@@ -1,6 +1,4 @@
-# [DRAFT] Turbine Python SDK
-
-> This SDK is not ready for consumption.
+# Turbine Python SDK
 
 Minimal, sync-first Python client for the Turbine GraphQL API.
 
@@ -23,26 +21,13 @@ uv add netrise-turbine-sdk
 
 ### Configure environment variables
 
-Create a `.env` file in your project root:
+Copy the example environment variable file:
 
 ```bash
-TURBINE_API_URL=https://your-turbine-instance.com/graphql
-TURBINE_API_TOKEN=your_api_token_here
+cp .env.example .env`
 ```
 
-### Basic usage
-
-```python
-from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
-
-# Initialize client (reads from .env automatically)
-config = TurbineClientConfig()
-client = TurbineClient(config)
-
-# Example: Query assets
-result = client.assets_relay()
-print(result.data)
-```
+Populate the missing values. Reach out to [mailto:support@netrise.io](support@netrise.io) if you need assistance.
 
 ## Documentation
 
