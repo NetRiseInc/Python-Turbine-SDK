@@ -1,4 +1,6 @@
-# Turbine Python SDK
+# [DRAFT] Turbine Python SDK
+
+> This SDK is not ready for consumption.
 
 Minimal, sync-first Python client for the Turbine GraphQL API.
 
