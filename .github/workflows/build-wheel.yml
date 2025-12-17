@@ -132,7 +132,7 @@ jobs:
       
       - name: Upload wheel to NetRise Platform
         id: netrise-upload
-        uses: NetRiseInc/binary-composition-analysis@v1.0.5
+        uses: NetRiseInc/binary-composition-analysis@v1.0.6
         with:
           # Authentication Info (from GitHub Secrets)
           client-id: ${{ secrets.NETRISE_CLIENT_ID }}
