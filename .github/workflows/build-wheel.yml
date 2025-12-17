@@ -132,7 +132,7 @@ jobs:
       
       - name: Upload wheel to NetRise Platform
         id: netrise-upload
-        uses: NetRiseInc/binary-composition-analysis@v1.0.4
+        uses: NetRiseInc/binary-composition-analysis@v1.0.5
         with:
           # Authentication Info (from GitHub Secrets)
           client-id: ${{ secrets.NETRISE_CLIENT_ID }}
@@ -146,6 +146,8 @@ jobs:
           artifact-path: ${{ steps.wheel-path.outputs.path }}
           name: ${{ steps.package-info.outputs.name }}
           version: ${{ steps.package-info.outputs.version }}
+          manufacturer: "NetRise"
+          model: "Python SDK"
       
       - name: Display NetRise upload results
         if: always()
