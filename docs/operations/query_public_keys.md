@@ -2,6 +2,8 @@
 
 # query_public_keys
 
+List public cryptographic keys found within the asset's file system.
+
 ## Parameters
 
 | name | type | required |

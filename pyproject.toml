@@ -17,6 +17,7 @@ python-dotenv = ">=1.0.0,<2.0.0"
 
 [tool.poetry.group.dev.dependencies]
 ariadne-codegen = ">=0.17.0,<0.18.0"
+graphql-core = "==3.2.0"
 pytest = ">=8.0.0,<9.0.0"
 
 [tool.ariadne-codegen]

@@ -2,7 +2,7 @@
 # Source: ../sdk-artifacts/synthetic_operations.graphql
 
 from datetime import datetime
-from typing import Annotated, Literal, Optional
+from typing import Annotated, Optional
 
 from pydantic import BeforeValidator, Field
 
@@ -26,19 +26,16 @@ class QueryDependencies(BaseModel):
 
 
 class QueryDependenciesDependencies(BaseModel):
-    typename__: Literal["DependencyConnection"] = Field(alias="__typename")
     edges: Optional[list[Optional["QueryDependenciesDependenciesEdges"]]]
     page_info: "QueryDependenciesDependenciesPageInfo" = Field(alias="pageInfo")
 
 
 class QueryDependenciesDependenciesEdges(BaseModel):
-    typename__: Literal["DependencyEdge"] = Field(alias="__typename")
     cursor: Optional[str]
     node: Optional["QueryDependenciesDependenciesEdgesNode"]
 
 
 class QueryDependenciesDependenciesEdgesNode(BaseModel):
-    typename__: Literal["Dependency"] = Field(alias="__typename")
     id: str
     analytic: "QueryDependenciesDependenciesEdgesNodeAnalytic"
     associated_files: Optional[
@@ -60,7 +57,6 @@ class QueryDependenciesDependenciesEdgesNode(BaseModel):
 
 
 class QueryDependenciesDependenciesEdgesNodeAnalytic(BaseModel):
-    typename__: Literal["AssetAnalytic"] = Field(alias="__typename")
     binaries: int
     components: "QueryDependenciesDependenciesEdgesNodeAnalyticComponents"
     credentials: "QueryDependenciesDependenciesEdgesNodeAnalyticCredentials"
@@ -72,7 +68,6 @@ class QueryDependenciesDependenciesEdgesNodeAnalytic(BaseModel):
 
 
 class QueryDependenciesDependenciesEdgesNodeAnalyticComponents(BaseModel):
-    typename__: Literal["AssetCountByTypeAnalytic"] = Field(alias="__typename")
     application: int
     container: int
     device: int
@@ -85,7 +80,6 @@ class QueryDependenciesDependenciesEdgesNodeAnalyticComponents(BaseModel):
 
 
 class QueryDependenciesDependenciesEdgesNodeAnalyticCredentials(BaseModel):
-    typename__: Literal["CredentialCountByTypeAnalytic"] = Field(alias="__typename")
     cracked_cred: Optional[int] = Field(alias="crackedCred")
     cracked_hash: Optional[int] = Field(alias="crackedHash")
     credential: int
@@ -93,14 +87,12 @@ class QueryDependenciesDependenciesEdgesNodeAnalyticCredentials(BaseModel):
 
 
 class QueryDependenciesDependenciesEdgesNodeAnalyticCryptography(BaseModel):
-    typename__: Literal["CryptographyCountByTypeAnalytic"] = Field(alias="__typename")
     certificate: int
     private_key: int = Field(alias="privateKey")
     public_key: int = Field(alias="publicKey")
 
 
 class QueryDependenciesDependenciesEdgesNodeAnalyticExploit(BaseModel):
-    typename__: Literal["ExploitCountAnalytic"] = Field(alias="__typename")
     botnet: int
     exploit_code: Optional[int] = Field(alias="exploitCode")
     in_known_exploited_vulnerabilities: Optional[int] = Field(
@@ -113,18 +105,12 @@ class QueryDependenciesDependenciesEdgesNodeAnalyticExploit(BaseModel):
 
 
 class QueryDependenciesDependenciesEdgesNodeAnalyticMisconfigurations(BaseModel):
-    typename__: Literal["MisconfigurationCountByStatusAnalytic"] = Field(
-        alias="__typename"
-    )
     failed: int
     not_applicable: int = Field(alias="notApplicable")
     passed: int
 
 
 class QueryDependenciesDependenciesEdgesNodeAnalyticVulnerability(BaseModel):
-    typename__: Literal["VulnerabilityCountBySeverityAnalytic"] = Field(
-        alias="__typename"
-    )
     critical: int
     high: int
     low: int
@@ -132,14 +118,12 @@ class QueryDependenciesDependenciesEdgesNodeAnalyticVulnerability(BaseModel):
 
 
 class QueryDependenciesDependenciesEdgesNodeAssociatedFiles(BaseModel):
-    typename__: Literal["ComponentNeighbor"] = Field(alias="__typename")
     badges: Optional[list[ComponentBadge]]
     component: "QueryDependenciesDependenciesEdgesNodeAssociatedFilesComponent"
     is_concrete: bool = Field(alias="isConcrete")
 
 
 class QueryDependenciesDependenciesEdgesNodeAssociatedFilesComponent(BaseModel):
-    typename__: Literal["Component"] = Field(alias="__typename")
     id: str
     architecture: Optional[Architecture]
     cpes: Optional[list[Optional[str]]]
@@ -163,7 +147,6 @@ class QueryDependenciesDependenciesEdgesNodeAssociatedFilesComponent(BaseModel):
 
 
 class QueryDependenciesDependenciesEdgesNodeCorrelations(BaseModel):
-    typename__: Literal["AssetCorrelation"] = Field(alias="__typename")
     artifact: Optional[str]
     asset_id: Optional[str] = Field(alias="assetId")
     asset_name: Optional[str] = Field(alias="assetName")
@@ -173,14 +156,12 @@ class QueryDependenciesDependenciesEdgesNodeCorrelations(BaseModel):
 
 
 class QueryDependenciesDependenciesEdgesNodeCorrelationsRisk(BaseModel):
-    typename__: Literal["RiskScore"] = Field(alias="__typename")
     category: Optional[RiskCategory]
     raw_score: Optional[float] = Field(alias="rawScore")
     score: Optional[float]
 
 
 class QueryDependenciesDependenciesEdgesNodeDependencies(BaseModel):
-    typename__: Literal["Dependencies"] = Field(alias="__typename")
     dependents: Optional[
         list["QueryDependenciesDependenciesEdgesNodeDependenciesDependents"]
     ]
@@ -191,25 +172,21 @@ class QueryDependenciesDependenciesEdgesNodeDependencies(BaseModel):
 
 
 class QueryDependenciesDependenciesEdgesNodeDependenciesDependents(BaseModel):
-    typename__: Literal["ComponentNeighbor"] = Field(alias="__typename")
     badges: Optional[list[ComponentBadge]]
     is_concrete: bool = Field(alias="isConcrete")
 
 
 class QueryDependenciesDependenciesEdgesNodeDependenciesDirect(BaseModel):
-    typename__: Literal["ComponentNeighbor"] = Field(alias="__typename")
     badges: Optional[list[ComponentBadge]]
     is_concrete: bool = Field(alias="isConcrete")
 
 
 class QueryDependenciesDependenciesEdgesNodeDependenciesIndirect(BaseModel):
-    typename__: Literal["ComponentNeighbor"] = Field(alias="__typename")
     badges: Optional[list[ComponentBadge]]
     is_concrete: bool = Field(alias="isConcrete")
 
 
 class QueryDependenciesDependenciesEdgesNodeDependency(BaseModel):
-    typename__: Literal["Component"] = Field(alias="__typename")
     id: str
     architecture: Optional[Architecture]
     cpes: Optional[list[Optional[str]]]
@@ -240,14 +217,12 @@ class QueryDependenciesDependenciesEdgesNodeDependency(BaseModel):
 
 
 class QueryDependenciesDependenciesEdgesNodeDependencyDigest(BaseModel):
-    typename__: Literal["Digest"] = Field(alias="__typename")
     md_5: Optional[str] = Field(alias="md5")
     sha_1: Optional[str] = Field(alias="sha1")
     sha_256: Optional[str] = Field(alias="sha256")
 
 
 class QueryDependenciesDependenciesEdgesNodeDependencyFile(BaseModel):
-    typename__: Literal["File"] = Field(alias="__typename")
     created_at: Optional[str] = Field(alias="createdAt")
     has_children: Optional[bool] = Field(alias="hasChildren")
     mime_type: Optional[str] = Field(alias="mimeType")
@@ -258,13 +233,11 @@ class QueryDependenciesDependenciesEdgesNodeDependencyFile(BaseModel):
 
 
 class QueryDependenciesDependenciesEdgesNodeDependencyIdentifiers(BaseModel):
-    typename__: Literal["Identifier"] = Field(alias="__typename")
     type: IdentifierFormat
     uri: str
 
 
 class QueryDependenciesDependenciesEdgesNodeDependencyPackage(BaseModel):
-    typename__: Literal["Package"] = Field(alias="__typename")
     language: Optional[list[Language]]
     license: Optional[str]
     name: str
@@ -273,14 +246,12 @@ class QueryDependenciesDependenciesEdgesNodeDependencyPackage(BaseModel):
 
 
 class QueryDependenciesDependenciesEdgesNodeDependencyVersion(BaseModel):
-    typename__: Literal["StringVersion"] = Field(alias="__typename")
     id: Optional[str]
     alternatives: Optional[list[str]]
     is_concrete: bool = Field(alias="isConcrete")
 
 
 class QueryDependenciesDependenciesEdgesNodeLatestRemediation(BaseModel):
-    typename__: Literal["IdentificationRemediation"] = Field(alias="__typename")
     author: Optional[str]
     created_at: Optional[str] = Field(alias="createdAt")
     identification_id: Optional[str] = Field(alias="identificationId")
@@ -295,7 +266,6 @@ class QueryDependenciesDependenciesEdgesNodeLatestRemediation(BaseModel):
 
 
 class QueryDependenciesDependenciesEdgesNodeVerification(BaseModel):
-    typename__: Literal["Verification"] = Field(alias="__typename")
     cryptographic: bool
     function_hashing: bool = Field(alias="functionHashing")
     heuristic: bool
@@ -305,7 +275,6 @@ class QueryDependenciesDependenciesEdgesNodeVerification(BaseModel):
 
 
 class QueryDependenciesDependenciesPageInfo(BaseModel):
-    typename__: Literal["PageInfo"] = Field(alias="__typename")
     end_cursor: Optional[str] = Field(alias="endCursor")
     has_next_page: bool = Field(alias="hasNextPage")
     has_previous_page: bool = Field(alias="hasPreviousPage")

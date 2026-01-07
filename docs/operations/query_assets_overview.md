@@ -2,6 +2,8 @@
 
 # query_assets_overview
 
+View high-level risk and threat exposure metrics for multiple assets.
+
 ## Parameters
 
 | name | type | required |

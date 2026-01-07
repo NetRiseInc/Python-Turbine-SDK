@@ -2,6 +2,8 @@
 
 # query_binary_protections
 
+List security hardening details for binaries found within the asset.
+
 ## Parameters
 
 | name | type | required |

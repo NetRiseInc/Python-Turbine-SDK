@@ -2,6 +2,8 @@
 
 # query_search
 
+Execute keyword searches across all artifacts and files in organization.
+
 ## Parameters
 
 | name | type | required |

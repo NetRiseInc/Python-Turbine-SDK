@@ -2,6 +2,8 @@
 
 # query_private_keys
 
+Detect private cryptographic keys stored insecurely on the asset filesystem.
+
 ## Parameters
 
 | name | type | required |

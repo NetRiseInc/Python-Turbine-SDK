@@ -2,6 +2,8 @@
 
 # mutation_remediate_asset_vulnerabilities
 
+Bulk apply VEX remediation status to multiple vulnerabilities on assets.
+
 ## Parameters
 
 | name | type | required |

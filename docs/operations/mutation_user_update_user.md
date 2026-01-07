@@ -2,6 +2,8 @@
 
 # mutation_user_update_user
 
+Modify user profile information including name and contact email details.
+
 ## Parameters
 
 | name | type | required |

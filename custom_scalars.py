@@ -41,6 +41,10 @@ def serialize_datetime(value: Any) -> str:
     if value.tzinfo is not None:
         offset = value.utcoffset()
         if offset is not None and offset.total_seconds() == 0:
-            return value.replace(tzinfo=_dt.timezone.utc).isoformat().replace("+00:00", "Z")
+            return (
+                value.replace(tzinfo=_dt.timezone.utc)
+                .isoformat()
+                .replace("+00:00", "Z")
+            )
 
     return value.isoformat()

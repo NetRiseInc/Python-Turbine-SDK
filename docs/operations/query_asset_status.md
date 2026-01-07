@@ -2,6 +2,8 @@
 
 # query_asset_status
 
+Check if an asset is currently processing or has finished.
+
 ## Parameters
 
 | name | type | required |

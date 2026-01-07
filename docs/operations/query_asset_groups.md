@@ -2,6 +2,8 @@
 
 # query_asset_groups
 
+Retrieve a detailed paginated list of all asset groups available.
+
 ## Parameters
 
 | name | type | required |

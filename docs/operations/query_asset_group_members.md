@@ -2,6 +2,8 @@
 
 # query_asset_group_members
 
+List all assets associated with a specific asset group container.
+
 ## Parameters
 
 | name | type | required |

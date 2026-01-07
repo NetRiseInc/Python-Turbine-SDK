@@ -2,6 +2,8 @@
 
 # query_vulnerabilities
 
+List CVEs and associated risks for components in an asset.
+
 ## Parameters
 
 | name | type | required |

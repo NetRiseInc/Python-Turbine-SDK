@@ -2,6 +2,8 @@
 
 # mutation_add_assets_to_asset_group
 
+Add specified assets to an existing asset group for organization.
+
 ## Parameters
 
 | name | type | required |

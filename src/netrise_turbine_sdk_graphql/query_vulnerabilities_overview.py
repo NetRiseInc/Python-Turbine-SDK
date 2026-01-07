@@ -2,7 +2,7 @@
 # Source: ../sdk-artifacts/synthetic_operations.graphql
 
 from datetime import datetime
-from typing import Annotated, Literal, Optional
+from typing import Annotated, Optional
 
 from pydantic import BeforeValidator, Field
 
@@ -18,7 +18,6 @@ class QueryVulnerabilitiesOverview(BaseModel):
 
 
 class QueryVulnerabilitiesOverviewVulnerabilitiesOverview(BaseModel):
-    typename__: Literal["VulnerabilityOverviewConnection"] = Field(alias="__typename")
     edges: Optional[
         list[Optional["QueryVulnerabilitiesOverviewVulnerabilitiesOverviewEdges"]]
     ]
@@ -28,13 +27,11 @@ class QueryVulnerabilitiesOverviewVulnerabilitiesOverview(BaseModel):
 
 
 class QueryVulnerabilitiesOverviewVulnerabilitiesOverviewEdges(BaseModel):
-    typename__: Literal["VulnerabilityOverviewEdge"] = Field(alias="__typename")
     cursor: Optional[str]
     node: Optional["QueryVulnerabilitiesOverviewVulnerabilitiesOverviewEdgesNode"]
 
 
 class QueryVulnerabilitiesOverviewVulnerabilitiesOverviewEdgesNode(BaseModel):
-    typename__: Literal["VulnerabilityOverview"] = Field(alias="__typename")
     botnets_list: Optional[list[Optional[str]]] = Field(alias="botnetsList")
     cisa_due_date: Optional[Annotated[datetime, BeforeValidator(parse_datetime)]] = (
         Field(alias="cisaDueDate")
@@ -66,7 +63,6 @@ class QueryVulnerabilitiesOverviewVulnerabilitiesOverviewEdgesNode(BaseModel):
 
 
 class QueryVulnerabilitiesOverviewVulnerabilitiesOverviewPageInfo(BaseModel):
-    typename__: Literal["PageInfo"] = Field(alias="__typename")
     end_cursor: Optional[str] = Field(alias="endCursor")
     has_next_page: bool = Field(alias="hasNextPage")
     has_previous_page: bool = Field(alias="hasPreviousPage")

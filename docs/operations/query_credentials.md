@@ -2,6 +2,8 @@
 
 # query_credentials
 
+Identify user accounts and password hashes discovered within the filesystem.
+
 ## Parameters
 
 | name | type | required |

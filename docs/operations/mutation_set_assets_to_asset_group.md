@@ -2,6 +2,8 @@
 
 # mutation_set_assets_to_asset_group
 
+Overwrite the member list of an asset group with new assets.
+
 ## Parameters
 
 | name | type | required |

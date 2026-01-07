@@ -2,6 +2,8 @@
 
 # mutation_asset_update
 
+Modify metadata such as name, vendor, or version for assets.
+
 ## Parameters
 
 | name | type | required |

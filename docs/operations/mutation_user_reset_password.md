@@ -2,6 +2,8 @@
 
 # mutation_user_reset_password
 
+Trigger a password reset email for a specific user account.
+
 ## Parameters
 
 | name | type | required |

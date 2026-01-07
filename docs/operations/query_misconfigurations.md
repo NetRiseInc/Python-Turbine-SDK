@@ -2,6 +2,8 @@
 
 # query_misconfigurations
 
+List failed security checks and configuration risks found in assets.
+
 ## Parameters
 
 | name | type | required |

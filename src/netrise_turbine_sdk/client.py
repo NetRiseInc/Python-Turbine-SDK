@@ -34,14 +34,14 @@ class TurbineClientConfig:
         """Load config from environment variables.
 
         If `load_env_file` is True, attempts to load a `.env` file from:
-        - sdk/sdk-tools/.env (project-root relative)
+        - turbine/sdk-tools/.env (project-root relative)
         - current working directory .env
 
         This mirrors the behavior of the TypeScript snapshot tool.
         """
         if load_env_file:
             # Try loading repo-local .env first (same convention as snapshot tool).
-            load_dotenv("sdk/sdk-tools/.env", override=False)
+            load_dotenv("turbine/sdk-tools/.env", override=False)
             load_dotenv(override=False)
 
         endpoint = (os.getenv("TURBINE_GRAPHQL_ENDPOINT") or "").strip()
@@ -57,7 +57,9 @@ class TurbineClientConfig:
             auth0_client_secret=_strip_or_none(os.getenv("AUTH0_CLIENT_SECRET")),
             auth0_audience=_strip_or_none(os.getenv("AUTH0_AUDIENCE")),
             auth0_organization_id=_strip_or_none(os.getenv("AUTH0_ORGANIZATION_ID")),
-            auth0_organization_name=_strip_or_none(os.getenv("AUTH0_ORGANIZATION_NAME")),
+            auth0_organization_name=_strip_or_none(
+                os.getenv("AUTH0_ORGANIZATION_NAME")
+            ),
             turbine_api_token=_strip_or_none(os.getenv("TURBINE_API_TOKEN")),
         )
 
@@ -161,7 +163,9 @@ def _fetch_auth0_token(
     if not domain:
         raise ValueError("AUTH0_DOMAIN is required when TURBINE_API_TOKEN is not set")
     if not client_id or not client_secret:
-        raise ValueError("AUTH0_CLIENT_ID and AUTH0_CLIENT_SECRET are required when TURBINE_API_TOKEN is not set")
+        raise ValueError(
+            "AUTH0_CLIENT_ID and AUTH0_CLIENT_SECRET are required when TURBINE_API_TOKEN is not set"
+        )
     if not audience:
         raise ValueError("AUTH0_AUDIENCE is required when TURBINE_API_TOKEN is not set")
 

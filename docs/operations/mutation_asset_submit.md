@@ -2,6 +2,8 @@
 
 # mutation_asset_submit
 
+Upload firmware or SBOMs with metadata, group assignments, and CPEs.
+
 ## Parameters
 
 | name | type | required |

@@ -2,6 +2,8 @@
 
 # query_user_orgs
 
+List all organizations the current user is authorized to access.
+
 ## Parameters
 
 | name | type | required |

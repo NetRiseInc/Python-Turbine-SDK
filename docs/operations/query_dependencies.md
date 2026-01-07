@@ -2,6 +2,8 @@
 
 # query_dependencies
 
+List all software components and libraries identified in the asset.
+
 ## Parameters
 
 | name | type | required |

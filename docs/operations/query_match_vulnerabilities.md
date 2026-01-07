@@ -2,6 +2,8 @@
 
 # query_match_vulnerabilities
 
+Find specific vulnerabilities matching a provided component identifier or package.
+
 ## Parameters
 
 | name | type | required |

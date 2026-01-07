@@ -2,6 +2,8 @@
 
 # query_metrics
 
+View organization-wide statistics on asset counts, processing, and risk.
+
 ## Parameters
 
 | name | type | required |

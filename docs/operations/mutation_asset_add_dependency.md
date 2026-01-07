@@ -2,6 +2,8 @@
 
 # mutation_asset_add_dependency
 
+Manually inject a missing dependency component into an asset's inventory.
+
 ## Parameters
 
 | name | type | required |

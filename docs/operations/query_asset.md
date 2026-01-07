@@ -2,6 +2,8 @@
 
 # query_asset
 
+Retrieve detailed metadata and risk information for a single asset.
+
 ## Parameters
 
 | name | type | required |

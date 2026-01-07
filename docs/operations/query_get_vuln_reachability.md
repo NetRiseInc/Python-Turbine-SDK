@@ -2,6 +2,8 @@
 
 # query_get_vuln_reachability
 
+Determine if a vulnerability can be executed via system paths.
+
 ## Parameters
 
 | name | type | required |

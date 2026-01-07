@@ -2,6 +2,8 @@
 
 # mutation_user_remove
 
+Remove a user from the organization without deleting their account.
+
 ## Parameters
 
 | name | type | required |

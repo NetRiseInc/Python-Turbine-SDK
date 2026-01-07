@@ -2,6 +2,8 @@
 
 # query_grouped_dependencies
 
+View dependencies aggregated by vendor, license, or specific component type.
+
 ## Parameters
 
 | name | type | required |

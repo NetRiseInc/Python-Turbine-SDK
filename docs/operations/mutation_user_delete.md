@@ -2,6 +2,8 @@
 
 # mutation_user_delete
 
+Permanently delete a user account and remove their access rights.
+
 ## Parameters
 
 | name | type | required |
