@@ -1,14 +1,14 @@
 <!-- Generated file: do not edit by hand -->
 
-# query_hashes
+# query_download_file
 
-List cryptographic hashes for files identified within the asset filesystem.
+Create a secure link to download a specific individual file.
 
 ## Parameters
 
 | name | type | required |
 | --- | --- | --- |
-| `hashes_args` | `HashesInput` | `true` |
+| `download_file_args` | `FileDownloadInput` | `true` |
 
 ## Example
 
@@ -17,8 +17,7 @@ from __future__ import annotations
 
 from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
 from netrise_turbine_sdk_graphql.input_types import (
-    Cursor,
-    HashesInput,
+    FileDownloadInput,
 )
 
 
@@ -27,7 +26,7 @@ def main() -> None:
     sdk = TurbineClient(cfg)
 
     with sdk.graphql() as client:
-        resp = client.query_hashes(hashes_args=HashesInput(asset_id='asset_123', cursor=Cursor()))
+        resp = client.query_download_file(download_file_args=FileDownloadInput(asset_id='asset_123', file_paths=['./path/to/file']))
         print(resp.model_dump())
 
 

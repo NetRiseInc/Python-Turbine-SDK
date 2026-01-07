@@ -2,6 +2,8 @@
 
 # mutation_remove_assets_from_asset_group
 
+Remove selected assets from a specific asset group container configuration.
+
 ## Parameters
 
 | name | type | required |

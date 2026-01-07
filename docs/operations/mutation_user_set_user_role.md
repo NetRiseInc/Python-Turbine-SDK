@@ -2,6 +2,8 @@
 
 # mutation_user_set_user_role
 
+Assign a new permission role like Owner or Operator to users.
+
 ## Parameters
 
 | name | type | required |

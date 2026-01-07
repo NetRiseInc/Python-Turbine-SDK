@@ -2,6 +2,8 @@
 
 # mutation_remediate_license_issues
 
+Update status and add notes to resolve identified license issues.
+
 ## Parameters
 
 | name | type | required |

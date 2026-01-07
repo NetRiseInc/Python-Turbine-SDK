@@ -2,6 +2,8 @@
 
 # query_vulnerabilities_overview
 
+Get a summary of vulnerability counts and severity across assets.
+
 ## Parameters
 
 | name | type | required |

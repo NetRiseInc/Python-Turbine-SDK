@@ -2,6 +2,8 @@
 
 # query_certificates
 
+List X.509 certificates and validity status found in the asset.
+
 ## Parameters
 
 | name | type | required |

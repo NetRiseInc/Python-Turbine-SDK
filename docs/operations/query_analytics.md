@@ -2,6 +2,8 @@
 
 # query_analytics
 
+Access high-level risk data and charts for organization dashboards.
+
 ## Parameters
 
 | name | type | required |

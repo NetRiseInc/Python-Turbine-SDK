@@ -30,6 +30,10 @@ from .input_types import (
     DeleteAssetGroupInput,
     DependencyInput,
     DependencyKnownExploitsInput,
+    ExtractedFirmwareDownloadInput,
+    FileDownloadInput,
+    FileListDownloadInput,
+    FirmwareDownloadInput,
     GetVulnReachabilityInput,
     GroupedDependenciesInput,
     HashesInput,
@@ -112,7 +116,10 @@ from .query_credentials import QueryCredentials
 from .query_dependencies import QueryDependencies
 from .query_dependency_known_exploits import QueryDependencyKnownExploits
 from .query_detailed_vulnerabilities import QueryDetailedVulnerabilities
-from .query_download import QueryDownload
+from .query_download_extracted_firmware import QueryDownloadExtractedFirmware
+from .query_download_file import QueryDownloadFile
+from .query_download_file_list import QueryDownloadFileList
+from .query_download_firmware import QueryDownloadFirmware
 from .query_get_vuln_reachability import QueryGetVulnReachability
 from .query_grouped_dependencies import QueryGroupedDependencies
 from .query_hashes import QueryHashes
@@ -144,12 +151,9 @@ class Client(BaseClient):
             """
             query QueryActivity($activity_args: ActivityInput!) {
               activity(args: $activity_args) {
-                __typename
                 edges {
-                  __typename
                   cursor
                   node {
-                    __typename
                     id
                     activityType
                     correlationId
@@ -158,42 +162,36 @@ class Client(BaseClient):
                     entity {
                       __typename
                       ... on AssetCreatedPayload {
-                        __typename
                         assetType
                         name
                         vendor
                         version
                       }
                       ... on AssetChangedPayload {
-                        __typename
                         assetType
                         name
                         vendor
                         version
                       }
                       ... on AssetRiskChangedPayload {
-                        __typename
                         assetType
                         name
                         vendor
                         version
                       }
                       ... on IdentificationAddedPayload {
-                        __typename
                         identificationId
                         name
                         vendor
                         version
                       }
                       ... on IdentificationRemovedPayload {
-                        __typename
                         identificationId
                         name
                         vendor
                         version
                       }
                       ... on VulnerabilityAddedPayload {
-                        __typename
                         componentName
                         componentVendor
                         componentVersion
@@ -203,7 +201,6 @@ class Client(BaseClient):
                         vulnerabilityId
                       }
                       ... on VulnerabilityRemediatedPayload {
-                        __typename
                         componentName
                         componentVendor
                         componentVersion
@@ -214,34 +211,28 @@ class Client(BaseClient):
                         vulnerabilityId
                       }
                       ... on VulnerabilityUpdatedPayload {
-                        __typename
                         cve
                         identificationId
                       }
                       ... on VulnerabilityRemovedPayload {
-                        __typename
                         cve
                         identificationId
                       }
                       ... on MisconfigChangedPayload {
-                        __typename
                         checkId
                         checkName
                         newStatus
                         oldStatus
                       }
                       ... on AssetGroupAddedPayload {
-                        __typename
                         groupId
                         name
                       }
                       ... on AssetGroupRemovedPayload {
-                        __typename
                         groupId
                         name
                       }
                       ... on UnspecifiedPayload {
-                        __typename
                         payloadType
                         rawData
                       }
@@ -251,7 +242,6 @@ class Client(BaseClient):
                   }
                 }
                 pageInfo {
-                  __typename
                   endCursor
                   hasNextPage
                   hasPreviousPage
@@ -274,29 +264,23 @@ class Client(BaseClient):
             """
             query QueryAnalytics {
               analytics {
-                __typename
                 assetsByRiskCategory {
-                  __typename
                   fields {
-                    __typename
                     name
                     value
                   }
                 }
                 highProfileVulnerabilities {
-                  __typename
                   affectedAssets
                   associatedCves
                   uniqueExploits
                 }
                 knownExploitedVulnerabilities {
-                  __typename
                   affectedAssets
                   pastDue
                   uniqueKevs
                 }
                 vulnerabilitiesByAge {
-                  __typename
                   age
                   ageGroupId
                   count
@@ -306,14 +290,12 @@ class Client(BaseClient):
                   uniqueCount
                 }
                 vulnerabilitiesByPriorityScore {
-                  __typename
                   occurrences
                   priorityScore
                   priorityScoreFilter
                   uniques
                 }
                 vulnerabilitiesFunnelChart {
-                  __typename
                   category
                   critical
                   high
@@ -322,7 +304,6 @@ class Client(BaseClient):
                   total
                 }
                 vulnerabilitiesOfInterest {
-                  __typename
                   name
                   occurrences
                   uniques
@@ -345,13 +326,10 @@ class Client(BaseClient):
             """
             query QueryAsset($asset_args: AssetInput) {
               asset(args: $asset_args) {
-                __typename
                 id
                 analytic {
-                  __typename
                   binaries
                   components {
-                    __typename
                     application
                     container
                     device
@@ -363,20 +341,17 @@ class Client(BaseClient):
                     package
                   }
                   credentials {
-                    __typename
                     crackedCred
                     crackedHash
                     credential
                     hash
                   }
                   cryptography {
-                    __typename
                     certificate
                     privateKey
                     publicKey
                   }
                   exploit {
-                    __typename
                     botnet
                     exploitCode
                     inKnownExploitedVulnerabilities
@@ -387,13 +362,11 @@ class Client(BaseClient):
                   }
                   files
                   misconfigurations {
-                    __typename
                     failed
                     notApplicable
                     passed
                   }
                   vulnerability {
-                    __typename
                     critical
                     high
                     low
@@ -406,14 +379,10 @@ class Client(BaseClient):
                 createdAt
                 fileName
                 filesystems {
-                  __typename
                   id
                   files {
-                    __typename
                     filesList {
-                      __typename
                       file {
-                        __typename
                         createdAt
                         hasChildren
                         mimeType
@@ -425,7 +394,6 @@ class Client(BaseClient):
                       fileId
                     }
                     pageInfo {
-                      __typename
                       nextPageToken
                       prevPageToken
                       totalSize
@@ -438,7 +406,6 @@ class Client(BaseClient):
                 orgId
                 product
                 risk {
-                  __typename
                   category
                   rawScore
                   score
@@ -468,7 +435,6 @@ class Client(BaseClient):
             """
             query QueryAssetGroupAnalytics($assetGroupAnalytics_args: AssetGroupAnalyticsInput!) {
               assetGroupAnalytics(args: $assetGroupAnalytics_args) {
-                __typename
                 crackedCredentials
                 exploits
                 invalidCertificates
@@ -497,18 +463,13 @@ class Client(BaseClient):
             """
             query QueryAssetGroupMembers($assetGroupMembers_args: AssetGroupMembersInput!) {
               assetGroupMembers(args: $assetGroupMembers_args) {
-                __typename
                 edges {
-                  __typename
                   cursor
                   node {
-                    __typename
                     id
                     analytic {
-                      __typename
                       binaries
                       components {
-                        __typename
                         application
                         container
                         device
@@ -520,20 +481,17 @@ class Client(BaseClient):
                         package
                       }
                       credentials {
-                        __typename
                         crackedCred
                         crackedHash
                         credential
                         hash
                       }
                       cryptography {
-                        __typename
                         certificate
                         privateKey
                         publicKey
                       }
                       exploit {
-                        __typename
                         botnet
                         exploitCode
                         inKnownExploitedVulnerabilities
@@ -544,13 +502,11 @@ class Client(BaseClient):
                       }
                       files
                       misconfigurations {
-                        __typename
                         failed
                         notApplicable
                         passed
                       }
                       vulnerability {
-                        __typename
                         critical
                         high
                         low
@@ -563,11 +519,7 @@ class Client(BaseClient):
                     createdAt
                     fileName
                     filesystems {
-                      __typename
                       id
-                      files {
-                        __typename
-                      }
                     }
                     firstAnalysisTime
                     hasRemediation
@@ -575,7 +527,6 @@ class Client(BaseClient):
                     orgId
                     product
                     risk {
-                      __typename
                       category
                       rawScore
                       score
@@ -590,7 +541,6 @@ class Client(BaseClient):
                   }
                 }
                 pageInfo {
-                  __typename
                   endCursor
                   hasNextPage
                   hasPreviousPage
@@ -620,12 +570,9 @@ class Client(BaseClient):
             """
             query QueryAssetGroups($assetGroups_args: AssetGroupsInput!) {
               assetGroups(args: $assetGroups_args) {
-                __typename
                 edges {
-                  __typename
                   cursor
                   node {
-                    __typename
                     id
                     assetsCount
                     description
@@ -635,7 +582,6 @@ class Client(BaseClient):
                   }
                 }
                 pageInfo {
-                  __typename
                   endCursor
                   hasNextPage
                   hasPreviousPage
@@ -663,7 +609,6 @@ class Client(BaseClient):
             """
             query QueryAssetStatus($assetStatus_args: AssetStatusInput!) {
               assetStatus(args: $assetStatus_args) {
-                __typename
                 assetId
                 hasRunningJob
                 lastUpdatedTime
@@ -690,7 +635,6 @@ class Client(BaseClient):
             """
             query QueryAssetUpload($assetUpload_args: AssetUploadInput) {
               assetUpload(args: $assetUpload_args) {
-                __typename
                 assetId
                 uploadId
                 uploaded
@@ -717,7 +661,6 @@ class Client(BaseClient):
             """
             query QueryAssetVulnerabilityRemediation($assetVulnerabilityRemediation_args: AssetVulnerabilityRemediationInput!) {
               assetVulnerabilityRemediation(args: $assetVulnerabilityRemediation_args) {
-                __typename
                 assetId
                 author
                 createdAt
@@ -750,12 +693,9 @@ class Client(BaseClient):
             """
             query QueryAssetsOverview($assetsOverview_args: AssetOverviewInput!) {
               assetsOverview(args: $assetsOverview_args) {
-                __typename
                 edges {
-                  __typename
                   cursor
                   node {
-                    __typename
                     associatedCves
                     botnets
                     composedAssetId
@@ -772,7 +712,6 @@ class Client(BaseClient):
                     operatingSystemKernelVersion
                     product
                     risk {
-                      __typename
                       category
                       rawScore
                       score
@@ -785,7 +724,6 @@ class Client(BaseClient):
                   }
                 }
                 pageInfo {
-                  __typename
                   endCursor
                   hasNextPage
                   hasPreviousPage
@@ -813,18 +751,13 @@ class Client(BaseClient):
             """
             query QueryAssetsRelay($assetsRelay_args: AssetsRelayInput!) {
               assetsRelay(args: $assetsRelay_args) {
-                __typename
                 edges {
-                  __typename
                   cursor
                   node {
-                    __typename
                     id
                     analytic {
-                      __typename
                       binaries
                       components {
-                        __typename
                         application
                         container
                         device
@@ -836,20 +769,17 @@ class Client(BaseClient):
                         package
                       }
                       credentials {
-                        __typename
                         crackedCred
                         crackedHash
                         credential
                         hash
                       }
                       cryptography {
-                        __typename
                         certificate
                         privateKey
                         publicKey
                       }
                       exploit {
-                        __typename
                         botnet
                         exploitCode
                         inKnownExploitedVulnerabilities
@@ -860,13 +790,11 @@ class Client(BaseClient):
                       }
                       files
                       misconfigurations {
-                        __typename
                         failed
                         notApplicable
                         passed
                       }
                       vulnerability {
-                        __typename
                         critical
                         high
                         low
@@ -879,11 +807,7 @@ class Client(BaseClient):
                     createdAt
                     fileName
                     filesystems {
-                      __typename
                       id
-                      files {
-                        __typename
-                      }
                     }
                     firstAnalysisTime
                     hasRemediation
@@ -891,7 +815,6 @@ class Client(BaseClient):
                     orgId
                     product
                     risk {
-                      __typename
                       category
                       rawScore
                       score
@@ -906,7 +829,6 @@ class Client(BaseClient):
                   }
                 }
                 pageInfo {
-                  __typename
                   endCursor
                   hasNextPage
                   hasPreviousPage
@@ -934,21 +856,16 @@ class Client(BaseClient):
             """
             query QueryBinaryProtections($binaryProtections_args: BinaryProtectionsInput!) {
               binaryProtections(args: $binaryProtections_args) {
-                __typename
                 edges {
-                  __typename
                   cursor
                   node {
-                    __typename
                     bindNow
                     correlations {
-                      __typename
                       artifact
                       assetId
                       assetName
                       location
                       risk {
-                        __typename
                         category
                         rawScore
                         score
@@ -968,7 +885,6 @@ class Client(BaseClient):
                   }
                 }
                 pageInfo {
-                  __typename
                   endCursor
                   hasNextPage
                   hasPreviousPage
@@ -1000,7 +916,6 @@ class Client(BaseClient):
             """
             query QueryBinaryProtectionsSummary($binaryProtectionsSummary_args: BinaryProtectionsSummaryInput!) {
               binaryProtectionsSummary(args: $binaryProtectionsSummary_args) {
-                __typename
                 canaryDisabled
                 canaryEnabled
                 nxDisabled
@@ -1032,21 +947,16 @@ class Client(BaseClient):
             """
             query QueryCertificates($certificates_args: CertificatesInput!) {
               certificates(args: $certificates_args) {
-                __typename
                 edges {
-                  __typename
                   cursor
                   node {
-                    __typename
                     bitSize
                     correlations {
-                      __typename
                       artifact
                       assetId
                       assetName
                       location
                       risk {
-                        __typename
                         category
                         rawScore
                         score
@@ -1076,7 +986,6 @@ class Client(BaseClient):
                   }
                 }
                 pageInfo {
-                  __typename
                   endCursor
                   hasNextPage
                   hasPreviousPage
@@ -1104,20 +1013,15 @@ class Client(BaseClient):
             """
             query QueryCredentials($credentials_args: CredentialsInput!) {
               credentials(args: $credentials_args) {
-                __typename
                 edges {
-                  __typename
                   cursor
                   node {
-                    __typename
                     correlations {
-                      __typename
                       artifact
                       assetId
                       assetName
                       location
                       risk {
-                        __typename
                         category
                         rawScore
                         score
@@ -1136,7 +1040,6 @@ class Client(BaseClient):
                   }
                 }
                 pageInfo {
-                  __typename
                   endCursor
                   hasNextPage
                   hasPreviousPage
@@ -1164,18 +1067,13 @@ class Client(BaseClient):
             """
             query QueryDependencies($dependencies_args: DependencyInput!) {
               dependencies(args: $dependencies_args) {
-                __typename
                 edges {
-                  __typename
                   cursor
                   node {
-                    __typename
                     id
                     analytic {
-                      __typename
                       binaries
                       components {
-                        __typename
                         application
                         container
                         device
@@ -1187,20 +1085,17 @@ class Client(BaseClient):
                         package
                       }
                       credentials {
-                        __typename
                         crackedCred
                         crackedHash
                         credential
                         hash
                       }
                       cryptography {
-                        __typename
                         certificate
                         privateKey
                         publicKey
                       }
                       exploit {
-                        __typename
                         botnet
                         exploitCode
                         inKnownExploitedVulnerabilities
@@ -1211,13 +1106,11 @@ class Client(BaseClient):
                       }
                       files
                       misconfigurations {
-                        __typename
                         failed
                         notApplicable
                         passed
                       }
                       vulnerability {
-                        __typename
                         critical
                         high
                         low
@@ -1225,10 +1118,8 @@ class Client(BaseClient):
                       }
                     }
                     associatedFiles {
-                      __typename
                       badges
                       component {
-                        __typename
                         id
                         architecture
                         cpes
@@ -1251,13 +1142,11 @@ class Client(BaseClient):
                       isConcrete
                     }
                     correlations {
-                      __typename
                       artifact
                       assetId
                       assetName
                       location
                       risk {
-                        __typename
                         category
                         rawScore
                         score
@@ -1266,37 +1155,30 @@ class Client(BaseClient):
                     }
                     correlationsCount
                     dependencies {
-                      __typename
                       dependents {
-                        __typename
                         badges
                         isConcrete
                       }
                       direct {
-                        __typename
                         badges
                         isConcrete
                       }
                       indirect {
-                        __typename
                         badges
                         isConcrete
                       }
                     }
                     dependency {
-                      __typename
                       id
                       architecture
                       cpes
                       description
                       digest {
-                        __typename
                         md5
                         sha1
                         sha256
                       }
                       file {
-                        __typename
                         createdAt
                         hasChildren
                         mimeType
@@ -1307,7 +1189,6 @@ class Client(BaseClient):
                       }
                       identificationIds
                       identifiers {
-                        __typename
                         type
                         uri
                       }
@@ -1318,7 +1199,6 @@ class Client(BaseClient):
                       operatingSystem
                       operatingSystemKernelVersion
                       package {
-                        __typename
                         language
                         license
                         name
@@ -1333,14 +1213,12 @@ class Client(BaseClient):
                       type
                       vendor
                       version {
-                        __typename
                         id
                         alternatives
                         isConcrete
                       }
                     }
                     latestRemediation {
-                      __typename
                       author
                       createdAt
                       identificationId
@@ -1351,7 +1229,6 @@ class Client(BaseClient):
                     }
                     submitDatetime
                     verification {
-                      __typename
                       cryptographic
                       functionHashing
                       heuristic
@@ -1362,7 +1239,6 @@ class Client(BaseClient):
                   }
                 }
                 pageInfo {
-                  __typename
                   endCursor
                   hasNextPage
                   hasPreviousPage
@@ -1392,15 +1268,12 @@ class Client(BaseClient):
             """
             query QueryDependencyKnownExploits($dependencyKnownExploits_args: DependencyKnownExploitsInput!) {
               dependencyKnownExploits(args: $dependencyKnownExploits_args) {
-                __typename
                 botnets {
-                  __typename
                   botnetName
                   dateAdded
                   url
                 }
                 exploits {
-                  __typename
                   dateAdded
                   exploitAvailability
                   exploitMaturity
@@ -1410,23 +1283,19 @@ class Client(BaseClient):
                 }
                 knownAttacks
                 knownExploitedVulnerabilities {
-                  __typename
                   action
                   dateAdded
                   dueDate
                   name
                 }
                 ransomware {
-                  __typename
                   families
                   references {
-                    __typename
                     date
                     url
                   }
                 }
                 threatActors {
-                  __typename
                   aliases
                   name
                   url
@@ -1456,20 +1325,15 @@ class Client(BaseClient):
             """
             query QueryDetailedVulnerabilities($detailedVulnerabilities_args: PaginatedDetailedVulnerabilitiesInput!) {
               detailedVulnerabilities(args: $detailedVulnerabilities_args) {
-                __typename
                 edges {
-                  __typename
                   cursor
                   node {
-                    __typename
                     id
                     createdDatetime
                     description
                     exploit {
-                      __typename
                       botnetDatetime
                       epss {
-                        __typename
                         percentile
                         score
                       }
@@ -1487,7 +1351,6 @@ class Client(BaseClient):
                       maturity
                       pocDatetime
                       prevalence {
-                        __typename
                         botnets
                         exploit
                         knownAttacks
@@ -1500,16 +1363,11 @@ class Client(BaseClient):
                       recentExploitDatetime
                       recentRansomwareDatetime
                       recentThreatActorDatetime
-                      references {
-                        __typename
-                      }
                       threatActorDatetime
                       weaponizeDatetime
                     }
                     impact {
-                      __typename
                       base {
-                        __typename
                         attackComplexity
                         attackVector
                         availabilityImpact
@@ -1525,7 +1383,6 @@ class Client(BaseClient):
                         vectorString
                       }
                       temporal {
-                        __typename
                         exploitCodeMaturity
                         remediationLevel
                         reportConfidence
@@ -1534,9 +1391,7 @@ class Client(BaseClient):
                       }
                     }
                     impactV2 {
-                      __typename
                       base {
-                        __typename
                         accessComplexity
                         accessVector
                         authentication
@@ -1551,7 +1406,6 @@ class Client(BaseClient):
                         version
                       }
                       temporal {
-                        __typename
                         exploitability
                         remediationLevel
                         reportConfidence
@@ -1561,16 +1415,13 @@ class Client(BaseClient):
                       }
                     }
                     impactV31 {
-                      __typename
                       metric {
-                        __typename
                         exploitabilityScore
                         impactScore
                         source
                         type
                       }
                       temporal {
-                        __typename
                         exploitCodeMaturity
                         remediationLevel
                         reportConfidence
@@ -1579,9 +1430,7 @@ class Client(BaseClient):
                       }
                     }
                     impactV4 {
-                      __typename
                       cvssData {
-                        __typename
                         attackComplexity
                         attackRequirements
                         attackVector
@@ -1621,7 +1470,6 @@ class Client(BaseClient):
                       }
                       source
                       threatCvssSecondary {
-                        __typename
                         baseThreatScore
                         baseThreatSeverity
                         exploitMaturity
@@ -1629,14 +1477,12 @@ class Client(BaseClient):
                       type
                     }
                     problemTypes {
-                      __typename
                       name
                       url
                       value
                     }
                     processedDatetime
                     references {
-                      __typename
                       name
                       refsource
                       url
@@ -1646,7 +1492,6 @@ class Client(BaseClient):
                   }
                 }
                 pageInfo {
-                  __typename
                   endCursor
                   hasNextPage
                   hasPreviousPage
@@ -1669,22 +1514,113 @@ class Client(BaseClient):
         data = self.get_data(response)
         return QueryDetailedVulnerabilities.model_validate(data)
 
-    def query_download(self, **kwargs: Any) -> QueryDownload:
+    def query_download_extracted_firmware(
+        self,
+        download_extracted_firmware_args: ExtractedFirmwareDownloadInput,
+        **kwargs: Any
+    ) -> QueryDownloadExtractedFirmware:
         query = gql(
             """
-            query QueryDownload {
+            query QueryDownloadExtractedFirmware($download_extractedFirmware_args: ExtractedFirmwareDownloadInput!) {
               download {
-                __typename
+                extractedFirmware(args: $download_extractedFirmware_args) {
+                  downloadUrlsList
+                  pathsList
+                }
               }
             }
             """
         )
-        variables: dict[str, object] = {}
+        variables: dict[str, object] = {
+            "download_extractedFirmware_args": download_extracted_firmware_args
+        }
         response = self.execute(
-            query=query, operation_name="QueryDownload", variables=variables, **kwargs
+            query=query,
+            operation_name="QueryDownloadExtractedFirmware",
+            variables=variables,
+            **kwargs
         )
         data = self.get_data(response)
-        return QueryDownload.model_validate(data)
+        return QueryDownloadExtractedFirmware.model_validate(data)
+
+    def query_download_file(
+        self, download_file_args: FileDownloadInput, **kwargs: Any
+    ) -> QueryDownloadFile:
+        query = gql(
+            """
+            query QueryDownloadFile($download_file_args: FileDownloadInput!) {
+              download {
+                file(args: $download_file_args) {
+                  downloadUrlsList
+                  pathsList
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {"download_file_args": download_file_args}
+        response = self.execute(
+            query=query,
+            operation_name="QueryDownloadFile",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryDownloadFile.model_validate(data)
+
+    def query_download_file_list(
+        self, download_file_list_args: FileListDownloadInput, **kwargs: Any
+    ) -> QueryDownloadFileList:
+        query = gql(
+            """
+            query QueryDownloadFileList($download_fileList_args: FileListDownloadInput!) {
+              download {
+                fileList(args: $download_fileList_args) {
+                  downloadUrlsList
+                  pathsList
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "download_fileList_args": download_file_list_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryDownloadFileList",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryDownloadFileList.model_validate(data)
+
+    def query_download_firmware(
+        self, download_firmware_args: FirmwareDownloadInput, **kwargs: Any
+    ) -> QueryDownloadFirmware:
+        query = gql(
+            """
+            query QueryDownloadFirmware($download_firmware_args: FirmwareDownloadInput!) {
+              download {
+                firmware(args: $download_firmware_args) {
+                  downloadUrlsList
+                  pathsList
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "download_firmware_args": download_firmware_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryDownloadFirmware",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryDownloadFirmware.model_validate(data)
 
     def query_get_vuln_reachability(
         self, get_vuln_reachability_args: GetVulnReachabilityInput, **kwargs: Any
@@ -1693,12 +1629,10 @@ class Client(BaseClient):
             """
             query QueryGetVulnReachability($getVulnReachability_args: GetVulnReachabilityInput!) {
               getVulnReachability(args: $getVulnReachability_args) {
-                __typename
                 cveId
                 entryPoint
                 entryType
                 scripts {
-                  __typename
                   invocation
                   path
                 }
@@ -1726,17 +1660,12 @@ class Client(BaseClient):
             """
             query QueryGroupedDependencies($groupedDependencies_args: GroupedDependenciesInput!) {
               groupedDependencies(args: $groupedDependencies_args) {
-                __typename
                 edges {
-                  __typename
                   cursor
                   node {
-                    __typename
                     analytic {
-                      __typename
                       binaries
                       components {
-                        __typename
                         application
                         container
                         device
@@ -1748,20 +1677,17 @@ class Client(BaseClient):
                         package
                       }
                       credentials {
-                        __typename
                         crackedCred
                         crackedHash
                         credential
                         hash
                       }
                       cryptography {
-                        __typename
                         certificate
                         privateKey
                         publicKey
                       }
                       exploit {
-                        __typename
                         botnet
                         exploitCode
                         inKnownExploitedVulnerabilities
@@ -1772,13 +1698,11 @@ class Client(BaseClient):
                       }
                       files
                       misconfigurations {
-                        __typename
                         failed
                         notApplicable
                         passed
                       }
                       vulnerability {
-                        __typename
                         critical
                         high
                         low
@@ -1795,7 +1719,6 @@ class Client(BaseClient):
                   }
                 }
                 pageInfo {
-                  __typename
                   endCursor
                   hasNextPage
                   hasPreviousPage
@@ -1823,20 +1746,15 @@ class Client(BaseClient):
             """
             query QueryHashes($hashes_args: HashesInput!) {
               hashes(args: $hashes_args) {
-                __typename
                 edges {
-                  __typename
                   cursor
                   node {
-                    __typename
                     correlations {
-                      __typename
                       artifact
                       assetId
                       assetName
                       location
                       risk {
-                        __typename
                         category
                         rawScore
                         score
@@ -1854,7 +1772,6 @@ class Client(BaseClient):
                   }
                 }
                 pageInfo {
-                  __typename
                   endCursor
                   hasNextPage
                   hasPreviousPage
@@ -1879,11 +1796,9 @@ class Client(BaseClient):
             """
             query QueryMatchVulnerabilities($matchVulnerabilities_args: MatchVulnerabilitiesInput!) {
               matchVulnerabilities(args: $matchVulnerabilities_args) {
-                __typename
                 id
                 createdDatetime
                 currentRemediation {
-                  __typename
                   assetId
                   author
                   createdAt
@@ -1896,10 +1811,8 @@ class Client(BaseClient):
                 }
                 description
                 exploit {
-                  __typename
                   botnetDatetime
                   epss {
-                    __typename
                     percentile
                     score
                   }
@@ -1917,7 +1830,6 @@ class Client(BaseClient):
                   maturity
                   pocDatetime
                   prevalence {
-                    __typename
                     botnets
                     exploit
                     knownAttacks
@@ -1931,15 +1843,12 @@ class Client(BaseClient):
                   recentRansomwareDatetime
                   recentThreatActorDatetime
                   references {
-                    __typename
                     botnets {
-                      __typename
                       botnetName
                       dateAdded
                       url
                     }
                     exploits {
-                      __typename
                       dateAdded
                       exploitAvailability
                       exploitMaturity
@@ -1948,13 +1857,11 @@ class Client(BaseClient):
                       url
                     }
                     knownAttacks {
-                      __typename
                       associatedVulnerabilitiesList
                       displayName
                       name
                     }
                     knownExploitedVulnerabilities {
-                      __typename
                       action
                       dateAdded
                       description
@@ -1965,16 +1872,13 @@ class Client(BaseClient):
                       vendor
                     }
                     ransomware {
-                      __typename
                       families
                       references {
-                        __typename
                         date
                         url
                       }
                     }
                     threatActors {
-                      __typename
                       aliases
                       name
                       url
@@ -1984,9 +1888,7 @@ class Client(BaseClient):
                   weaponizeDatetime
                 }
                 impact {
-                  __typename
                   base {
-                    __typename
                     attackComplexity
                     attackVector
                     availabilityImpact
@@ -2002,7 +1904,6 @@ class Client(BaseClient):
                     vectorString
                   }
                   temporal {
-                    __typename
                     exploitCodeMaturity
                     remediationLevel
                     reportConfidence
@@ -2011,9 +1912,7 @@ class Client(BaseClient):
                   }
                 }
                 impactV2 {
-                  __typename
                   base {
-                    __typename
                     accessComplexity
                     accessVector
                     authentication
@@ -2028,7 +1927,6 @@ class Client(BaseClient):
                     version
                   }
                   temporal {
-                    __typename
                     exploitability
                     remediationLevel
                     reportConfidence
@@ -2038,11 +1936,8 @@ class Client(BaseClient):
                   }
                 }
                 impactV31 {
-                  __typename
                   metric {
-                    __typename
                     cvssData {
-                      __typename
                       attackComplexity
                       attackVector
                       availabilityImpact
@@ -2064,7 +1959,6 @@ class Client(BaseClient):
                     type
                   }
                   temporal {
-                    __typename
                     exploitCodeMaturity
                     remediationLevel
                     reportConfidence
@@ -2073,9 +1967,7 @@ class Client(BaseClient):
                   }
                 }
                 impactV4 {
-                  __typename
                   cvssData {
-                    __typename
                     attackComplexity
                     attackRequirements
                     attackVector
@@ -2115,9 +2007,7 @@ class Client(BaseClient):
                   }
                   source
                   threatCvssSecondary {
-                    __typename
                     associatedBaseMetricV40 {
-                      __typename
                       baseScore
                       source
                       type
@@ -2131,14 +2021,12 @@ class Client(BaseClient):
                 nvdStatus
                 priorityScore
                 problemTypes {
-                  __typename
                   name
                   url
                   value
                 }
                 processedDatetime
                 references {
-                  __typename
                   name
                   refsource
                   url
@@ -2167,29 +2055,23 @@ class Client(BaseClient):
             """
             query QueryMetrics {
               metrics {
-                __typename
                 assetsByRiskCategory {
-                  __typename
                   count
                   status
                 }
                 assetsByStatus {
-                  __typename
                   count
                   status
                 }
                 assetsCount {
-                  __typename
                   count
                   status
                 }
                 filesCount {
-                  __typename
                   count
                   status
                 }
                 vulnerabilitiesCount {
-                  __typename
                   count
                   status
                 }
@@ -2211,25 +2093,20 @@ class Client(BaseClient):
             """
             query QueryMisconfigurations($misconfigurations_args: MisconfigurationsInput!) {
               misconfigurations(args: $misconfigurations_args) {
-                __typename
                 edges {
-                  __typename
                   cursor
                   node {
-                    __typename
                     category
                     checkDescription
                     checkId
                     checkRecommendation
                     context
                     correlations {
-                      __typename
                       artifact
                       assetId
                       assetName
                       location
                       risk {
-                        __typename
                         category
                         rawScore
                         score
@@ -2243,7 +2120,6 @@ class Client(BaseClient):
                   }
                 }
                 pageInfo {
-                  __typename
                   endCursor
                   hasNextPage
                   hasPreviousPage
@@ -2275,26 +2151,20 @@ class Client(BaseClient):
             """
             query QueryPackageDependenciesById($packageDependenciesById_args: packageDependenciesByIdInput!) {
               packageDependenciesById(args: $packageDependenciesById_args) {
-                __typename
                 associatedFiles {
-                  __typename
                   badges
                   component {
-                    __typename
                     id
                     architecture
                     cpes
                     description
                     digest {
-                      __typename
                       md5
                       sha1
                       sha256
                     }
                     file {
-                      __typename
                       assets {
-                        __typename
                         id
                         assetCpe
                         assetGroupCount
@@ -2316,7 +2186,6 @@ class Client(BaseClient):
                       }
                       createdAt
                       digest {
-                        __typename
                         md5
                         sha1
                         sha256
@@ -2326,7 +2195,6 @@ class Client(BaseClient):
                       path
                       permissions
                       similarity {
-                        __typename
                         file
                         ordinal
                         similarity
@@ -2337,7 +2205,6 @@ class Client(BaseClient):
                     }
                     identificationIds
                     identifiers {
-                      __typename
                       type
                       uri
                     }
@@ -2348,50 +2215,41 @@ class Client(BaseClient):
                     operatingSystem
                     operatingSystemKernelVersion
                     package {
-                      __typename
                       associatedFiles {
-                        __typename
                         fidelity
                         method
                         type
                         value
                       }
                       authors {
-                        __typename
                         address
                         title
                       }
                       dependencies {
-                        __typename
                         name
                       }
                       language
                       license
                       maintainers {
-                        __typename
                         address
                         title
                       }
                       name
                       provides {
-                        __typename
                         name
                       }
                       rawVersion {
-                        __typename
                         id
                         alternatives
                         isConcrete
                       }
                       referenceLinks {
-                        __typename
                         type
                         url
                       }
                       summary
                       type
                       version {
-                        __typename
                         id
                         alternatives
                         isConcrete
@@ -2405,7 +2263,6 @@ class Client(BaseClient):
                     type
                     vendor
                     version {
-                      __typename
                       id
                       alternatives
                       isConcrete
@@ -2414,24 +2271,19 @@ class Client(BaseClient):
                   isConcrete
                 }
                 dependencies {
-                  __typename
                   dependents {
-                    __typename
                     badges
                     component {
-                      __typename
                       id
                       architecture
                       cpes
                       description
                       digest {
-                        __typename
                         md5
                         sha1
                         sha256
                       }
                       file {
-                        __typename
                         createdAt
                         hasChildren
                         mimeType
@@ -2442,7 +2294,6 @@ class Client(BaseClient):
                       }
                       identificationIds
                       identifiers {
-                        __typename
                         type
                         uri
                       }
@@ -2453,7 +2304,6 @@ class Client(BaseClient):
                       operatingSystem
                       operatingSystemKernelVersion
                       package {
-                        __typename
                         language
                         license
                         name
@@ -2468,7 +2318,6 @@ class Client(BaseClient):
                       type
                       vendor
                       version {
-                        __typename
                         id
                         alternatives
                         isConcrete
@@ -2477,22 +2326,18 @@ class Client(BaseClient):
                     isConcrete
                   }
                   direct {
-                    __typename
                     badges
                     component {
-                      __typename
                       id
                       architecture
                       cpes
                       description
                       digest {
-                        __typename
                         md5
                         sha1
                         sha256
                       }
                       file {
-                        __typename
                         createdAt
                         hasChildren
                         mimeType
@@ -2503,7 +2348,6 @@ class Client(BaseClient):
                       }
                       identificationIds
                       identifiers {
-                        __typename
                         type
                         uri
                       }
@@ -2514,7 +2358,6 @@ class Client(BaseClient):
                       operatingSystem
                       operatingSystemKernelVersion
                       package {
-                        __typename
                         language
                         license
                         name
@@ -2529,7 +2372,6 @@ class Client(BaseClient):
                       type
                       vendor
                       version {
-                        __typename
                         id
                         alternatives
                         isConcrete
@@ -2538,22 +2380,18 @@ class Client(BaseClient):
                     isConcrete
                   }
                   indirect {
-                    __typename
                     badges
                     component {
-                      __typename
                       id
                       architecture
                       cpes
                       description
                       digest {
-                        __typename
                         md5
                         sha1
                         sha256
                       }
                       file {
-                        __typename
                         createdAt
                         hasChildren
                         mimeType
@@ -2564,7 +2402,6 @@ class Client(BaseClient):
                       }
                       identificationIds
                       identifiers {
-                        __typename
                         type
                         uri
                       }
@@ -2575,7 +2412,6 @@ class Client(BaseClient):
                       operatingSystem
                       operatingSystemKernelVersion
                       package {
-                        __typename
                         language
                         license
                         name
@@ -2590,7 +2426,6 @@ class Client(BaseClient):
                       type
                       vendor
                       version {
-                        __typename
                         id
                         alternatives
                         isConcrete
@@ -2622,23 +2457,18 @@ class Client(BaseClient):
             """
             query QueryPrivateKeys($privateKeys_args: PrivateKeysInput!) {
               privateKeys(args: $privateKeys_args) {
-                __typename
                 edges {
-                  __typename
                   cursor
                   node {
-                    __typename
                     id
                     algorithm
                     bitSize
                     correlations {
-                      __typename
                       artifact
                       assetId
                       assetName
                       location
                       risk {
-                        __typename
                         category
                         rawScore
                         score
@@ -2655,7 +2485,6 @@ class Client(BaseClient):
                   }
                 }
                 pageInfo {
-                  __typename
                   endCursor
                   hasNextPage
                   hasPreviousPage
@@ -2683,22 +2512,17 @@ class Client(BaseClient):
             """
             query QueryPublicKeys($publicKeys_args: PublicKeysInput!) {
               publicKeys(args: $publicKeys_args) {
-                __typename
                 edges {
-                  __typename
                   cursor
                   node {
-                    __typename
                     algorithm
                     bitSize
                     correlations {
-                      __typename
                       artifact
                       assetId
                       assetName
                       location
                       risk {
-                        __typename
                         category
                         rawScore
                         score
@@ -2715,7 +2539,6 @@ class Client(BaseClient):
                   }
                 }
                 pageInfo {
-                  __typename
                   endCursor
                   hasNextPage
                   hasPreviousPage
@@ -2742,13 +2565,9 @@ class Client(BaseClient):
             """
             query QuerySearch($search_args: SearchInput) {
               search(args: $search_args) {
-                __typename
                 findings {
-                  __typename
                   edges {
-                    __typename
                     node {
-                      __typename
                       assetGroupIds
                       assetId
                       assetName
@@ -2762,7 +2581,6 @@ class Client(BaseClient):
                     }
                   }
                   pageInfo {
-                    __typename
                     endCursor
                     hasNextPage
                     hasPreviousPage
@@ -2787,9 +2605,7 @@ class Client(BaseClient):
             """
             query QuerySift {
               sift {
-                __typename
                 count {
-                  __typename
                   assetCount
                   fileCount
                   pythonFileCount
@@ -2812,7 +2628,6 @@ class Client(BaseClient):
             """
             query QueryUserOrgs {
               userOrgs {
-                __typename
                 DisplayName
                 Id
               }
@@ -2831,12 +2646,9 @@ class Client(BaseClient):
             """
             query QueryUsers($users_args: UsersInput!) {
               users(args: $users_args) {
-                __typename
                 edges {
-                  __typename
                   cursor
                   node {
-                    __typename
                     id
                     createdAt
                     deletedAt
@@ -2858,7 +2670,6 @@ class Client(BaseClient):
                   }
                 }
                 pageInfo {
-                  __typename
                   endCursor
                   hasNextPage
                   hasPreviousPage
@@ -2883,23 +2694,18 @@ class Client(BaseClient):
             """
             query QueryVulnerabilities($vulnerabilities_args: PaginatedVulnerabilitiesInput!) {
               vulnerabilities(args: $vulnerabilities_args) {
-                __typename
                 edges {
-                  __typename
                   cursor
                   node {
-                    __typename
                     id
                     attackComplexity
                     attackVector
                     correlations {
-                      __typename
                       artifact
                       assetId
                       assetName
                       location
                       risk {
-                        __typename
                         category
                         rawScore
                         score
@@ -2908,7 +2714,6 @@ class Client(BaseClient):
                     }
                     correlationsCount
                     currentRemediation {
-                      __typename
                       assetId
                       author
                       createdAt
@@ -2936,7 +2741,6 @@ class Client(BaseClient):
                   }
                 }
                 pageInfo {
-                  __typename
                   endCursor
                   hasNextPage
                   hasPreviousPage
@@ -2964,12 +2768,9 @@ class Client(BaseClient):
             """
             query QueryVulnerabilitiesOverview($vulnerabilitiesOverview_args: VulnerabilityOverviewInput!) {
               vulnerabilitiesOverview(args: $vulnerabilitiesOverview_args) {
-                __typename
                 edges {
-                  __typename
                   cursor
                   node {
-                    __typename
                     botnetsList
                     cisaDueDate
                     component
@@ -2995,7 +2796,6 @@ class Client(BaseClient):
                   }
                 }
                 pageInfo {
-                  __typename
                   endCursor
                   hasNextPage
                   hasPreviousPage
@@ -3025,11 +2825,9 @@ class Client(BaseClient):
             """
             query QueryVulnerability($vulnerability_args: VulnerabilityInput!) {
               vulnerability(args: $vulnerability_args) {
-                __typename
                 id
                 createdDatetime
                 currentRemediation {
-                  __typename
                   assetId
                   author
                   createdAt
@@ -3042,10 +2840,8 @@ class Client(BaseClient):
                 }
                 description
                 exploit {
-                  __typename
                   botnetDatetime
                   epss {
-                    __typename
                     percentile
                     score
                   }
@@ -3063,7 +2859,6 @@ class Client(BaseClient):
                   maturity
                   pocDatetime
                   prevalence {
-                    __typename
                     botnets
                     exploit
                     knownAttacks
@@ -3077,15 +2872,12 @@ class Client(BaseClient):
                   recentRansomwareDatetime
                   recentThreatActorDatetime
                   references {
-                    __typename
                     botnets {
-                      __typename
                       botnetName
                       dateAdded
                       url
                     }
                     exploits {
-                      __typename
                       dateAdded
                       exploitAvailability
                       exploitMaturity
@@ -3094,13 +2886,11 @@ class Client(BaseClient):
                       url
                     }
                     knownAttacks {
-                      __typename
                       associatedVulnerabilitiesList
                       displayName
                       name
                     }
                     knownExploitedVulnerabilities {
-                      __typename
                       action
                       dateAdded
                       description
@@ -3111,16 +2901,13 @@ class Client(BaseClient):
                       vendor
                     }
                     ransomware {
-                      __typename
                       families
                       references {
-                        __typename
                         date
                         url
                       }
                     }
                     threatActors {
-                      __typename
                       aliases
                       name
                       url
@@ -3130,9 +2917,7 @@ class Client(BaseClient):
                   weaponizeDatetime
                 }
                 impact {
-                  __typename
                   base {
-                    __typename
                     attackComplexity
                     attackVector
                     availabilityImpact
@@ -3148,7 +2933,6 @@ class Client(BaseClient):
                     vectorString
                   }
                   temporal {
-                    __typename
                     exploitCodeMaturity
                     remediationLevel
                     reportConfidence
@@ -3157,9 +2941,7 @@ class Client(BaseClient):
                   }
                 }
                 impactV2 {
-                  __typename
                   base {
-                    __typename
                     accessComplexity
                     accessVector
                     authentication
@@ -3174,7 +2956,6 @@ class Client(BaseClient):
                     version
                   }
                   temporal {
-                    __typename
                     exploitability
                     remediationLevel
                     reportConfidence
@@ -3184,11 +2965,8 @@ class Client(BaseClient):
                   }
                 }
                 impactV31 {
-                  __typename
                   metric {
-                    __typename
                     cvssData {
-                      __typename
                       attackComplexity
                       attackVector
                       availabilityImpact
@@ -3210,7 +2988,6 @@ class Client(BaseClient):
                     type
                   }
                   temporal {
-                    __typename
                     exploitCodeMaturity
                     remediationLevel
                     reportConfidence
@@ -3219,9 +2996,7 @@ class Client(BaseClient):
                   }
                 }
                 impactV4 {
-                  __typename
                   cvssData {
-                    __typename
                     attackComplexity
                     attackRequirements
                     attackVector
@@ -3261,9 +3036,7 @@ class Client(BaseClient):
                   }
                   source
                   threatCvssSecondary {
-                    __typename
                     associatedBaseMetricV40 {
-                      __typename
                       baseScore
                       source
                       type
@@ -3277,14 +3050,12 @@ class Client(BaseClient):
                 nvdStatus
                 priorityScore
                 problemTypes {
-                  __typename
                   name
                   url
                   value
                 }
                 processedDatetime
                 references {
-                  __typename
                   name
                   refsource
                   url
@@ -3315,7 +3086,6 @@ class Client(BaseClient):
             """
             query QueryVulnerabilityExternalFilters($vulnerabilityExternalFilters_args: VulnerabilityExternalFiltersInput!) {
               vulnerabilityExternalFilters(args: $vulnerabilityExternalFilters_args) {
-                __typename
                 critical
                 exploits
                 high
@@ -3395,7 +3165,6 @@ class Client(BaseClient):
             mutation MutationAssetAddDependency($asset_addDependency_args: AddDependencyInput!) {
               asset {
                 addDependency(args: $asset_addDependency_args) {
-                  __typename
                   err
                 }
               }
@@ -3422,7 +3191,6 @@ class Client(BaseClient):
             mutation MutationAssetModifyDependency($asset_modifyDependency_args: ModifyDependencyInput!) {
               asset {
                 modifyDependency(args: $asset_modifyDependency_args) {
-                  __typename
                   err
                 }
               }
@@ -3449,7 +3217,6 @@ class Client(BaseClient):
             mutation MutationAssetRemoveDependencies($asset_removeDependencies_args: IdentificationInput!) {
               asset {
                 removeDependencies(args: $asset_removeDependencies_args) {
-                  __typename
                   err
                 }
               }
@@ -3479,15 +3246,11 @@ class Client(BaseClient):
             mutation MutationAssetSubmit($asset_submit_fileName: String!, $asset_submit_args: SubmitAssetInput) {
               asset {
                 submit(fileName: $asset_submit_fileName, args: $asset_submit_args) {
-                  __typename
                   asset {
-                    __typename
                     id
                     analytic {
-                      __typename
                       binaries
                       components {
-                        __typename
                         application
                         container
                         device
@@ -3499,20 +3262,17 @@ class Client(BaseClient):
                         package
                       }
                       credentials {
-                        __typename
                         crackedCred
                         crackedHash
                         credential
                         hash
                       }
                       cryptography {
-                        __typename
                         certificate
                         privateKey
                         publicKey
                       }
                       exploit {
-                        __typename
                         botnet
                         exploitCode
                         inKnownExploitedVulnerabilities
@@ -3523,13 +3283,11 @@ class Client(BaseClient):
                       }
                       files
                       misconfigurations {
-                        __typename
                         failed
                         notApplicable
                         passed
                       }
                       vulnerability {
-                        __typename
                         critical
                         high
                         low
@@ -3542,16 +3300,12 @@ class Client(BaseClient):
                     createdAt
                     fileName
                     filesystems {
-                      __typename
                       id
                       files {
-                        __typename
                         filesList {
-                          __typename
                           fileId
                         }
                         pageInfo {
-                          __typename
                           nextPageToken
                           prevPageToken
                           totalSize
@@ -3564,7 +3318,6 @@ class Client(BaseClient):
                     orgId
                     product
                     risk {
-                      __typename
                       category
                       rawScore
                       score
@@ -3607,13 +3360,10 @@ class Client(BaseClient):
             mutation MutationAssetUpdate($asset_update_args: UpdateAssetInput) {
               asset {
                 update(args: $asset_update_args) {
-                  __typename
                   id
                   analytic {
-                    __typename
                     binaries
                     components {
-                      __typename
                       application
                       container
                       device
@@ -3625,20 +3375,17 @@ class Client(BaseClient):
                       package
                     }
                     credentials {
-                      __typename
                       crackedCred
                       crackedHash
                       credential
                       hash
                     }
                     cryptography {
-                      __typename
                       certificate
                       privateKey
                       publicKey
                     }
                     exploit {
-                      __typename
                       botnet
                       exploitCode
                       inKnownExploitedVulnerabilities
@@ -3649,13 +3396,11 @@ class Client(BaseClient):
                     }
                     files
                     misconfigurations {
-                      __typename
                       failed
                       notApplicable
                       passed
                     }
                     vulnerability {
-                      __typename
                       critical
                       high
                       low
@@ -3668,14 +3413,10 @@ class Client(BaseClient):
                   createdAt
                   fileName
                   filesystems {
-                    __typename
                     id
                     files {
-                      __typename
                       filesList {
-                        __typename
                         file {
-                          __typename
                           createdAt
                           hasChildren
                           mimeType
@@ -3687,7 +3428,6 @@ class Client(BaseClient):
                         fileId
                       }
                       pageInfo {
-                        __typename
                         nextPageToken
                         prevPageToken
                         totalSize
@@ -3700,7 +3440,6 @@ class Client(BaseClient):
                   orgId
                   product
                   risk {
-                    __typename
                     category
                     rawScore
                     score
@@ -3734,9 +3473,7 @@ class Client(BaseClient):
             """
             mutation MutationCreateAssetGroup($createAssetGroup_args: CreateAssetGroupInput!) {
               createAssetGroup(args: $createAssetGroup_args) {
-                __typename
                 assetGroup {
-                  __typename
                   id
                   description
                   name
@@ -3788,7 +3525,6 @@ class Client(BaseClient):
             """
             mutation MutationRemediateAllAssetVulnerabilities($remediateAllAssetVulnerabilities_args: CreateAllAssetVulnerabilitiesRemediationInput!) {
               remediateAllAssetVulnerabilities(args: $remediateAllAssetVulnerabilities_args) {
-                __typename
                 err
               }
             }
@@ -3815,18 +3551,15 @@ class Client(BaseClient):
             """
             mutation MutationRemediateAssetVulnerabilities($remediateAssetVulnerabilities_args: CreateAssetVulnerabilityRemediationsInput!) {
               remediateAssetVulnerabilities(args: $remediateAssetVulnerabilities_args) {
-                __typename
                 id
                 attackComplexity
                 attackVector
                 correlations {
-                  __typename
                   artifact
                   assetId
                   assetName
                   location
                   risk {
-                    __typename
                     category
                     rawScore
                     score
@@ -3835,7 +3568,6 @@ class Client(BaseClient):
                 }
                 correlationsCount
                 currentRemediation {
-                  __typename
                   assetId
                   author
                   createdAt
@@ -3885,18 +3617,15 @@ class Client(BaseClient):
             """
             mutation MutationRemediateAssetVulnerability($remediateAssetVulnerability_args: CreateAssetVulnerabilityRemediationInput!) {
               remediateAssetVulnerability(args: $remediateAssetVulnerability_args) {
-                __typename
                 id
                 attackComplexity
                 attackVector
                 correlations {
-                  __typename
                   artifact
                   assetId
                   assetName
                   location
                   risk {
-                    __typename
                     category
                     rawScore
                     score
@@ -3905,7 +3634,6 @@ class Client(BaseClient):
                 }
                 correlationsCount
                 currentRemediation {
-                  __typename
                   assetId
                   author
                   createdAt
@@ -3953,7 +3681,6 @@ class Client(BaseClient):
             """
             mutation MutationRemediateLicenseIssues($remediateLicenseIssues_args: RemediateLicenseIssuesInput!) {
               remediateLicenseIssues(args: $remediateLicenseIssues_args) {
-                __typename
                 err
               }
             }
@@ -4070,9 +3797,7 @@ class Client(BaseClient):
             """
             mutation MutationUpdateAssetGroup($updateAssetGroup_args: UpdateAssetGroupInput!) {
               updateAssetGroup(args: $updateAssetGroup_args) {
-                __typename
                 assetGroup {
-                  __typename
                   id
                   description
                   name
@@ -4100,7 +3825,6 @@ class Client(BaseClient):
             """
             mutation MutationUpdateOrgLevelSettings($updateOrgLevelSettings_args: OrgLevelSettingsInput!) {
               updateOrgLevelSettings(args: $updateOrgLevelSettings_args) {
-                __typename
                 err
               }
             }
@@ -4126,7 +3850,6 @@ class Client(BaseClient):
             mutation MutationUserAction($user_action_args: UserActionInput!) {
               user {
                 action(args: $user_action_args) {
-                  __typename
                   id
                   createdAt
                   deletedAt
@@ -4168,7 +3891,6 @@ class Client(BaseClient):
             mutation MutationUserDelete($user_delete_args: UserInput!) {
               user {
                 delete(args: $user_delete_args) {
-                  __typename
                   err
                 }
               }
@@ -4193,7 +3915,6 @@ class Client(BaseClient):
             mutation MutationUserInvite($user_invite_args: InviteUserInput!) {
               user {
                 invite(args: $user_invite_args) {
-                  __typename
                   id
                   createdAt
                   deletedAt
@@ -4235,7 +3956,6 @@ class Client(BaseClient):
             mutation MutationUserRemove($user_remove_args: UserInput!) {
               user {
                 remove(args: $user_remove_args) {
-                  __typename
                   err
                 }
               }
@@ -4260,7 +3980,6 @@ class Client(BaseClient):
             mutation MutationUserResetPassword($user_resetPassword_args: UserInput!) {
               user {
                 resetPassword(args: $user_resetPassword_args) {
-                  __typename
                   id
                   createdAt
                   deletedAt
@@ -4304,7 +4023,6 @@ class Client(BaseClient):
             mutation MutationUserSetUserRole($user_setUserRole_args: SetUserRoleInput!) {
               user {
                 setUserRole(args: $user_setUserRole_args) {
-                  __typename
                   id
                   createdAt
                   deletedAt
@@ -4348,7 +4066,6 @@ class Client(BaseClient):
             mutation MutationUserUpdateUser($user_updateUser_args: UpdateUserInput!) {
               user {
                 updateUser(args: $user_updateUser_args) {
-                  __typename
                   id
                   createdAt
                   deletedAt

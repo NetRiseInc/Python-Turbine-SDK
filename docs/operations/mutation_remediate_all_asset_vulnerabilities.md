@@ -2,6 +2,8 @@
 
 # mutation_remediate_all_asset_vulnerabilities
 
+Apply a remediation status to all vulnerabilities matching specific filters.
+
 ## Parameters
 
 | name | type | required |

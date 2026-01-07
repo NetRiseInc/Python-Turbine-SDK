@@ -1,14 +1,14 @@
 <!-- Generated file: do not edit by hand -->
 
-# query_hashes
+# query_download_extracted_firmware
 
-List cryptographic hashes for files identified within the asset filesystem.
+Generate a URL to download the full unpacked file system.
 
 ## Parameters
 
 | name | type | required |
 | --- | --- | --- |
-| `hashes_args` | `HashesInput` | `true` |
+| `download_extracted_firmware_args` | `ExtractedFirmwareDownloadInput` | `true` |
 
 ## Example
 
@@ -17,8 +17,7 @@ from __future__ import annotations
 
 from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
 from netrise_turbine_sdk_graphql.input_types import (
-    Cursor,
-    HashesInput,
+    ExtractedFirmwareDownloadInput,
 )
 
 
@@ -27,7 +26,7 @@ def main() -> None:
     sdk = TurbineClient(cfg)
 
     with sdk.graphql() as client:
-        resp = client.query_hashes(hashes_args=HashesInput(asset_id='asset_123', cursor=Cursor()))
+        resp = client.query_download_extracted_firmware(download_extracted_firmware_args=ExtractedFirmwareDownloadInput(asset_id='asset_123'))
         print(resp.model_dump())
 
 

@@ -2,6 +2,8 @@
 
 # mutation_asset_remove_dependencies
 
+Remove specific dependencies from the component list of an asset.
+
 ## Parameters
 
 | name | type | required |

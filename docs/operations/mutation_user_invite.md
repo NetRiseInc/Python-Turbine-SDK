@@ -2,6 +2,8 @@
 
 # mutation_user_invite
 
+Invite a new user to the organization with a specific role.
+
 ## Parameters
 
 | name | type | required |

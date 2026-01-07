@@ -2,6 +2,8 @@
 
 # mutation_asset_modify_dependency
 
+Update metadata or details for a manually added asset dependency.
+
 ## Parameters
 
 | name | type | required |

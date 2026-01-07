@@ -2,6 +2,8 @@
 
 # query_package_dependencies_by_id
 
+View the dependency tree hierarchy for a specific software package.
+
 ## Parameters
 
 | name | type | required |

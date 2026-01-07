@@ -2,6 +2,8 @@
 
 # query_users
 
+Retrieve a detailed list of all users and their assigned roles.
+
 ## Parameters
 
 | name | type | required |

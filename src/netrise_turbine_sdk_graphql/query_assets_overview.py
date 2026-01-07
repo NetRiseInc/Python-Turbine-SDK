@@ -2,7 +2,7 @@
 # Source: ../sdk-artifacts/synthetic_operations.graphql
 
 from datetime import datetime
-from typing import Annotated, Literal, Optional
+from typing import Annotated, Optional
 
 from pydantic import BeforeValidator, Field
 
@@ -18,19 +18,16 @@ class QueryAssetsOverview(BaseModel):
 
 
 class QueryAssetsOverviewAssetsOverview(BaseModel):
-    typename__: Literal["AssetOverviewConnection"] = Field(alias="__typename")
     edges: Optional[list[Optional["QueryAssetsOverviewAssetsOverviewEdges"]]]
     page_info: "QueryAssetsOverviewAssetsOverviewPageInfo" = Field(alias="pageInfo")
 
 
 class QueryAssetsOverviewAssetsOverviewEdges(BaseModel):
-    typename__: Literal["AssetOverviewEdge"] = Field(alias="__typename")
     cursor: Optional[str]
     node: Optional["QueryAssetsOverviewAssetsOverviewEdgesNode"]
 
 
 class QueryAssetsOverviewAssetsOverviewEdgesNode(BaseModel):
-    typename__: Literal["AssetOverview"] = Field(alias="__typename")
     associated_cves: Optional[list[Optional[str]]] = Field(alias="associatedCves")
     botnets: Optional[list[Optional[str]]]
     composed_asset_id: str = Field(alias="composedAssetId")
@@ -61,14 +58,12 @@ class QueryAssetsOverviewAssetsOverviewEdgesNode(BaseModel):
 
 
 class QueryAssetsOverviewAssetsOverviewEdgesNodeRisk(BaseModel):
-    typename__: Literal["RiskScore"] = Field(alias="__typename")
     category: Optional[RiskCategory]
     raw_score: Optional[float] = Field(alias="rawScore")
     score: Optional[float]
 
 
 class QueryAssetsOverviewAssetsOverviewPageInfo(BaseModel):
-    typename__: Literal["PageInfo"] = Field(alias="__typename")
     end_cursor: Optional[str] = Field(alias="endCursor")
     has_next_page: bool = Field(alias="hasNextPage")
     has_previous_page: bool = Field(alias="hasPreviousPage")

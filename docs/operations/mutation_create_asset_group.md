@@ -2,6 +2,8 @@
 
 # mutation_create_asset_group
 
+Create a new named group to organize and track assets.
+
 ## Parameters
 
 | name | type | required |

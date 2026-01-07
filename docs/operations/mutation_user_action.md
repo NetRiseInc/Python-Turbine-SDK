@@ -2,6 +2,8 @@
 
 # mutation_user_action
 
+Perform administrative actions like enabling or disabling specific user accounts.
+
 ## Parameters
 
 | name | type | required |

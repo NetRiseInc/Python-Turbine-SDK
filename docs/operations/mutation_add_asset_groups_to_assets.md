@@ -2,6 +2,8 @@
 
 # mutation_add_asset_groups_to_assets
 
+Associate a list of existing asset groups with selected assets.
+
 ## Parameters
 
 | name | type | required |

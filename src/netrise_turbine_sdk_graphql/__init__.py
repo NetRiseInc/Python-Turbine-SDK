@@ -445,7 +445,6 @@ from .query_asset_group_members import (
     QueryAssetGroupMembersAssetGroupMembersEdgesNodeAnalyticMisconfigurations,
     QueryAssetGroupMembersAssetGroupMembersEdgesNodeAnalyticVulnerability,
     QueryAssetGroupMembersAssetGroupMembersEdgesNodeFilesystems,
-    QueryAssetGroupMembersAssetGroupMembersEdgesNodeFilesystemsFiles,
     QueryAssetGroupMembersAssetGroupMembersEdgesNodeRisk,
     QueryAssetGroupMembersAssetGroupMembersPageInfo,
 )
@@ -483,7 +482,6 @@ from .query_assets_relay import (
     QueryAssetsRelayAssetsRelayEdgesNodeAnalyticMisconfigurations,
     QueryAssetsRelayAssetsRelayEdgesNodeAnalyticVulnerability,
     QueryAssetsRelayAssetsRelayEdgesNodeFilesystems,
-    QueryAssetsRelayAssetsRelayEdgesNodeFilesystemsFiles,
     QueryAssetsRelayAssetsRelayEdgesNodeRisk,
     QueryAssetsRelayAssetsRelayPageInfo,
 )
@@ -566,7 +564,6 @@ from .query_detailed_vulnerabilities import (
     QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNodeExploit,
     QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNodeExploitEpss,
     QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNodeExploitPrevalence,
-    QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNodeExploitReferences,
     QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNodeImpact,
     QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNodeImpactBase,
     QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNodeImpactTemporal,
@@ -583,7 +580,26 @@ from .query_detailed_vulnerabilities import (
     QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNodeReferences,
     QueryDetailedVulnerabilitiesDetailedVulnerabilitiesPageInfo,
 )
-from .query_download import QueryDownload, QueryDownloadDownload
+from .query_download_extracted_firmware import (
+    QueryDownloadExtractedFirmware,
+    QueryDownloadExtractedFirmwareDownload,
+    QueryDownloadExtractedFirmwareDownloadExtractedFirmware,
+)
+from .query_download_file import (
+    QueryDownloadFile,
+    QueryDownloadFileDownload,
+    QueryDownloadFileDownloadFile,
+)
+from .query_download_file_list import (
+    QueryDownloadFileList,
+    QueryDownloadFileListDownload,
+    QueryDownloadFileListDownloadFileList,
+)
+from .query_download_firmware import (
+    QueryDownloadFirmware,
+    QueryDownloadFirmwareDownload,
+    QueryDownloadFirmwareDownloadFirmware,
+)
 from .query_get_vuln_reachability import (
     QueryGetVulnReachability,
     QueryGetVulnReachabilityGetVulnReachability,
@@ -1133,7 +1149,6 @@ __all__ = [
     "QueryAssetGroupMembersAssetGroupMembersEdgesNodeAnalyticMisconfigurations",
     "QueryAssetGroupMembersAssetGroupMembersEdgesNodeAnalyticVulnerability",
     "QueryAssetGroupMembersAssetGroupMembersEdgesNodeFilesystems",
-    "QueryAssetGroupMembersAssetGroupMembersEdgesNodeFilesystemsFiles",
     "QueryAssetGroupMembersAssetGroupMembersEdgesNodeRisk",
     "QueryAssetGroupMembersAssetGroupMembersPageInfo",
     "QueryAssetGroups",
@@ -1165,7 +1180,6 @@ __all__ = [
     "QueryAssetsRelayAssetsRelayEdgesNodeAnalyticMisconfigurations",
     "QueryAssetsRelayAssetsRelayEdgesNodeAnalyticVulnerability",
     "QueryAssetsRelayAssetsRelayEdgesNodeFilesystems",
-    "QueryAssetsRelayAssetsRelayEdgesNodeFilesystemsFiles",
     "QueryAssetsRelayAssetsRelayEdgesNodeRisk",
     "QueryAssetsRelayAssetsRelayPageInfo",
     "QueryBinaryProtections",
@@ -1234,7 +1248,6 @@ __all__ = [
     "QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNodeExploit",
     "QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNodeExploitEpss",
     "QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNodeExploitPrevalence",
-    "QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNodeExploitReferences",
     "QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNodeImpact",
     "QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNodeImpactBase",
     "QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNodeImpactTemporal",
@@ -1250,8 +1263,18 @@ __all__ = [
     "QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNodeProblemTypes",
     "QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNodeReferences",
     "QueryDetailedVulnerabilitiesDetailedVulnerabilitiesPageInfo",
-    "QueryDownload",
-    "QueryDownloadDownload",
+    "QueryDownloadExtractedFirmware",
+    "QueryDownloadExtractedFirmwareDownload",
+    "QueryDownloadExtractedFirmwareDownloadExtractedFirmware",
+    "QueryDownloadFile",
+    "QueryDownloadFileDownload",
+    "QueryDownloadFileDownloadFile",
+    "QueryDownloadFileList",
+    "QueryDownloadFileListDownload",
+    "QueryDownloadFileListDownloadFileList",
+    "QueryDownloadFirmware",
+    "QueryDownloadFirmwareDownload",
+    "QueryDownloadFirmwareDownloadFirmware",
     "QueryGetVulnReachability",
     "QueryGetVulnReachabilityGetVulnReachability",
     "QueryGetVulnReachabilityGetVulnReachabilityScripts",

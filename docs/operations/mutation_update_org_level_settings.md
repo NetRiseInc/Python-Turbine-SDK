@@ -2,6 +2,8 @@
 
 # mutation_update_org_level_settings
 
+Configure global organization settings such as idle session timeout duration.
+
 ## Parameters
 
 | name | type | required |

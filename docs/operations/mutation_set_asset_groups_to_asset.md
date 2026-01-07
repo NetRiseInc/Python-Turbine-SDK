@@ -2,6 +2,8 @@
 
 # mutation_set_asset_groups_to_asset
 
+Replace all current group associations for an asset with new ones.
+
 ## Parameters
 
 | name | type | required |

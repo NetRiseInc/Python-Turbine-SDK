@@ -29,11 +29,10 @@ cp .env.example .env
 
 Populate the missing values. Reach out to [mailto:support@netrise.io](support@netrise.io) if you need assistance.
 
-## Documentation
-
-- [Operations documentation](https://github.com/NetRiseInc/Python-Turbine-SDK/docs/operations/) - detailed examples for all GraphQL operations
-- [API Reference](https://github.com/NetRiseInc/Python-Turbine-SDK/docs/README.md) - complete API documentation
-
 ## License
 
 See [LICENSE](https://github.com/NetRiseInc/Python-Turbine-SDK/blob/main/LICENSE) for details.
+
+## Documentation
+
+- [API Documentation & Code Samples](https://github.com/NetRiseInc/Python-Turbine-SDK/docs/README.md) - detailed examples for all client SDK operations.

@@ -2,6 +2,8 @@
 
 # mutation_delete_asset_group
 
+Permanently remove an asset group while keeping contained assets intact.
+
 ## Parameters
 
 | name | type | required |

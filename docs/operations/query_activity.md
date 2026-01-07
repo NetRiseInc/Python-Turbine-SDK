@@ -2,6 +2,8 @@
 
 # query_activity
 
+Retrieve a comprehensive log of actions and events for assets.
+
 ## Parameters
 
 | name | type | required |

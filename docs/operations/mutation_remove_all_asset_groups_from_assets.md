@@ -2,6 +2,8 @@
 
 # mutation_remove_all_asset_groups_from_assets
 
+Disassociate all asset groups from a specified list of assets.
+
 ## Parameters
 
 | name | type | required |

@@ -2,6 +2,8 @@
 
 # query_asset_group_analytics
 
+View risk metrics and exploit counts for a specific group.
+
 ## Parameters
 
 | name | type | required |

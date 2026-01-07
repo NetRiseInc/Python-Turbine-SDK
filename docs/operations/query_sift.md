@@ -2,6 +2,8 @@
 
 # query_sift
 
+Perform fuzzy hash matching to find similar code or files.
+
 ## Parameters
 
 | name | type | required |

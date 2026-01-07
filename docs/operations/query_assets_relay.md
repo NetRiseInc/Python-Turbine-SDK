@@ -2,6 +2,8 @@
 
 # query_assets_relay
 
+Retrieve a paginated, sortable list of assets with filtering options.
+
 ## Parameters
 
 | name | type | required |

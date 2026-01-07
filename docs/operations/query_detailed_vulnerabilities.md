@@ -2,6 +2,8 @@
 
 # query_detailed_vulnerabilities
 
+Retrieve in-depth vulnerability data including descriptions and CVSS vector strings.
+
 ## Parameters
 
 | name | type | required |

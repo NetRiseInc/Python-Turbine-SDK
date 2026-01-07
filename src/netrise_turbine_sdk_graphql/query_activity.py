@@ -14,19 +14,16 @@ class QueryActivity(BaseModel):
 
 
 class QueryActivityActivity(BaseModel):
-    typename__: Literal["ActivityConnection"] = Field(alias="__typename")
     edges: Optional[list[Optional["QueryActivityActivityEdges"]]]
     page_info: "QueryActivityActivityPageInfo" = Field(alias="pageInfo")
 
 
 class QueryActivityActivityEdges(BaseModel):
-    typename__: Literal["ActivityEdge"] = Field(alias="__typename")
     cursor: Optional[str]
     node: Optional["QueryActivityActivityEdgesNode"]
 
 
 class QueryActivityActivityEdgesNode(BaseModel):
-    typename__: Literal["Activity"] = Field(alias="__typename")
     id: str
     activity_type: ActivityType = Field(alias="activityType")
     correlation_id: str = Field(alias="correlationId")
@@ -53,7 +50,6 @@ class QueryActivityActivityEdgesNode(BaseModel):
 
 class QueryActivityActivityEdgesNodeEntityAssetCreatedPayload(BaseModel):
     typename__: Literal["AssetCreatedPayload"] = Field(alias="__typename")
-    typename__: Literal["AssetCreatedPayload"] = Field(alias="__typename")
     asset_type: Optional[AssetType] = Field(alias="assetType")
     name: Optional[str]
     vendor: Optional[str]
@@ -61,7 +57,6 @@ class QueryActivityActivityEdgesNodeEntityAssetCreatedPayload(BaseModel):
 
 
 class QueryActivityActivityEdgesNodeEntityAssetChangedPayload(BaseModel):
-    typename__: Literal["AssetChangedPayload"] = Field(alias="__typename")
     typename__: Literal["AssetChangedPayload"] = Field(alias="__typename")
     asset_type: Optional[AssetType] = Field(alias="assetType")
     name: Optional[str]
@@ -71,7 +66,6 @@ class QueryActivityActivityEdgesNodeEntityAssetChangedPayload(BaseModel):
 
 class QueryActivityActivityEdgesNodeEntityAssetRiskChangedPayload(BaseModel):
     typename__: Literal["AssetRiskChangedPayload"] = Field(alias="__typename")
-    typename__: Literal["AssetRiskChangedPayload"] = Field(alias="__typename")
     asset_type: Optional[AssetType] = Field(alias="assetType")
     name: Optional[str]
     vendor: Optional[str]
@@ -79,7 +73,6 @@ class QueryActivityActivityEdgesNodeEntityAssetRiskChangedPayload(BaseModel):
 
 
 class QueryActivityActivityEdgesNodeEntityIdentificationAddedPayload(BaseModel):
-    typename__: Literal["IdentificationAddedPayload"] = Field(alias="__typename")
     typename__: Literal["IdentificationAddedPayload"] = Field(alias="__typename")
     identification_id: Optional[str] = Field(alias="identificationId")
     name: Optional[str]
@@ -89,7 +82,6 @@ class QueryActivityActivityEdgesNodeEntityIdentificationAddedPayload(BaseModel):
 
 class QueryActivityActivityEdgesNodeEntityIdentificationRemovedPayload(BaseModel):
     typename__: Literal["IdentificationRemovedPayload"] = Field(alias="__typename")
-    typename__: Literal["IdentificationRemovedPayload"] = Field(alias="__typename")
     identification_id: Optional[str] = Field(alias="identificationId")
     name: Optional[str]
     vendor: Optional[str]
@@ -97,7 +89,6 @@ class QueryActivityActivityEdgesNodeEntityIdentificationRemovedPayload(BaseModel
 
 
 class QueryActivityActivityEdgesNodeEntityVulnerabilityAddedPayload(BaseModel):
-    typename__: Literal["VulnerabilityAddedPayload"] = Field(alias="__typename")
     typename__: Literal["VulnerabilityAddedPayload"] = Field(alias="__typename")
     component_name: Optional[str] = Field(alias="componentName")
     component_vendor: Optional[str] = Field(alias="componentVendor")
@@ -109,7 +100,6 @@ class QueryActivityActivityEdgesNodeEntityVulnerabilityAddedPayload(BaseModel):
 
 
 class QueryActivityActivityEdgesNodeEntityVulnerabilityRemediatedPayload(BaseModel):
-    typename__: Literal["VulnerabilityRemediatedPayload"] = Field(alias="__typename")
     typename__: Literal["VulnerabilityRemediatedPayload"] = Field(alias="__typename")
     component_name: Optional[str] = Field(alias="componentName")
     component_vendor: Optional[str] = Field(alias="componentVendor")
@@ -123,20 +113,17 @@ class QueryActivityActivityEdgesNodeEntityVulnerabilityRemediatedPayload(BaseMod
 
 class QueryActivityActivityEdgesNodeEntityVulnerabilityUpdatedPayload(BaseModel):
     typename__: Literal["VulnerabilityUpdatedPayload"] = Field(alias="__typename")
-    typename__: Literal["VulnerabilityUpdatedPayload"] = Field(alias="__typename")
     cve: Optional[str]
     identification_id: Optional[str] = Field(alias="identificationId")
 
 
 class QueryActivityActivityEdgesNodeEntityVulnerabilityRemovedPayload(BaseModel):
     typename__: Literal["VulnerabilityRemovedPayload"] = Field(alias="__typename")
-    typename__: Literal["VulnerabilityRemovedPayload"] = Field(alias="__typename")
     cve: Optional[str]
     identification_id: Optional[str] = Field(alias="identificationId")
 
 
 class QueryActivityActivityEdgesNodeEntityMisconfigChangedPayload(BaseModel):
-    typename__: Literal["MisconfigChangedPayload"] = Field(alias="__typename")
     typename__: Literal["MisconfigChangedPayload"] = Field(alias="__typename")
     check_id: Optional[str] = Field(alias="checkId")
     check_name: Optional[str] = Field(alias="checkName")
@@ -146,13 +133,11 @@ class QueryActivityActivityEdgesNodeEntityMisconfigChangedPayload(BaseModel):
 
 class QueryActivityActivityEdgesNodeEntityAssetGroupAddedPayload(BaseModel):
     typename__: Literal["AssetGroupAddedPayload"] = Field(alias="__typename")
-    typename__: Literal["AssetGroupAddedPayload"] = Field(alias="__typename")
     group_id: Optional[str] = Field(alias="groupId")
     name: Optional[str]
 
 
 class QueryActivityActivityEdgesNodeEntityAssetGroupRemovedPayload(BaseModel):
-    typename__: Literal["AssetGroupRemovedPayload"] = Field(alias="__typename")
     typename__: Literal["AssetGroupRemovedPayload"] = Field(alias="__typename")
     group_id: Optional[str] = Field(alias="groupId")
     name: Optional[str]
@@ -160,13 +145,11 @@ class QueryActivityActivityEdgesNodeEntityAssetGroupRemovedPayload(BaseModel):
 
 class QueryActivityActivityEdgesNodeEntityUnspecifiedPayload(BaseModel):
     typename__: Literal["UnspecifiedPayload"] = Field(alias="__typename")
-    typename__: Literal["UnspecifiedPayload"] = Field(alias="__typename")
     payload_type: Optional[str] = Field(alias="payloadType")
     raw_data: Optional[Any] = Field(alias="rawData")
 
 
 class QueryActivityActivityPageInfo(BaseModel):
-    typename__: Literal["PageInfo"] = Field(alias="__typename")
     end_cursor: Optional[str] = Field(alias="endCursor")
     has_next_page: bool = Field(alias="hasNextPage")
     has_previous_page: bool = Field(alias="hasPreviousPage")

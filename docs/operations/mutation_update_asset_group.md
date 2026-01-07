@@ -2,6 +2,8 @@
 
 # mutation_update_asset_group
 
+Rename or update the description of an existing asset group.
+
 ## Parameters
 
 | name | type | required |

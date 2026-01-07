@@ -2,6 +2,8 @@
 
 # query_asset_upload
 
+Obtain a secure pre-signed URL to upload files for analysis.
+
 ## Parameters
 
 | name | type | required |

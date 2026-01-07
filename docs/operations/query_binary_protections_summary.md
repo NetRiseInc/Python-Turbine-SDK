@@ -2,6 +2,8 @@
 
 # query_binary_protections_summary
 
+Get aggregated counts of binary hardening features like NX or PIE.
+
 ## Parameters
 
 | name | type | required |
