@@ -35,4 +35,4 @@ See [LICENSE](https://github.com/NetRiseInc/Python-Turbine-SDK/blob/main/LICENSE
 
 ## Documentation
 
-- [API Documentation & Code Samples](https://github.com/NetRiseInc/Python-Turbine-SDK/docs/README.md) - detailed examples for all client SDK operations.
+- [API Documentation & Code Samples](https://github.com/NetRiseInc/Python-Turbine-SDK/blob/main/docs/README.md) - detailed examples for all client SDK operations.
