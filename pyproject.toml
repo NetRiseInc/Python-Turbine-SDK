@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "netrise-turbine-sdk"
-version = "0.1.0"
+version = "0.1.4"
 description = "Turbine GraphQL Python SDK (generated via ariadne-codegen)"
-authors = ["NetRise <dev@netrise.io>"]
+authors = ["NetRise <anthony.feddersen@netrise.io>"]
 readme = "README.md"
 packages = [
   { include = "netrise_turbine_sdk", from = "src" },
