@@ -18,13 +18,12 @@ from netrise_turbine_sdk_graphql import Client as GeneratedClient
 class TurbineClientConfig:
     endpoint: str
 
-    # Auth0 client-credentials
-    auth0_domain: Optional[str] = None
-    auth0_client_id: Optional[str] = None
-    auth0_client_secret: Optional[str] = None
-    auth0_audience: Optional[str] = None
-    auth0_organization_id: Optional[str] = None
-    auth0_organization_name: Optional[str] = None  # kept for parity with TS tool
+    # Client credentials
+    domain: Optional[str] = None
+    client_id: Optional[str] = None
+    client_secret: Optional[str] = None
+    audience: Optional[str] = None
+    organization_id: Optional[str] = None
 
     # Manual token override
     turbine_api_token: Optional[str] = None
@@ -33,33 +32,31 @@ class TurbineClientConfig:
     def from_env(load_env_file: bool = True) -> "TurbineClientConfig":
         """Load config from environment variables.
 
-        If `load_env_file` is True, attempts to load a `.env` file from:
-        - turbine/sdk-tools/.env (project-root relative)
-        - current working directory .env
+        If `load_env_file` is True, automatically loads a `.env` file from:
+        - Current working directory (most common)
+        - Parent directories (walks up the directory tree)
 
-        This mirrors the behavior of the TypeScript snapshot tool.
+        Environment variables can also be set directly without a `.env` file.
+        Set `load_env_file=False` to disable automatic `.env` file loading.
         """
         if load_env_file:
-            # Try loading repo-local .env first (same convention as snapshot tool).
-            load_dotenv("turbine/sdk-tools/.env", override=False)
+            # load_dotenv() automatically searches current working directory
+            # and parent directories - no explicit path needed
             load_dotenv(override=False)
 
-        endpoint = (os.getenv("TURBINE_GRAPHQL_ENDPOINT") or "").strip()
+        endpoint = (os.getenv("endpoint") or "").strip()
         if not endpoint:
             raise ValueError(
-                "TURBINE_GRAPHQL_ENDPOINT is required (e.g. https://apollo.turbine.netrise.io/graphql/v3)"
+                "endpoint is required (e.g. https://apollo.turbine.netrise.io/graphql/v3)"
             )
 
         return TurbineClientConfig(
             endpoint=endpoint,
-            auth0_domain=_strip_or_none(os.getenv("AUTH0_DOMAIN")),
-            auth0_client_id=_strip_or_none(os.getenv("AUTH0_CLIENT_ID")),
-            auth0_client_secret=_strip_or_none(os.getenv("AUTH0_CLIENT_SECRET")),
-            auth0_audience=_strip_or_none(os.getenv("AUTH0_AUDIENCE")),
-            auth0_organization_id=_strip_or_none(os.getenv("AUTH0_ORGANIZATION_ID")),
-            auth0_organization_name=_strip_or_none(
-                os.getenv("AUTH0_ORGANIZATION_NAME")
-            ),
+            domain=_strip_or_none(os.getenv("domain")),
+            client_id=_strip_or_none(os.getenv("client_id")),
+            client_secret=_strip_or_none(os.getenv("client_secret")),
+            audience=_strip_or_none(os.getenv("audience")),
+            organization_id=_strip_or_none(os.getenv("organization_id")),
             turbine_api_token=_strip_or_none(os.getenv("TURBINE_API_TOKEN")),
         )
 
@@ -68,7 +65,7 @@ class TurbineClient:
     """Sync-first Turbine GraphQL client.
 
     - Uses `TURBINE_API_TOKEN` if provided.
-    - Otherwise uses Auth0 client credentials to fetch a token.
+    - Otherwise uses client credentials to fetch a token.
 
     The underlying request execution is provided by the generated client from
     `ariadne-codegen`.
@@ -103,19 +100,18 @@ class TurbineClient:
         if self._config.turbine_api_token:
             return self._config.turbine_api_token
 
-        # 2) Cached Auth0 token
+        # 2) Cached token
         now = time.time()
         if self._cached_token and now < self._cached_token_expires_at:
             return self._cached_token
 
-        # 3) Fetch via Auth0 client credentials
-        token, expires_in = _fetch_auth0_token(
-            domain=self._config.auth0_domain,
-            client_id=self._config.auth0_client_id,
-            client_secret=self._config.auth0_client_secret,
-            audience=self._config.auth0_audience,
-            organization_id=self._config.auth0_organization_id,
-            organization_name=self._config.auth0_organization_name,
+        # 3) Fetch via client credentials
+        token, expires_in = _fetch_token(
+            domain=self._config.domain,
+            client_id=self._config.client_id,
+            client_secret=self._config.client_secret,
+            audience=self._config.audience,
+            organization_id=self._config.organization_id,
             timeout=self._timeout,
         )
 
@@ -150,24 +146,23 @@ def _strip_or_none(v: Optional[str]) -> Optional[str]:
     return v or None
 
 
-def _fetch_auth0_token(
+def _fetch_token(
     *,
     domain: Optional[str],
     client_id: Optional[str],
     client_secret: Optional[str],
     audience: Optional[str],
     organization_id: Optional[str],
-    organization_name: Optional[str],
     timeout: float,
 ) -> tuple[str, int]:
     if not domain:
-        raise ValueError("AUTH0_DOMAIN is required when TURBINE_API_TOKEN is not set")
+        raise ValueError("domain is required when TURBINE_API_TOKEN is not set")
     if not client_id or not client_secret:
         raise ValueError(
-            "AUTH0_CLIENT_ID and AUTH0_CLIENT_SECRET are required when TURBINE_API_TOKEN is not set"
+            "client_id and client_secret are required when TURBINE_API_TOKEN is not set"
         )
     if not audience:
-        raise ValueError("AUTH0_AUDIENCE is required when TURBINE_API_TOKEN is not set")
+        raise ValueError("audience is required when TURBINE_API_TOKEN is not set")
 
     domain = domain.rstrip("/")
     token_url = f"{domain}/oauth/token"
@@ -179,12 +174,9 @@ def _fetch_auth0_token(
         "audience": audience,
     }
 
-    # Organizations support depends on the Auth0 client grant settings.
+    # Organizations support depends on the client grant settings.
     if organization_id:
         payload["organization"] = organization_id
-    # Kept for parity with the existing TS tool; Auth0 may ignore it.
-    if organization_name:
-        payload["organization_name"] = organization_name
 
     with httpx.Client(timeout=timeout) as c:
         r = c.post(token_url, json=payload)
@@ -195,6 +187,6 @@ def _fetch_auth0_token(
     expires_in = int(data.get("expires_in", 3600))
 
     if not token:
-        raise RuntimeError(f"Auth0 token response missing access_token: {data}")
+        raise RuntimeError(f"Token response missing access_token: {data}")
 
     return token if token.startswith("Bearer ") else f"Bearer {token}", expires_in
