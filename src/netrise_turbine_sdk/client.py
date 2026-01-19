@@ -3,10 +3,11 @@ from __future__ import annotations
 import os
 import time
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Dict, Optional
 
 import httpx
-from dotenv import load_dotenv
+from dotenv import find_dotenv, load_dotenv
 
 # The generated client will live in this module after `ariadne-codegen` runs.
 # It is intentionally a separate top-level package so it won't overwrite
@@ -40,9 +41,19 @@ class TurbineClientConfig:
         Set `load_env_file=False` to disable automatic `.env` file loading.
         """
         if load_env_file:
-            # load_dotenv() automatically searches current working directory
-            # and parent directories - no explicit path needed
-            load_dotenv(override=False)
+            # Prioritize .env file in current working directory
+            # This ensures local .env files take precedence over parent directories
+            current_dir_env = Path.cwd() / ".env"
+            if current_dir_env.exists():
+                load_dotenv(current_dir_env, override=False)
+            else:
+                # If no .env in current directory, search parent directories
+                dotenv_path = find_dotenv(usecwd=True)
+                if dotenv_path:
+                    load_dotenv(dotenv_path, override=False)
+                else:
+                    # Fallback to default behavior if find_dotenv doesn't find anything
+                    load_dotenv(override=False)
 
         endpoint = (os.getenv("endpoint") or "").strip()
         if not endpoint:
