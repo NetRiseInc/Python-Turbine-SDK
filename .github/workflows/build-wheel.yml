@@ -138,7 +138,7 @@ jobs:
           client-id: ${{ secrets.NETRISE_CLIENT_ID }}
           client-secret: ${{ secrets.NETRISE_CLIENT_SECRET }}
           organization-id: ${{ secrets.NETRISE_ORGANIZATION_ID }}
-          token-url: ${{ secrets.NETRISE_TOKEN_URL }}
+          domain: ${{ secrets.NETRISE_TOKEN_URL }}
           audience: ${{ secrets.NETRISE_AUDIENCE }}
           endpoint: ${{ secrets.NETRISE_ENDPOINT }}
           
