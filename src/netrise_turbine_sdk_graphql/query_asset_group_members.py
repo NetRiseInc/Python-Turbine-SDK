@@ -45,6 +45,7 @@ class QueryAssetGroupMembersAssetGroupMembersEdgesNode(BaseModel):
     product: Optional[str]
     risk: Optional["QueryAssetGroupMembersAssetGroupMembersEdgesNodeRisk"]
     sha_256: Optional[str] = Field(alias="sha256")
+    size_bytes: Optional[int] = Field(alias="sizeBytes")
     status: Optional[ProcessingStatus]
     type: Optional[AssetType]
     updated_at: Optional[str] = Field(alias="updatedAt")
@@ -60,6 +61,7 @@ class QueryAssetGroupMembersAssetGroupMembersEdgesNodeAnalytic(BaseModel):
     cryptography: "QueryAssetGroupMembersAssetGroupMembersEdgesNodeAnalyticCryptography"
     exploit: "QueryAssetGroupMembersAssetGroupMembersEdgesNodeAnalyticExploit"
     files: int
+    license_issues: int = Field(alias="licenseIssues")
     misconfigurations: (
         "QueryAssetGroupMembersAssetGroupMembersEdgesNodeAnalyticMisconfigurations"
     )
@@ -85,6 +87,7 @@ class QueryAssetGroupMembersAssetGroupMembersEdgesNodeAnalyticCredentials(BaseMo
     cracked_hash: Optional[int] = Field(alias="crackedHash")
     credential: int
     hash: int
+    secrets: Optional[int]
 
 
 class QueryAssetGroupMembersAssetGroupMembersEdgesNodeAnalyticCryptography(BaseModel):

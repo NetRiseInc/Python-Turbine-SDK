@@ -104,6 +104,7 @@ cfg = TurbineClientConfig.from_env(load_env_file=False)
 - [query_assets_relay](operations/query_assets_relay.md): Retrieve a paginated, sortable list of assets with filtering options.
 - [query_binary_protections](operations/query_binary_protections.md): List security hardening details for binaries found within the asset.
 - [query_binary_protections_summary](operations/query_binary_protections_summary.md): Get aggregated counts of binary hardening features like NX or PIE.
+- [query_caas_availability](operations/query_caas_availability.md): Check for the availability of the RISE AI analysis report.
 - [query_certificates](operations/query_certificates.md): List X.509 certificates and validity status found in the asset.
 - [query_credentials](operations/query_credentials.md): Identify user accounts and password hashes discovered within the filesystem.
 - [query_dependencies](operations/query_dependencies.md): List all software components and libraries identified in the asset.
@@ -119,9 +120,11 @@ cfg = TurbineClientConfig.from_env(load_env_file=False)
 - [query_match_vulnerabilities](operations/query_match_vulnerabilities.md): Find specific vulnerabilities matching a provided component identifier or package.
 - [query_metrics](operations/query_metrics.md): View organization-wide statistics on asset counts, processing, and risk.
 - [query_misconfigurations](operations/query_misconfigurations.md): List failed security checks and configuration risks found in assets.
+- [query_org_level_settings](operations/query_org_level_settings.md): Check how the tenant organization is configured.
 - [query_package_dependencies_by_id](operations/query_package_dependencies_by_id.md): View the dependency tree hierarchy for a specific software package.
 - [query_private_keys](operations/query_private_keys.md): Detect private cryptographic keys stored insecurely on the asset filesystem.
 - [query_public_keys](operations/query_public_keys.md): List public cryptographic keys found within the asset's file system.
+- [query_rise_ai_analysis_data](operations/query_rise_ai_analysis_data.md): Check for the contents of the RISE AI analysis report.
 - [query_search](operations/query_search.md): Execute keyword searches across all artifacts and files in organization.
 - [query_sift](operations/query_sift.md): Perform fuzzy hash matching to find similar code or files.
 - [query_user_orgs](operations/query_user_orgs.md): List all organizations the current user is authorized to access.

@@ -6,7 +6,14 @@ from typing import Any, Literal, Optional, Union
 from pydantic import Field
 
 from .base_model import BaseModel
-from .enums import ActivityEntityType, ActivityType, AssetType, VexJustification
+from .enums import (
+    ActivityEntityType,
+    ActivityType,
+    AssetType,
+    SecretCategory,
+    SecretType,
+    VexJustification,
+)
 
 
 class QueryActivity(BaseModel):
@@ -42,6 +49,8 @@ class QueryActivityActivityEdgesNode(BaseModel):
         "QueryActivityActivityEdgesNodeEntityMisconfigChangedPayload",
         "QueryActivityActivityEdgesNodeEntityAssetGroupAddedPayload",
         "QueryActivityActivityEdgesNodeEntityAssetGroupRemovedPayload",
+        "QueryActivityActivityEdgesNodeEntitySecretRemediatedPayload",
+        "QueryActivityActivityEdgesNodeEntityLicenseIssueRemediatedPayload",
         "QueryActivityActivityEdgesNodeEntityUnspecifiedPayload",
     ] = Field(discriminator="typename__")
     entity_type: ActivityEntityType = Field(alias="entityType")
@@ -141,6 +150,27 @@ class QueryActivityActivityEdgesNodeEntityAssetGroupRemovedPayload(BaseModel):
     typename__: Literal["AssetGroupRemovedPayload"] = Field(alias="__typename")
     group_id: Optional[str] = Field(alias="groupId")
     name: Optional[str]
+
+
+class QueryActivityActivityEdgesNodeEntitySecretRemediatedPayload(BaseModel):
+    typename__: Literal["SecretRemediatedPayload"] = Field(alias="__typename")
+    category: Optional[SecretCategory]
+    detail: Optional[str]
+    file_path: Optional[str] = Field(alias="filePath")
+    new_status: Optional[str] = Field(alias="newStatus")
+    old_status: Optional[str] = Field(alias="oldStatus")
+    secret_id: Optional[str] = Field(alias="secretId")
+    subtype: Optional[str]
+    type: Optional[SecretType]
+    user: Optional[str]
+
+
+class QueryActivityActivityEdgesNodeEntityLicenseIssueRemediatedPayload(BaseModel):
+    typename__: Literal["LicenseIssueRemediatedPayload"] = Field(alias="__typename")
+    component_id: Optional[str] = Field(alias="componentId")
+    component_name: Optional[str] = Field(alias="componentName")
+    component_version: Optional[str] = Field(alias="componentVersion")
+    issue_name: Optional[str] = Field(alias="issueName")
 
 
 class QueryActivityActivityEdgesNodeEntityUnspecifiedPayload(BaseModel):
