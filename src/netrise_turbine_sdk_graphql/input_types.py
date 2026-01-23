@@ -10,6 +10,7 @@ from .base_model import BaseModel
 from .custom_scalars import serialize_datetime
 from .enums import (
     ArtifactName,
+    AssetAnalysisEventSelection,
     AssetGroupsField,
     AssetOverviewRiskCategory,
     AssetOverviewSortField,
@@ -18,6 +19,7 @@ from .enums import (
     AssetType,
     BinaryProtectionsField,
     CertificatesField,
+    CertificateValidityPeriod,
     ComponentType,
     CredentialsField,
     DependencyField,
@@ -39,9 +41,12 @@ from .enums import (
     ListFilesFilterFieldEnum,
     ListFilesSortField,
     MisconfigurationsField,
+    NewSBOMFindingsSelection,
     NotificationField,
     NotificationParser,
+    NotificationSettingsType,
     NotificationSortField,
+    NotificationTimeframe,
     NotificationType,
     PrivateKeysField,
     PublicKeysField,
@@ -50,12 +55,20 @@ from .enums import (
     SbomFormat,
     SbomType,
     SbomVersion,
+    SecretCategory,
+    SecretRemediationStatus,
+    SecretSeverity,
+    SecretsField,
+    SecretType,
     Severity,
     SiftSearchType,
     SortOrder,
     UserActionEnum,
+    UserManagementEventSelection,
     VexJustification,
     VexStatus,
+    VulnerabilitiesExploitsSelection,
+    VulnerabilitiesSeveritiesSelection,
     VulnerabilityField,
     VulnerabilityOverviewFilterField,
     VulnerabilityOverviewSortField,
@@ -209,6 +222,11 @@ class LicenseIssuesInput(BaseModel):
     sort: Optional["LicenseIssuesSort"] = None
 
 
+class LicenseIssueInput(BaseModel):
+    asset_id: str = Field(alias="assetId")
+    issue_id: str = Field(alias="issueId")
+
+
 class RemediateLicenseIssuesInput(BaseModel):
     asset_id: str = Field(alias="assetId")
     issue_ids: list[str] = Field(alias="issueIds")
@@ -264,10 +282,85 @@ class NotificationsSort(BaseModel):
     order: Optional[SortOrder] = None
 
 
+class UpdateNotificationSettingsInput(BaseModel):
+    settings: "NotificationSettingsInput"
+    update_mask: Optional[list[str]] = Field(alias="updateMask", default=None)
+
+
+class NotificationSettingsInput(BaseModel):
+    allow_user_overrides: Optional[bool] = Field(
+        alias="allowUserOverrides", default=None
+    )
+    email_notifications_enabled: Optional[bool] = Field(
+        alias="emailNotificationsEnabled", default=None
+    )
+    notification_timeframe: Optional[NotificationTimeframe] = Field(
+        alias="notificationTimeframe", default=None
+    )
+    preferences: Optional[list["NotificationPreferenceInput"]] = None
+
+
+class NotificationPreferenceInput(BaseModel):
+    name: Optional[str] = None
+    type: Optional[NotificationSettingsType] = None
+    console: Optional[str] = None
+    console_enabled: Optional[bool] = Field(alias="consoleEnabled", default=None)
+    email: Optional[str] = None
+    email_enabled: Optional[bool] = Field(alias="emailEnabled", default=None)
+    webhook: Optional[str] = None
+    webhook_enabled: Optional[bool] = Field(alias="webhookEnabled", default=None)
+    controls: Optional[list[Optional["NotificationControlInput"]]] = None
+
+
+class NotificationControlInput(BaseModel):
+    vulnerability: Optional["VulnerabilityControlInput"] = None
+    certificate_validity: Optional["CertificateControlInput"] = Field(
+        alias="certificateValidity", default=None
+    )
+    asset_analysis: Optional["AssetAnalysisControlInput"] = Field(
+        alias="assetAnalysis", default=None
+    )
+    sbom_findings: Optional["SbomFindingsControlInput"] = Field(
+        alias="sbomFindings", default=None
+    )
+    user_management: Optional["UserManagementControlInput"] = Field(
+        alias="userManagement", default=None
+    )
+
+
+class VulnerabilityControlInput(BaseModel):
+    severities: Optional[list[VulnerabilitiesSeveritiesSelection]] = None
+    exploits: Optional[list[VulnerabilitiesExploitsSelection]] = None
+
+
+class CertificateControlInput(BaseModel):
+    min_validity: Optional[CertificateValidityPeriod] = Field(
+        alias="minValidity", default=None
+    )
+    max_validity: Optional[CertificateValidityPeriod] = Field(
+        alias="maxValidity", default=None
+    )
+
+
+class AssetAnalysisControlInput(BaseModel):
+    events: Optional[list[AssetAnalysisEventSelection]] = None
+
+
+class SbomFindingsControlInput(BaseModel):
+    findings: Optional[list[NewSBOMFindingsSelection]] = None
+
+
+class UserManagementControlInput(BaseModel):
+    events: Optional[list[UserManagementEventSelection]] = None
+
+
 class OrgLevelSettingsInput(BaseModel):
     idle_timout_enabled: bool = Field(alias="idleTimoutEnabled")
     idle_timeout_seconds: Optional[int] = Field(
         alias="idleTimeoutSeconds", default=None
+    )
+    rise_ai_insights_report_enabled: Optional[bool] = Field(
+        alias="riseAiInsightsReportEnabled", default=None
     )
 
 
@@ -334,6 +427,71 @@ class SearchInput(BaseModel):
     asset_ids: Optional[list[str]] = Field(alias="assetIds", default=None)
     group_ids: Optional[list[str]] = Field(alias="groupIds", default=None)
     cursor: Optional["Cursor"] = None
+
+
+class SecretsFilter(BaseModel):
+    """Filter for secrets."""
+
+    type: Optional[list[Optional[SecretType]]] = None
+    severity: Optional[list[Optional[SecretSeverity]]] = None
+    category: Optional[SecretCategory] = None
+    search: Optional[str] = None
+    status: Optional[list[Optional[SecretRemediationStatus]]] = None
+
+
+class SecretInput(BaseModel):
+    """Input for querying a single secret."""
+
+    id: str
+    "Unique secret identifier."
+    reveal_secret: Optional[bool] = Field(alias="revealSecret", default=False)
+    "If true, attempts to return the raw secret value."
+
+
+class SecretsInput(BaseModel):
+    """Input for listing secrets on an asset."""
+
+    asset_id: str = Field(alias="assetId")
+    "Asset identifier whose secrets are being listed.\nMaps to ListAssetSecretsRequest.asset_id."
+    cursor: "Cursor"
+    "Pagination configuration."
+    filter: Optional["SecretsFilter"] = None
+    "Optional structured filter for secrets."
+    sort: Optional["SecretsSort"] = None
+    "Optional order by expression."
+
+
+class SecretsSort(BaseModel):
+    field: Optional[SecretsField] = None
+    order: Optional[SortOrder] = None
+
+
+class SecretCategoriesInput(BaseModel):
+    """Input for listing secret categories on an asset."""
+
+    asset_id: str = Field(alias="assetId")
+    "Asset identifier whose secrets are being listed.\nMaps to ListAssetSecretsRequest.asset_id."
+    filter: Optional["SecretsFilter"] = None
+    "Optional structured filter for secrets."
+
+
+class SecretsSummaryInput(BaseModel):
+    asset_id: str = Field(alias="assetId")
+
+
+class SecretTypesAndCountInput(BaseModel):
+    asset_id: str = Field(alias="assetId")
+
+
+class SecretStatusCountInput(BaseModel):
+    asset_id: str = Field(alias="assetId")
+
+
+class CreateSecretsRemediationInput(BaseModel):
+    asset_id: str = Field(alias="assetId")
+    secret_ids: list[str] = Field(alias="secretIds")
+    status: SecretRemediationStatus
+    description: Optional[str] = None
 
 
 class SiftInput(BaseModel):
@@ -1008,6 +1166,10 @@ class VulnerabilityExternalFiltersInput(BaseModel):
     asset_id: str = Field(alias="assetId")
 
 
+class RiseAIAnalysisDataInput(BaseModel):
+    asset_id: str = Field(alias="assetId")
+
+
 BinaryProtectionsInput.model_rebuild()
 BinaryProtectionsFilter.model_rebuild()
 CertificatesInput.model_rebuild()
@@ -1020,11 +1182,17 @@ LicenseIssuesFilter.model_rebuild()
 LicenseIssuesInput.model_rebuild()
 NotificationsInput.model_rebuild()
 NotificationsFilter.model_rebuild()
+UpdateNotificationSettingsInput.model_rebuild()
+NotificationSettingsInput.model_rebuild()
+NotificationPreferenceInput.model_rebuild()
+NotificationControlInput.model_rebuild()
 PrivateKeysInput.model_rebuild()
 ListPrivateKeysFilter.model_rebuild()
 PublicKeysInput.model_rebuild()
 ListPublicKeysFilter.model_rebuild()
 SearchInput.model_rebuild()
+SecretsInput.model_rebuild()
+SecretCategoriesInput.model_rebuild()
 HighProfileExploitInput.model_rebuild()
 HighProfileExploitFilter.model_rebuild()
 ActivityInput.model_rebuild()

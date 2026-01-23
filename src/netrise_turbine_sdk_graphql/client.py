@@ -50,6 +50,7 @@ from .input_types import (
     RemediateLicenseIssuesInput,
     RemoveAllAssetGroupsFromAssetsInput,
     RemoveAssetsFromAssetGroupInput,
+    RiseAIAnalysisDataInput,
     SearchInput,
     SetAssetGroupsToAssetInput,
     SetAssetsToAssetGroupInput,
@@ -111,6 +112,7 @@ from .query_assets_overview import QueryAssetsOverview
 from .query_assets_relay import QueryAssetsRelay
 from .query_binary_protections import QueryBinaryProtections
 from .query_binary_protections_summary import QueryBinaryProtectionsSummary
+from .query_caas_availability import QueryCaasAvailability
 from .query_certificates import QueryCertificates
 from .query_credentials import QueryCredentials
 from .query_dependencies import QueryDependencies
@@ -126,9 +128,11 @@ from .query_hashes import QueryHashes
 from .query_match_vulnerabilities import QueryMatchVulnerabilities
 from .query_metrics import QueryMetrics
 from .query_misconfigurations import QueryMisconfigurations
+from .query_org_level_settings import QueryOrgLevelSettings
 from .query_package_dependencies_by_id import QueryPackageDependenciesById
 from .query_private_keys import QueryPrivateKeys
 from .query_public_keys import QueryPublicKeys
+from .query_rise_ai_analysis_data import QueryRiseAIAnalysisData
 from .query_search import QuerySearch
 from .query_sift import QuerySift
 from .query_user_orgs import QueryUserOrgs
@@ -231,6 +235,23 @@ class Client(BaseClient):
                       ... on AssetGroupRemovedPayload {
                         groupId
                         name
+                      }
+                      ... on SecretRemediatedPayload {
+                        category
+                        detail
+                        filePath
+                        newStatus
+                        oldStatus
+                        secretId
+                        subtype
+                        type
+                        user
+                      }
+                      ... on LicenseIssueRemediatedPayload {
+                        componentId
+                        componentName
+                        componentVersion
+                        issueName
                       }
                       ... on UnspecifiedPayload {
                         payloadType
@@ -345,6 +366,7 @@ class Client(BaseClient):
                     crackedHash
                     credential
                     hash
+                    secrets
                   }
                   cryptography {
                     certificate
@@ -361,6 +383,7 @@ class Client(BaseClient):
                     threatActor
                   }
                   files
+                  licenseIssues
                   misconfigurations {
                     failed
                     notApplicable
@@ -411,6 +434,7 @@ class Client(BaseClient):
                   score
                 }
                 sha256
+                sizeBytes
                 status
                 type
                 updatedAt
@@ -485,6 +509,7 @@ class Client(BaseClient):
                         crackedHash
                         credential
                         hash
+                        secrets
                       }
                       cryptography {
                         certificate
@@ -501,6 +526,7 @@ class Client(BaseClient):
                         threatActor
                       }
                       files
+                      licenseIssues
                       misconfigurations {
                         failed
                         notApplicable
@@ -532,6 +558,7 @@ class Client(BaseClient):
                       score
                     }
                     sha256
+                    sizeBytes
                     status
                     type
                     updatedAt
@@ -773,6 +800,7 @@ class Client(BaseClient):
                         crackedHash
                         credential
                         hash
+                        secrets
                       }
                       cryptography {
                         certificate
@@ -789,6 +817,7 @@ class Client(BaseClient):
                         threatActor
                       }
                       files
+                      licenseIssues
                       misconfigurations {
                         failed
                         notApplicable
@@ -820,6 +849,7 @@ class Client(BaseClient):
                       score
                     }
                     sha256
+                    sizeBytes
                     status
                     type
                     updatedAt
@@ -939,6 +969,26 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return QueryBinaryProtectionsSummary.model_validate(data)
+
+    def query_caas_availability(
+        self, caas_availability_args: RiseAIAnalysisDataInput, **kwargs: Any
+    ) -> QueryCaasAvailability:
+        query = gql(
+            """
+            query QueryCaasAvailability($caasAvailability_args: RiseAIAnalysisDataInput!) {
+              caasAvailability(args: $caasAvailability_args)
+            }
+            """
+        )
+        variables: dict[str, object] = {"caasAvailability_args": caas_availability_args}
+        response = self.execute(
+            query=query,
+            operation_name="QueryCaasAvailability",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryCaasAvailability.model_validate(data)
 
     def query_certificates(
         self, certificates_args: CertificatesInput, **kwargs: Any
@@ -1089,6 +1139,7 @@ class Client(BaseClient):
                         crackedHash
                         credential
                         hash
+                        secrets
                       }
                       cryptography {
                         certificate
@@ -1105,6 +1156,7 @@ class Client(BaseClient):
                         threatActor
                       }
                       files
+                      licenseIssues
                       misconfigurations {
                         failed
                         notApplicable
@@ -1121,7 +1173,6 @@ class Client(BaseClient):
                       badges
                       component {
                         id
-                        architecture
                         cpes
                         description
                         identificationIds
@@ -1170,7 +1221,10 @@ class Client(BaseClient):
                     }
                     dependency {
                       id
-                      architecture
+                      architecture {
+                        name
+                        percentage
+                      }
                       cpes
                       description
                       digest {
@@ -1681,6 +1735,7 @@ class Client(BaseClient):
                         crackedHash
                         credential
                         hash
+                        secrets
                       }
                       cryptography {
                         certificate
@@ -1697,6 +1752,7 @@ class Client(BaseClient):
                         threatActor
                       }
                       files
+                      licenseIssues
                       misconfigurations {
                         failed
                         notApplicable
@@ -2142,6 +2198,28 @@ class Client(BaseClient):
         data = self.get_data(response)
         return QueryMisconfigurations.model_validate(data)
 
+    def query_org_level_settings(self, **kwargs: Any) -> QueryOrgLevelSettings:
+        query = gql(
+            """
+            query QueryOrgLevelSettings {
+              orgLevelSettings {
+                idleTimeoutSeconds
+                idleTimoutEnabled
+                riseAiInsightsReportEnabled
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {}
+        response = self.execute(
+            query=query,
+            operation_name="QueryOrgLevelSettings",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryOrgLevelSettings.model_validate(data)
+
     def query_package_dependencies_by_id(
         self,
         package_dependencies_by_id_args: packageDependenciesByIdInput,
@@ -2155,7 +2233,10 @@ class Client(BaseClient):
                   badges
                   component {
                     id
-                    architecture
+                    architecture {
+                      name
+                      percentage
+                    }
                     cpes
                     description
                     digest {
@@ -2177,6 +2258,7 @@ class Client(BaseClient):
                         orgId
                         product
                         sha256
+                        sizeBytes
                         status
                         type
                         updatedAt
@@ -2275,7 +2357,10 @@ class Client(BaseClient):
                     badges
                     component {
                       id
-                      architecture
+                      architecture {
+                        name
+                        percentage
+                      }
                       cpes
                       description
                       digest {
@@ -2329,7 +2414,10 @@ class Client(BaseClient):
                     badges
                     component {
                       id
-                      architecture
+                      architecture {
+                        name
+                        percentage
+                      }
                       cpes
                       description
                       digest {
@@ -2383,7 +2471,10 @@ class Client(BaseClient):
                     badges
                     component {
                       id
-                      architecture
+                      architecture {
+                        name
+                        percentage
+                      }
                       cpes
                       description
                       digest {
@@ -2555,6 +2646,67 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return QueryPublicKeys.model_validate(data)
+
+    def query_rise_ai_analysis_data(
+        self, rise_ai_analysis_data_args: RiseAIAnalysisDataInput, **kwargs: Any
+    ) -> QueryRiseAIAnalysisData:
+        query = gql(
+            """
+            query QueryRiseAIAnalysisData($riseAIAnalysisData_args: RiseAIAnalysisDataInput!) {
+              riseAIAnalysisData(args: $riseAIAnalysisData_args) {
+                architectures {
+                  name
+                  percentage
+                }
+                components {
+                  cpes
+                  name
+                  versions
+                }
+                entropyData {
+                  description
+                  level
+                  percentage
+                }
+                fileInfo {
+                  filename
+                  magic
+                  sha256
+                  size
+                  sizeFormatted
+                }
+                findingsCount
+                securityInsights {
+                  oldComponents {
+                    concern
+                    name
+                    version
+                  }
+                }
+                synopsis
+                totals {
+                  architecturesCount
+                  components
+                  entropySections
+                  highEntropyPct
+                  lowEntropyPct
+                  mediumEntropyPct
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "riseAIAnalysisData_args": rise_ai_analysis_data_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryRiseAIAnalysisData",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryRiseAIAnalysisData.model_validate(data)
 
     def query_search(
         self,
@@ -3266,6 +3418,7 @@ class Client(BaseClient):
                         crackedHash
                         credential
                         hash
+                        secrets
                       }
                       cryptography {
                         certificate
@@ -3282,6 +3435,7 @@ class Client(BaseClient):
                         threatActor
                       }
                       files
+                      licenseIssues
                       misconfigurations {
                         failed
                         notApplicable
@@ -3323,6 +3477,7 @@ class Client(BaseClient):
                       score
                     }
                     sha256
+                    sizeBytes
                     status
                     type
                     updatedAt
@@ -3379,6 +3534,7 @@ class Client(BaseClient):
                       crackedHash
                       credential
                       hash
+                      secrets
                     }
                     cryptography {
                       certificate
@@ -3395,6 +3551,7 @@ class Client(BaseClient):
                       threatActor
                     }
                     files
+                    licenseIssues
                     misconfigurations {
                       failed
                       notApplicable
@@ -3445,6 +3602,7 @@ class Client(BaseClient):
                     score
                   }
                   sha256
+                  sizeBytes
                   status
                   type
                   updatedAt

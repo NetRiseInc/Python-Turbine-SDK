@@ -9,7 +9,6 @@ from pydantic import BeforeValidator, Field
 from .base_model import BaseModel
 from .custom_scalars import parse_datetime
 from .enums import (
-    Architecture,
     ComponentBadge,
     ComponentSubType,
     ComponentType,
@@ -63,6 +62,7 @@ class QueryDependenciesDependenciesEdgesNodeAnalytic(BaseModel):
     cryptography: "QueryDependenciesDependenciesEdgesNodeAnalyticCryptography"
     exploit: "QueryDependenciesDependenciesEdgesNodeAnalyticExploit"
     files: int
+    license_issues: int = Field(alias="licenseIssues")
     misconfigurations: "QueryDependenciesDependenciesEdgesNodeAnalyticMisconfigurations"
     vulnerability: "QueryDependenciesDependenciesEdgesNodeAnalyticVulnerability"
 
@@ -84,6 +84,7 @@ class QueryDependenciesDependenciesEdgesNodeAnalyticCredentials(BaseModel):
     cracked_hash: Optional[int] = Field(alias="crackedHash")
     credential: int
     hash: int
+    secrets: Optional[int]
 
 
 class QueryDependenciesDependenciesEdgesNodeAnalyticCryptography(BaseModel):
@@ -125,7 +126,6 @@ class QueryDependenciesDependenciesEdgesNodeAssociatedFiles(BaseModel):
 
 class QueryDependenciesDependenciesEdgesNodeAssociatedFilesComponent(BaseModel):
     id: str
-    architecture: Optional[Architecture]
     cpes: Optional[list[Optional[str]]]
     description: Optional[str]
     identification_ids: Optional[list[Optional[str]]] = Field(alias="identificationIds")
@@ -188,7 +188,9 @@ class QueryDependenciesDependenciesEdgesNodeDependenciesIndirect(BaseModel):
 
 class QueryDependenciesDependenciesEdgesNodeDependency(BaseModel):
     id: str
-    architecture: Optional[Architecture]
+    architecture: Optional[
+        "QueryDependenciesDependenciesEdgesNodeDependencyArchitecture"
+    ]
     cpes: Optional[list[Optional[str]]]
     description: Optional[str]
     digest: Optional["QueryDependenciesDependenciesEdgesNodeDependencyDigest"]
@@ -214,6 +216,11 @@ class QueryDependenciesDependenciesEdgesNodeDependency(BaseModel):
     type: ComponentType
     vendor: Optional[str]
     version: Optional["QueryDependenciesDependenciesEdgesNodeDependencyVersion"]
+
+
+class QueryDependenciesDependenciesEdgesNodeDependencyArchitecture(BaseModel):
+    name: str
+    percentage: int
 
 
 class QueryDependenciesDependenciesEdgesNodeDependencyDigest(BaseModel):

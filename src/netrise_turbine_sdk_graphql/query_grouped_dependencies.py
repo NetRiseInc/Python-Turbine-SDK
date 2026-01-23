@@ -48,6 +48,7 @@ class QueryGroupedDependenciesGroupedDependenciesEdgesNodeAnalytic(BaseModel):
     )
     exploit: "QueryGroupedDependenciesGroupedDependenciesEdgesNodeAnalyticExploit"
     files: int
+    license_issues: int = Field(alias="licenseIssues")
     misconfigurations: (
         "QueryGroupedDependenciesGroupedDependenciesEdgesNodeAnalyticMisconfigurations"
     )
@@ -75,6 +76,7 @@ class QueryGroupedDependenciesGroupedDependenciesEdgesNodeAnalyticCredentials(
     cracked_hash: Optional[int] = Field(alias="crackedHash")
     credential: int
     hash: int
+    secrets: Optional[int]
 
 
 class QueryGroupedDependenciesGroupedDependenciesEdgesNodeAnalyticCryptography(
