@@ -7,10 +7,12 @@ from pydantic import Field
 
 from .base_model import BaseModel
 from .enums import (
+    Architecture,
     AssetType,
     ComponentBadge,
     ComponentSubType,
     ComponentType,
+    Confidence,
     CoordinateType,
     Fidelity,
     IdentifierFormat,
@@ -47,9 +49,8 @@ class QueryPackageDependenciesByIdPackageDependenciesByIdAssociatedFilesComponen
     BaseModel
 ):
     id: str
-    architecture: Optional[
-        "QueryPackageDependenciesByIdPackageDependenciesByIdAssociatedFilesComponentArchitecture"
-    ]
+    architecture: Optional[Architecture]
+    confidence: Optional[Confidence]
     cpes: Optional[list[Optional[str]]]
     description: Optional[str]
     digest: Optional[
@@ -85,13 +86,6 @@ class QueryPackageDependenciesByIdPackageDependenciesByIdAssociatedFilesComponen
     version: Optional[
         "QueryPackageDependenciesByIdPackageDependenciesByIdAssociatedFilesComponentVersion"
     ]
-
-
-class QueryPackageDependenciesByIdPackageDependenciesByIdAssociatedFilesComponentArchitecture(
-    BaseModel
-):
-    name: str
-    percentage: int
 
 
 class QueryPackageDependenciesByIdPackageDependenciesByIdAssociatedFilesComponentDigest(
@@ -141,6 +135,7 @@ class QueryPackageDependenciesByIdPackageDependenciesByIdAssociatedFilesComponen
     name: Optional[str]
     org_id: Optional[str] = Field(alias="orgId")
     product: Optional[str]
+    quantum_capable: Optional[bool] = Field(alias="quantumCapable")
     sha_256: Optional[str] = Field(alias="sha256")
     size_bytes: Optional[int] = Field(alias="sizeBytes")
     status: Optional[ProcessingStatus]
@@ -313,9 +308,8 @@ class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDependentsC
     BaseModel
 ):
     id: str
-    architecture: Optional[
-        "QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDependentsComponentArchitecture"
-    ]
+    architecture: Optional[Architecture]
+    confidence: Optional[Confidence]
     cpes: Optional[list[Optional[str]]]
     description: Optional[str]
     digest: Optional[
@@ -351,13 +345,6 @@ class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDependentsC
     version: Optional[
         "QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDependentsComponentVersion"
     ]
-
-
-class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDependentsComponentArchitecture(
-    BaseModel
-):
-    name: str
-    percentage: int
 
 
 class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDependentsComponentDigest(
@@ -417,9 +404,8 @@ class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDirectCompo
     BaseModel
 ):
     id: str
-    architecture: Optional[
-        "QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDirectComponentArchitecture"
-    ]
+    architecture: Optional[Architecture]
+    confidence: Optional[Confidence]
     cpes: Optional[list[Optional[str]]]
     description: Optional[str]
     digest: Optional[
@@ -455,13 +441,6 @@ class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDirectCompo
     version: Optional[
         "QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDirectComponentVersion"
     ]
-
-
-class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDirectComponentArchitecture(
-    BaseModel
-):
-    name: str
-    percentage: int
 
 
 class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDirectComponentDigest(
@@ -521,9 +500,8 @@ class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesIndirectCom
     BaseModel
 ):
     id: str
-    architecture: Optional[
-        "QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesIndirectComponentArchitecture"
-    ]
+    architecture: Optional[Architecture]
+    confidence: Optional[Confidence]
     cpes: Optional[list[Optional[str]]]
     description: Optional[str]
     digest: Optional[
@@ -559,13 +537,6 @@ class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesIndirectCom
     version: Optional[
         "QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesIndirectComponentVersion"
     ]
-
-
-class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesIndirectComponentArchitecture(
-    BaseModel
-):
-    name: str
-    percentage: int
 
 
 class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesIndirectComponentDigest(

@@ -9,11 +9,14 @@ from pydantic import BeforeValidator, Field
 from .base_model import BaseModel
 from .custom_scalars import parse_datetime
 from .enums import (
+    Architecture,
     ComponentBadge,
     ComponentSubType,
     ComponentType,
+    Confidence,
     IdentificationRemediationAction,
     IdentificationRemediationOperationType,
+    IdentifiedViaCategory,
     IdentifierFormat,
     Language,
     RiskCategory,
@@ -46,6 +49,9 @@ class QueryDependenciesDependenciesEdgesNode(BaseModel):
     correlations_count: Optional[int] = Field(alias="correlationsCount")
     dependencies: "QueryDependenciesDependenciesEdgesNodeDependencies"
     dependency: "QueryDependenciesDependenciesEdgesNodeDependency"
+    identified_via: Optional[list[Optional[IdentifiedViaCategory]]] = Field(
+        alias="identifiedVia"
+    )
     latest_remediation: Optional[
         "QueryDependenciesDependenciesEdgesNodeLatestRemediation"
     ] = Field(alias="latestRemediation")
@@ -126,6 +132,8 @@ class QueryDependenciesDependenciesEdgesNodeAssociatedFiles(BaseModel):
 
 class QueryDependenciesDependenciesEdgesNodeAssociatedFilesComponent(BaseModel):
     id: str
+    architecture: Optional[Architecture]
+    confidence: Optional[Confidence]
     cpes: Optional[list[Optional[str]]]
     description: Optional[str]
     identification_ids: Optional[list[Optional[str]]] = Field(alias="identificationIds")
@@ -188,9 +196,8 @@ class QueryDependenciesDependenciesEdgesNodeDependenciesIndirect(BaseModel):
 
 class QueryDependenciesDependenciesEdgesNodeDependency(BaseModel):
     id: str
-    architecture: Optional[
-        "QueryDependenciesDependenciesEdgesNodeDependencyArchitecture"
-    ]
+    architecture: Optional[Architecture]
+    confidence: Optional[Confidence]
     cpes: Optional[list[Optional[str]]]
     description: Optional[str]
     digest: Optional["QueryDependenciesDependenciesEdgesNodeDependencyDigest"]
@@ -216,11 +223,6 @@ class QueryDependenciesDependenciesEdgesNodeDependency(BaseModel):
     type: ComponentType
     vendor: Optional[str]
     version: Optional["QueryDependenciesDependenciesEdgesNodeDependencyVersion"]
-
-
-class QueryDependenciesDependenciesEdgesNodeDependencyArchitecture(BaseModel):
-    name: str
-    percentage: int
 
 
 class QueryDependenciesDependenciesEdgesNodeDependencyDigest(BaseModel):

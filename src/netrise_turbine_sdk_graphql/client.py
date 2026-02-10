@@ -21,11 +21,13 @@ from .input_types import (
     AssetVulnerabilityRemediationInput,
     BinaryProtectionsInput,
     BinaryProtectionsSummaryInput,
+    CertificateExternalFiltersInput,
     CertificatesInput,
     CreateAllAssetVulnerabilitiesRemediationInput,
     CreateAssetGroupInput,
     CreateAssetVulnerabilityRemediationInput,
     CreateAssetVulnerabilityRemediationsInput,
+    CreateSecretsRemediationInput,
     CredentialsInput,
     DeleteAssetGroupInput,
     DependencyInput,
@@ -39,25 +41,43 @@ from .input_types import (
     HashesInput,
     IdentificationInput,
     InviteUserInput,
+    LicenseInput,
+    LicenseIssueInput,
+    LicenseIssuesExternalFiltersInput,
+    LicenseIssuesInput,
+    ListAssetCryptoLibrariesInput,
     MatchVulnerabilitiesInput,
     MisconfigurationsInput,
     ModifyDependencyInput,
+    NotificationsInput,
     OrgLevelSettingsInput,
     PaginatedDetailedVulnerabilitiesInput,
     PaginatedVulnerabilitiesInput,
+    PrivateKeyExternalFiltersInput,
     PrivateKeysInput,
+    PublicKeyExternalFiltersInput,
     PublicKeysInput,
+    RemediateCertificatesInput,
     RemediateLicenseIssuesInput,
+    RemediatePrivateKeysInput,
+    RemediatePublicKeysInput,
     RemoveAllAssetGroupsFromAssetsInput,
     RemoveAssetsFromAssetGroupInput,
     RiseAIAnalysisDataInput,
     SearchInput,
+    SecretCategoriesInput,
+    SecretInput,
+    SecretsInput,
+    SecretsSummaryInput,
+    SecretStatusCountInput,
+    SecretTypesAndCountInput,
     SetAssetGroupsToAssetInput,
     SetAssetsToAssetGroupInput,
     SetUserRoleInput,
     SubmitAssetInput,
     UpdateAssetGroupInput,
     UpdateAssetInput,
+    UpdateNotificationSettingsInput,
     UpdateUserInput,
     UserActionInput,
     UserInput,
@@ -83,14 +103,20 @@ from .mutation_remediate_asset_vulnerabilities import (
     MutationRemediateAssetVulnerabilities,
 )
 from .mutation_remediate_asset_vulnerability import MutationRemediateAssetVulnerability
+from .mutation_remediate_certificates import MutationRemediateCertificates
 from .mutation_remediate_license_issues import MutationRemediateLicenseIssues
+from .mutation_remediate_private_keys import MutationRemediatePrivateKeys
+from .mutation_remediate_public_keys import MutationRemediatePublicKeys
+from .mutation_remediate_secrets import MutationRemediateSecrets
 from .mutation_remove_all_asset_groups_from_assets import (
     MutationRemoveAllAssetGroupsFromAssets,
 )
 from .mutation_remove_assets_from_asset_group import MutationRemoveAssetsFromAssetGroup
 from .mutation_set_asset_groups_to_asset import MutationSetAssetGroupsToAsset
 from .mutation_set_assets_to_asset_group import MutationSetAssetsToAssetGroup
+from .mutation_submit_rise_ai_analysis import MutationSubmitRiseAIAnalysis
 from .mutation_update_asset_group import MutationUpdateAssetGroup
+from .mutation_update_notification_settings import MutationUpdateNotificationSettings
 from .mutation_update_org_level_settings import MutationUpdateOrgLevelSettings
 from .mutation_user_action import MutationUserAction
 from .mutation_user_delete import MutationUserDelete
@@ -112,7 +138,7 @@ from .query_assets_overview import QueryAssetsOverview
 from .query_assets_relay import QueryAssetsRelay
 from .query_binary_protections import QueryBinaryProtections
 from .query_binary_protections_summary import QueryBinaryProtectionsSummary
-from .query_caas_availability import QueryCaasAvailability
+from .query_certificate_external_filters import QueryCertificateExternalFilters
 from .query_certificates import QueryCertificates
 from .query_credentials import QueryCredentials
 from .query_dependencies import QueryDependencies
@@ -125,15 +151,32 @@ from .query_download_firmware import QueryDownloadFirmware
 from .query_get_vuln_reachability import QueryGetVulnReachability
 from .query_grouped_dependencies import QueryGroupedDependencies
 from .query_hashes import QueryHashes
+from .query_license import QueryLicense
+from .query_license_issue import QueryLicenseIssue
+from .query_license_issues import QueryLicenseIssues
+from .query_license_issues_external_filters import QueryLicenseIssuesExternalFilters
+from .query_licenses_spdx_ids import QueryLicensesSpdxIds
+from .query_list_asset_crypto_libraries import QueryListAssetCryptoLibraries
 from .query_match_vulnerabilities import QueryMatchVulnerabilities
 from .query_metrics import QueryMetrics
 from .query_misconfigurations import QueryMisconfigurations
+from .query_notification_settings import QueryNotificationSettings
+from .query_notifications import QueryNotifications
 from .query_org_level_settings import QueryOrgLevelSettings
 from .query_package_dependencies_by_id import QueryPackageDependenciesById
+from .query_private_key_external_filters import QueryPrivateKeyExternalFilters
 from .query_private_keys import QueryPrivateKeys
+from .query_public_key_external_filters import QueryPublicKeyExternalFilters
 from .query_public_keys import QueryPublicKeys
 from .query_rise_ai_analysis_data import QueryRiseAIAnalysisData
+from .query_rise_ai_availability import QueryRiseAIAvailability
 from .query_search import QuerySearch
+from .query_secret import QuerySecret
+from .query_secret_categories_summary import QuerySecretCategoriesSummary
+from .query_secret_status_count import QuerySecretStatusCount
+from .query_secret_types_and_count import QuerySecretTypesAndCount
+from .query_secrets import QuerySecrets
+from .query_secrets_summary import QuerySecretsSummary
 from .query_sift import QuerySift
 from .query_user_orgs import QueryUserOrgs
 from .query_users import QueryUsers
@@ -301,6 +344,24 @@ class Client(BaseClient):
                   pastDue
                   uniqueKevs
                 }
+                notificationsSummary {
+                  created {
+                    past3Days
+                    pastDay
+                    pastMonth
+                    pastWeek
+                  }
+                  status {
+                    all
+                    unread
+                  }
+                  types {
+                    asset
+                    sbom
+                    setting
+                    vulnerability
+                  }
+                }
                 vulnerabilitiesByAge {
                   age
                   ageGroupId
@@ -428,6 +489,7 @@ class Client(BaseClient):
                 name
                 orgId
                 product
+                quantumCapable
                 risk {
                   category
                   rawScore
@@ -552,6 +614,7 @@ class Client(BaseClient):
                     name
                     orgId
                     product
+                    quantumCapable
                     risk {
                       category
                       rawScore
@@ -843,6 +906,7 @@ class Client(BaseClient):
                     name
                     orgId
                     product
+                    quantumCapable
                     risk {
                       category
                       rawScore
@@ -970,25 +1034,32 @@ class Client(BaseClient):
         data = self.get_data(response)
         return QueryBinaryProtectionsSummary.model_validate(data)
 
-    def query_caas_availability(
-        self, caas_availability_args: RiseAIAnalysisDataInput, **kwargs: Any
-    ) -> QueryCaasAvailability:
+    def query_certificate_external_filters(
+        self,
+        certificate_external_filters_args: CertificateExternalFiltersInput,
+        **kwargs: Any
+    ) -> QueryCertificateExternalFilters:
         query = gql(
             """
-            query QueryCaasAvailability($caasAvailability_args: RiseAIAnalysisDataInput!) {
-              caasAvailability(args: $caasAvailability_args)
+            query QueryCertificateExternalFilters($certificateExternalFilters_args: CertificateExternalFiltersInput!) {
+              certificateExternalFilters(args: $certificateExternalFilters_args) {
+                totalClassical
+                totalPqc
+              }
             }
             """
         )
-        variables: dict[str, object] = {"caasAvailability_args": caas_availability_args}
+        variables: dict[str, object] = {
+            "certificateExternalFilters_args": certificate_external_filters_args
+        }
         response = self.execute(
             query=query,
-            operation_name="QueryCaasAvailability",
+            operation_name="QueryCertificateExternalFilters",
             variables=variables,
             **kwargs
         )
         data = self.get_data(response)
-        return QueryCaasAvailability.model_validate(data)
+        return QueryCertificateExternalFilters.model_validate(data)
 
     def query_certificates(
         self, certificates_args: CertificatesInput, **kwargs: Any
@@ -1000,6 +1071,12 @@ class Client(BaseClient):
                 edges {
                   cursor
                   node {
+                    algorithmType
+                    altDnsNames
+                    altEmailAddresses
+                    altIps
+                    altUris
+                    basicConstraintsValid
                     bitSize
                     correlations {
                       artifact
@@ -1014,25 +1091,73 @@ class Client(BaseClient):
                       updatedAt
                     }
                     correlationsCount
+                    crlDistributionPoints
+                    currentRemediation {
+                      author
+                      certificate {
+                        filePath
+                        sha256
+                      }
+                      createdAt
+                      description
+                      errorMessage
+                      status
+                    }
                     curve
+                    decapsulationKey
                     e
                     effectivePermissions
+                    encapsulationKey
                     expireDate
                     expired
+                    fileOffset
                     filePath
+                    invalid
                     invalidities
                     invaliditiesCount
                     isCa
+                    issuerCommonName
+                    issuerCountry
                     issuerDN
+                    issuerLocality
+                    issuerOrgUnit
+                    issuerOrganization
+                    issuerPostalCode
+                    issuerProvince
+                    issuerRdn
+                    issuerSerialNumber
+                    issuerStreetAddress
+                    issuingCertUrl
+                    keyUsage
+                    ocspServer
+                    passwordProtected
+                    privKeyCompromised
+                    privateDsaKey
+                    publicDsaKey
                     publicKeyAlgorithm
+                    revoked
+                    seed
                     selfSigned
                     serial
                     sha1
                     sha256
                     signature
                     signatureAlgorithm
+                    signatureValid
                     startDate
+                    subjectCommonName
+                    subjectCountry
                     subjectDN
+                    subjectLocality
+                    subjectOrgUnit
+                    subjectOrganization
+                    subjectPostalCode
+                    subjectProvince
+                    subjectRdn
+                    subjectSerialNumber
+                    subjectStreetAddress
+                    uniqueHash
+                    version
                   }
                 }
                 pageInfo {
@@ -1173,6 +1298,8 @@ class Client(BaseClient):
                       badges
                       component {
                         id
+                        architecture
+                        confidence
                         cpes
                         description
                         identificationIds
@@ -1221,10 +1348,8 @@ class Client(BaseClient):
                     }
                     dependency {
                       id
-                      architecture {
-                        name
-                        percentage
-                      }
+                      architecture
+                      confidence
                       cpes
                       description
                       digest {
@@ -1272,6 +1397,7 @@ class Client(BaseClient):
                         isConcrete
                       }
                     }
+                    identifiedVia
                     latestRemediation {
                       author
                       createdAt
@@ -1845,6 +1971,259 @@ class Client(BaseClient):
         data = self.get_data(response)
         return QueryHashes.model_validate(data)
 
+    def query_license(self, license_args: LicenseInput, **kwargs: Any) -> QueryLicense:
+        query = gql(
+            """
+            query QueryLicense($license_args: LicenseInput!) {
+              license(args: $license_args) {
+                additionalCounts {
+                  associatedComponents
+                  issues
+                }
+                additionalInfoUrlsList
+                licenseName
+                licenseNotes
+                licenseType
+                licenseUrl
+                spdxId
+                url
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {"license_args": license_args}
+        response = self.execute(
+            query=query, operation_name="QueryLicense", variables=variables, **kwargs
+        )
+        data = self.get_data(response)
+        return QueryLicense.model_validate(data)
+
+    def query_license_issue(
+        self, license_issue_args: LicenseIssueInput, **kwargs: Any
+    ) -> QueryLicenseIssue:
+        query = gql(
+            """
+            query QueryLicenseIssue($licenseIssue_args: LicenseIssueInput!) {
+              licenseIssue(args: $licenseIssue_args) {
+                componentId
+                componentName
+                componentVersion
+                evidence {
+                  children
+                  componentId
+                  licenseName
+                  name
+                  packageType
+                  spdxId
+                  vendor
+                  version
+                }
+                issueDescription
+                issueId
+                issueName
+                lastModified
+                license {
+                  additionalCounts {
+                    associatedComponents
+                    issues
+                  }
+                  additionalInfoUrlsList
+                  licenseName
+                  licenseNotes
+                  licenseType
+                  licenseUrl
+                  spdxId
+                  url
+                }
+                potentialSolution
+                remediation {
+                  createdTime
+                  detail
+                  user
+                }
+                severity
+                status
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {"licenseIssue_args": license_issue_args}
+        response = self.execute(
+            query=query,
+            operation_name="QueryLicenseIssue",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryLicenseIssue.model_validate(data)
+
+    def query_license_issues(
+        self, license_issues_args: LicenseIssuesInput, **kwargs: Any
+    ) -> QueryLicenseIssues:
+        query = gql(
+            """
+            query QueryLicenseIssues($licenseIssues_args: LicenseIssuesInput!) {
+              licenseIssues(args: $licenseIssues_args) {
+                edges {
+                  cursor
+                  node {
+                    componentId
+                    componentName
+                    componentVersion
+                    evidence {
+                      children
+                      componentId
+                      licenseName
+                      name
+                      packageType
+                      spdxId
+                      vendor
+                      version
+                    }
+                    issueDescription
+                    issueId
+                    issueName
+                    lastModified
+                    license {
+                      additionalCounts {
+                        associatedComponents
+                        issues
+                      }
+                      additionalInfoUrlsList
+                      licenseName
+                      licenseNotes
+                      licenseType
+                      licenseUrl
+                      spdxId
+                      url
+                    }
+                    potentialSolution
+                    remediation {
+                      createdTime
+                      detail
+                      user
+                    }
+                    severity
+                    status
+                  }
+                }
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                  startCursor
+                  totalCount
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {"licenseIssues_args": license_issues_args}
+        response = self.execute(
+            query=query,
+            operation_name="QueryLicenseIssues",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryLicenseIssues.model_validate(data)
+
+    def query_license_issues_external_filters(
+        self,
+        license_issues_external_filters_args: LicenseIssuesExternalFiltersInput,
+        **kwargs: Any
+    ) -> QueryLicenseIssuesExternalFilters:
+        query = gql(
+            """
+            query QueryLicenseIssuesExternalFilters($licenseIssuesExternalFilters_args: LicenseIssuesExternalFiltersInput!) {
+              licenseIssuesExternalFilters(args: $licenseIssuesExternalFilters_args) {
+                blocker
+                inReview
+                major
+                minor
+                resolved
+                types {
+                  count
+                  type
+                }
+                unreviewed
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "licenseIssuesExternalFilters_args": license_issues_external_filters_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryLicenseIssuesExternalFilters",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryLicenseIssuesExternalFilters.model_validate(data)
+
+    def query_licenses_spdx_ids(self, **kwargs: Any) -> QueryLicensesSpdxIds:
+        query = gql(
+            """
+            query QueryLicensesSpdxIds {
+              licensesSpdxIds
+            }
+            """
+        )
+        variables: dict[str, object] = {}
+        response = self.execute(
+            query=query,
+            operation_name="QueryLicensesSpdxIds",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryLicensesSpdxIds.model_validate(data)
+
+    def query_list_asset_crypto_libraries(
+        self,
+        list_asset_crypto_libraries_args: ListAssetCryptoLibrariesInput,
+        **kwargs: Any
+    ) -> QueryListAssetCryptoLibraries:
+        query = gql(
+            """
+            query QueryListAssetCryptoLibraries($listAssetCryptoLibraries_args: ListAssetCryptoLibrariesInput!) {
+              listAssetCryptoLibraries(args: $listAssetCryptoLibraries_args) {
+                edges {
+                  cursor
+                  node {
+                    fips
+                    name
+                    pqcReady
+                    purl
+                    vendor
+                    version
+                  }
+                }
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                  startCursor
+                  totalCount
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "listAssetCryptoLibraries_args": list_asset_crypto_libraries_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryListAssetCryptoLibraries",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryListAssetCryptoLibraries.model_validate(data)
+
     def query_match_vulnerabilities(
         self, match_vulnerabilities_args: MatchVulnerabilitiesInput, **kwargs: Any
     ) -> QueryMatchVulnerabilities:
@@ -2198,14 +2577,163 @@ class Client(BaseClient):
         data = self.get_data(response)
         return QueryMisconfigurations.model_validate(data)
 
+    def query_notification_settings(self, **kwargs: Any) -> QueryNotificationSettings:
+        query = gql(
+            """
+            query QueryNotificationSettings {
+              notificationSettings {
+                allowUserOverrides
+                emailNotificationsEnabled
+                notificationTimeframe
+                preferences {
+                  category
+                  console
+                  consoleEnabled
+                  controls {
+                    __typename
+                    ... on VulnerabilityControl {
+                      exploits
+                      severities
+                    }
+                    ... on CertificateControl {
+                      maxValidity
+                      minValidity
+                    }
+                    ... on AssetAnalysisControl {
+                      assetAnalysisControlEvents: events
+                    }
+                    ... on SbomFindingsControl {
+                      findings
+                    }
+                    ... on UserManagementControl {
+                      userManagementControlEvents: events
+                    }
+                  }
+                  email
+                  emailEnabled
+                  name
+                  type
+                  webhook
+                  webhookEnabled
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {}
+        response = self.execute(
+            query=query,
+            operation_name="QueryNotificationSettings",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryNotificationSettings.model_validate(data)
+
+    def query_notifications(
+        self, notifications_args: NotificationsInput, **kwargs: Any
+    ) -> QueryNotifications:
+        query = gql(
+            """
+            query QueryNotifications($notifications_args: NotificationsInput!) {
+              notifications(args: $notifications_args) {
+                edges {
+                  cursor
+                  node {
+                    id
+                    assetId
+                    assetName
+                    createdAt
+                    description
+                    entry {
+                      __typename
+                      ... on CveNotificationEntry {
+                        cveId
+                      }
+                      ... on ComponentNotificationEntry {
+                        componentName
+                        componentVersion
+                        vendor
+                      }
+                      ... on BinaryProtectionsNotificationEntry {
+                        filePath
+                      }
+                      ... on CertificateNotificationEntry {
+                        filePath
+                        sha256Thumbprint
+                      }
+                      ... on CredentialUserNotificationEntry {
+                        filePath
+                        username
+                      }
+                      ... on CredentialHashNotificationEntry {
+                        filePath
+                        hash
+                      }
+                      ... on PrivateKeyNotificationEntry {
+                        filePath
+                        matchHash
+                      }
+                      ... on EmptyNotificationEntry {
+                        _empty
+                      }
+                    }
+                    isUnread
+                    parser
+                    title
+                    type
+                    user
+                  }
+                }
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                  startCursor
+                  totalCount
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {"notifications_args": notifications_args}
+        response = self.execute(
+            query=query,
+            operation_name="QueryNotifications",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryNotifications.model_validate(data)
+
     def query_org_level_settings(self, **kwargs: Any) -> QueryOrgLevelSettings:
         query = gql(
             """
             query QueryOrgLevelSettings {
               orgLevelSettings {
+                binaryFingerprintEnabled
+                cryptographicHashEnabled
+                curatedHashEnabled
+                functionHashingEnabled
+                heuristicEnabled
                 idleTimeoutSeconds
                 idleTimoutEnabled
+                justification
+                kernelModuleEnabled
+                kernelVulnerabilitiesEnabled
+                legacyHashEnabled
+                libraryNameEnabled
+                libraryVersionEnabled
+                packageManagerEnabled
+                packageManifestEnabled
+                peMetaDataEnabled
+                response
+                riseAiConversationalGptEnabled
                 riseAiInsightsReportEnabled
+                signatureEnabled
+                status
+                symbolIndexEnabled
+                verifyCredentialsEnabled
               }
             }
             """
@@ -2233,10 +2761,8 @@ class Client(BaseClient):
                   badges
                   component {
                     id
-                    architecture {
-                      name
-                      percentage
-                    }
+                    architecture
+                    confidence
                     cpes
                     description
                     digest {
@@ -2257,6 +2783,7 @@ class Client(BaseClient):
                         name
                         orgId
                         product
+                        quantumCapable
                         sha256
                         sizeBytes
                         status
@@ -2357,10 +2884,8 @@ class Client(BaseClient):
                     badges
                     component {
                       id
-                      architecture {
-                        name
-                        percentage
-                      }
+                      architecture
+                      confidence
                       cpes
                       description
                       digest {
@@ -2414,10 +2939,8 @@ class Client(BaseClient):
                     badges
                     component {
                       id
-                      architecture {
-                        name
-                        percentage
-                      }
+                      architecture
+                      confidence
                       cpes
                       description
                       digest {
@@ -2471,10 +2994,8 @@ class Client(BaseClient):
                     badges
                     component {
                       id
-                      architecture {
-                        name
-                        percentage
-                      }
+                      architecture
+                      confidence
                       cpes
                       description
                       digest {
@@ -2541,6 +3062,33 @@ class Client(BaseClient):
         data = self.get_data(response)
         return QueryPackageDependenciesById.model_validate(data)
 
+    def query_private_key_external_filters(
+        self,
+        private_key_external_filters_args: PrivateKeyExternalFiltersInput,
+        **kwargs: Any
+    ) -> QueryPrivateKeyExternalFilters:
+        query = gql(
+            """
+            query QueryPrivateKeyExternalFilters($privateKeyExternalFilters_args: PrivateKeyExternalFiltersInput!) {
+              privateKeyExternalFilters(args: $privateKeyExternalFilters_args) {
+                totalClassical
+                totalPqc
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "privateKeyExternalFilters_args": private_key_external_filters_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryPrivateKeyExternalFilters",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryPrivateKeyExternalFilters.model_validate(data)
+
     def query_private_keys(
         self, private_keys_args: PrivateKeysInput, **kwargs: Any
     ) -> QueryPrivateKeys:
@@ -2553,6 +3101,7 @@ class Client(BaseClient):
                   node {
                     id
                     algorithm
+                    algorithmType
                     bitSize
                     correlations {
                       artifact
@@ -2567,12 +3116,30 @@ class Client(BaseClient):
                       updatedAt
                     }
                     correlationsCount
+                    currentRemediation {
+                      author
+                      createdAt
+                      description
+                      errorMessage
+                      privateKey {
+                        filePath
+                        matchHash
+                      }
+                      status
+                    }
+                    decapsulationKey
                     e
                     effectivePermissions
+                    encapsulationKey
+                    fileOffset
                     filePath
                     foundPublicKey
                     foundPublicKeyCount
                     matchHash
+                    privateDsaKey
+                    publicDsaKey
+                    seed
+                    uniqueHash
                   }
                 }
                 pageInfo {
@@ -2596,6 +3163,33 @@ class Client(BaseClient):
         data = self.get_data(response)
         return QueryPrivateKeys.model_validate(data)
 
+    def query_public_key_external_filters(
+        self,
+        public_key_external_filters_args: PublicKeyExternalFiltersInput,
+        **kwargs: Any
+    ) -> QueryPublicKeyExternalFilters:
+        query = gql(
+            """
+            query QueryPublicKeyExternalFilters($publicKeyExternalFilters_args: PublicKeyExternalFiltersInput!) {
+              publicKeyExternalFilters(args: $publicKeyExternalFilters_args) {
+                totalClassical
+                totalPqc
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "publicKeyExternalFilters_args": public_key_external_filters_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryPublicKeyExternalFilters",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryPublicKeyExternalFilters.model_validate(data)
+
     def query_public_keys(
         self, public_keys_args: PublicKeysInput, **kwargs: Any
     ) -> QueryPublicKeys:
@@ -2607,6 +3201,7 @@ class Client(BaseClient):
                   cursor
                   node {
                     algorithm
+                    algorithmType
                     bitSize
                     correlations {
                       artifact
@@ -2621,12 +3216,26 @@ class Client(BaseClient):
                       updatedAt
                     }
                     correlationsCount
+                    currentRemediation {
+                      assetId
+                      author
+                      createdAt
+                      description
+                      publicKey {
+                        filePath
+                        matchHash
+                      }
+                      publicKeyId
+                      status
+                    }
                     e
                     effectivePermissions
+                    fileOffset
                     filePath
                     foundPrivateKey
                     foundPrivateKeyCount
                     matchHash
+                    uniqueHash
                   }
                 }
                 pageInfo {
@@ -2654,10 +3263,7 @@ class Client(BaseClient):
             """
             query QueryRiseAIAnalysisData($riseAIAnalysisData_args: RiseAIAnalysisDataInput!) {
               riseAIAnalysisData(args: $riseAIAnalysisData_args) {
-                architectures {
-                  name
-                  percentage
-                }
+                architectures
                 components {
                   cpes
                   name
@@ -2708,6 +3314,32 @@ class Client(BaseClient):
         data = self.get_data(response)
         return QueryRiseAIAnalysisData.model_validate(data)
 
+    def query_rise_ai_availability(
+        self, rise_ai_availability_args: RiseAIAnalysisDataInput, **kwargs: Any
+    ) -> QueryRiseAIAvailability:
+        query = gql(
+            """
+            query QueryRiseAIAvailability($riseAIAvailability_args: RiseAIAnalysisDataInput!) {
+              riseAIAvailability(args: $riseAIAvailability_args) {
+                available
+                eligible
+                status
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "riseAIAvailability_args": rise_ai_availability_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryRiseAIAvailability",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryRiseAIAvailability.model_validate(data)
+
     def query_search(
         self,
         search_args: Union[Optional[SearchInput], UnsetType] = UNSET,
@@ -2751,6 +3383,224 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return QuerySearch.model_validate(data)
+
+    def query_secret(self, secret_args: SecretInput, **kwargs: Any) -> QuerySecret:
+        query = gql(
+            """
+            query QuerySecret($secret_args: SecretInput!) {
+              secret(args: $secret_args) {
+                id
+                category
+                categoryLabel
+                correlations {
+                  artifact
+                  assetId
+                  assetName
+                  location
+                  risk {
+                    category
+                    rawScore
+                    score
+                  }
+                  updatedAt
+                }
+                correlationsCount
+                currentRemediation {
+                  author
+                  createdAt
+                  description
+                  secretId
+                  status
+                }
+                description
+                filePath
+                rawSecret
+                remediationStatus
+                sanitizedSecret
+                severity
+                subtype
+                type
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {"secret_args": secret_args}
+        response = self.execute(
+            query=query, operation_name="QuerySecret", variables=variables, **kwargs
+        )
+        data = self.get_data(response)
+        return QuerySecret.model_validate(data)
+
+    def query_secret_categories_summary(
+        self, secret_categories_summary_args: SecretCategoriesInput, **kwargs: Any
+    ) -> QuerySecretCategoriesSummary:
+        query = gql(
+            """
+            query QuerySecretCategoriesSummary($secretCategoriesSummary_args: SecretCategoriesInput!) {
+              secretCategoriesSummary(args: $secretCategoriesSummary_args) {
+                category
+                categoryLabel
+                remediationStatusCounts {
+                  count
+                  status
+                }
+                severityCounts {
+                  count
+                  severity
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "secretCategoriesSummary_args": secret_categories_summary_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QuerySecretCategoriesSummary",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QuerySecretCategoriesSummary.model_validate(data)
+
+    def query_secret_status_count(
+        self, secret_status_count_args: SecretStatusCountInput, **kwargs: Any
+    ) -> QuerySecretStatusCount:
+        query = gql(
+            """
+            query QuerySecretStatusCount($secretStatusCount_args: SecretStatusCountInput!) {
+              secretStatusCount(args: $secretStatusCount_args) {
+                count
+                name
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "secretStatusCount_args": secret_status_count_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QuerySecretStatusCount",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QuerySecretStatusCount.model_validate(data)
+
+    def query_secret_types_and_count(
+        self, secret_types_and_count_args: SecretTypesAndCountInput, **kwargs: Any
+    ) -> QuerySecretTypesAndCount:
+        query = gql(
+            """
+            query QuerySecretTypesAndCount($secretTypesAndCount_args: SecretTypesAndCountInput!) {
+              secretTypesAndCount(args: $secretTypesAndCount_args) {
+                totalTypes
+                typeCounts {
+                  count
+                  type
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "secretTypesAndCount_args": secret_types_and_count_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QuerySecretTypesAndCount",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QuerySecretTypesAndCount.model_validate(data)
+
+    def query_secrets(self, secrets_args: SecretsInput, **kwargs: Any) -> QuerySecrets:
+        query = gql(
+            """
+            query QuerySecrets($secrets_args: SecretsInput!) {
+              secrets(args: $secrets_args) {
+                edges {
+                  cursor
+                  node {
+                    id
+                    category
+                    categoryLabel
+                    correlations {
+                      artifact
+                      assetId
+                      assetName
+                      location
+                      risk {
+                        category
+                        rawScore
+                        score
+                      }
+                      updatedAt
+                    }
+                    correlationsCount
+                    currentRemediation {
+                      author
+                      createdAt
+                      description
+                      secretId
+                      status
+                    }
+                    description
+                    filePath
+                    rawSecret
+                    remediationStatus
+                    sanitizedSecret
+                    severity
+                    subtype
+                    type
+                  }
+                }
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                  startCursor
+                  totalCount
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {"secrets_args": secrets_args}
+        response = self.execute(
+            query=query, operation_name="QuerySecrets", variables=variables, **kwargs
+        )
+        data = self.get_data(response)
+        return QuerySecrets.model_validate(data)
+
+    def query_secrets_summary(
+        self, secrets_summary_args: SecretsSummaryInput, **kwargs: Any
+    ) -> QuerySecretsSummary:
+        query = gql(
+            """
+            query QuerySecretsSummary($secretsSummary_args: SecretsSummaryInput!) {
+              secretsSummary(args: $secretsSummary_args) {
+                high
+                invalid
+                low
+                medium
+                total
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {"secretsSummary_args": secrets_summary_args}
+        response = self.execute(
+            query=query,
+            operation_name="QuerySecretsSummary",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QuerySecretsSummary.model_validate(data)
 
     def query_sift(self, **kwargs: Any) -> QuerySift:
         query = gql(
@@ -3471,6 +4321,7 @@ class Client(BaseClient):
                     name
                     orgId
                     product
+                    quantumCapable
                     risk {
                       category
                       rawScore
@@ -3596,6 +4447,7 @@ class Client(BaseClient):
                   name
                   orgId
                   product
+                  quantumCapable
                   risk {
                     category
                     rawScore
@@ -3832,6 +4684,38 @@ class Client(BaseClient):
         data = self.get_data(response)
         return MutationRemediateAssetVulnerability.model_validate(data)
 
+    def mutation_remediate_certificates(
+        self, remediate_certificates_args: RemediateCertificatesInput, **kwargs: Any
+    ) -> MutationRemediateCertificates:
+        query = gql(
+            """
+            mutation MutationRemediateCertificates($remediateCertificates_args: RemediateCertificatesInput!) {
+              remediateCertificates(args: $remediateCertificates_args) {
+                author
+                certificate {
+                  filePath
+                  sha256
+                }
+                createdAt
+                description
+                errorMessage
+                status
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "remediateCertificates_args": remediate_certificates_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationRemediateCertificates",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationRemediateCertificates.model_validate(data)
+
     def mutation_remediate_license_issues(
         self, remediate_license_issues_args: RemediateLicenseIssuesInput, **kwargs: Any
     ) -> MutationRemediateLicenseIssues:
@@ -3855,6 +4739,97 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return MutationRemediateLicenseIssues.model_validate(data)
+
+    def mutation_remediate_private_keys(
+        self, remediate_private_keys_args: RemediatePrivateKeysInput, **kwargs: Any
+    ) -> MutationRemediatePrivateKeys:
+        query = gql(
+            """
+            mutation MutationRemediatePrivateKeys($remediatePrivateKeys_args: RemediatePrivateKeysInput!) {
+              remediatePrivateKeys(args: $remediatePrivateKeys_args) {
+                author
+                createdAt
+                description
+                errorMessage
+                privateKey {
+                  filePath
+                  matchHash
+                }
+                status
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "remediatePrivateKeys_args": remediate_private_keys_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationRemediatePrivateKeys",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationRemediatePrivateKeys.model_validate(data)
+
+    def mutation_remediate_public_keys(
+        self, remediate_public_keys_args: RemediatePublicKeysInput, **kwargs: Any
+    ) -> MutationRemediatePublicKeys:
+        query = gql(
+            """
+            mutation MutationRemediatePublicKeys($remediatePublicKeys_args: RemediatePublicKeysInput!) {
+              remediatePublicKeys(args: $remediatePublicKeys_args) {
+                assetId
+                author
+                createdAt
+                description
+                publicKey {
+                  filePath
+                  matchHash
+                }
+                publicKeyId
+                status
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "remediatePublicKeys_args": remediate_public_keys_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationRemediatePublicKeys",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationRemediatePublicKeys.model_validate(data)
+
+    def mutation_remediate_secrets(
+        self, remediate_secrets_args: CreateSecretsRemediationInput, **kwargs: Any
+    ) -> MutationRemediateSecrets:
+        query = gql(
+            """
+            mutation MutationRemediateSecrets($remediateSecrets_args: CreateSecretsRemediationInput!) {
+              remediateSecrets(args: $remediateSecrets_args) {
+                author
+                createdAt
+                description
+                secretId
+                status
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {"remediateSecrets_args": remediate_secrets_args}
+        response = self.execute(
+            query=query,
+            operation_name="MutationRemediateSecrets",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationRemediateSecrets.model_validate(data)
 
     def mutation_remove_all_asset_groups_from_assets(
         self,
@@ -3948,6 +4923,30 @@ class Client(BaseClient):
         data = self.get_data(response)
         return MutationSetAssetsToAssetGroup.model_validate(data)
 
+    def mutation_submit_rise_ai_analysis(
+        self, submit_rise_ai_analysis_args: RiseAIAnalysisDataInput, **kwargs: Any
+    ) -> MutationSubmitRiseAIAnalysis:
+        query = gql(
+            """
+            mutation MutationSubmitRiseAIAnalysis($submitRiseAIAnalysis_args: RiseAIAnalysisDataInput!) {
+              submitRiseAIAnalysis(args: $submitRiseAIAnalysis_args) {
+                status
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "submitRiseAIAnalysis_args": submit_rise_ai_analysis_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationSubmitRiseAIAnalysis",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationSubmitRiseAIAnalysis.model_validate(data)
+
     def mutation_update_asset_group(
         self, update_asset_group_args: UpdateAssetGroupInput, **kwargs: Any
     ) -> MutationUpdateAssetGroup:
@@ -3975,6 +4974,65 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return MutationUpdateAssetGroup.model_validate(data)
+
+    def mutation_update_notification_settings(
+        self,
+        update_notification_settings_args: UpdateNotificationSettingsInput,
+        **kwargs: Any
+    ) -> MutationUpdateNotificationSettings:
+        query = gql(
+            """
+            mutation MutationUpdateNotificationSettings($updateNotificationSettings_args: UpdateNotificationSettingsInput!) {
+              updateNotificationSettings(args: $updateNotificationSettings_args) {
+                allowUserOverrides
+                emailNotificationsEnabled
+                notificationTimeframe
+                preferences {
+                  category
+                  console
+                  consoleEnabled
+                  controls {
+                    __typename
+                    ... on VulnerabilityControl {
+                      exploits
+                      severities
+                    }
+                    ... on CertificateControl {
+                      maxValidity
+                      minValidity
+                    }
+                    ... on AssetAnalysisControl {
+                      assetAnalysisControlEvents: events
+                    }
+                    ... on SbomFindingsControl {
+                      findings
+                    }
+                    ... on UserManagementControl {
+                      userManagementControlEvents: events
+                    }
+                  }
+                  email
+                  emailEnabled
+                  name
+                  type
+                  webhook
+                  webhookEnabled
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "updateNotificationSettings_args": update_notification_settings_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationUpdateNotificationSettings",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationUpdateNotificationSettings.model_validate(data)
 
     def mutation_update_org_level_settings(
         self, update_org_level_settings_args: OrgLevelSettingsInput, **kwargs: Any

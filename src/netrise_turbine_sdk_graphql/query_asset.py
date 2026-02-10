@@ -27,6 +27,7 @@ class QueryAssetAsset(BaseModel):
     name: Optional[str]
     org_id: Optional[str] = Field(alias="orgId")
     product: Optional[str]
+    quantum_capable: Optional[bool] = Field(alias="quantumCapable")
     risk: Optional["QueryAssetAssetRisk"]
     sha_256: Optional[str] = Field(alias="sha256")
     size_bytes: Optional[int] = Field(alias="sizeBytes")

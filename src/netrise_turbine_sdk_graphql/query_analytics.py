@@ -28,6 +28,9 @@ class QueryAnalyticsAnalytics(BaseModel):
     known_exploited_vulnerabilities: (
         "QueryAnalyticsAnalyticsKnownExploitedVulnerabilities"
     ) = Field(alias="knownExploitedVulnerabilities")
+    notifications_summary: Optional["QueryAnalyticsAnalyticsNotificationsSummary"] = (
+        Field(alias="notificationsSummary")
+    )
     vulnerabilities_by_age: list["QueryAnalyticsAnalyticsVulnerabilitiesByAge"] = Field(
         alias="vulnerabilitiesByAge"
     )
@@ -65,6 +68,31 @@ class QueryAnalyticsAnalyticsKnownExploitedVulnerabilities(BaseModel):
     unique_kevs: Optional[int] = Field(alias="uniqueKevs")
 
 
+class QueryAnalyticsAnalyticsNotificationsSummary(BaseModel):
+    created: "QueryAnalyticsAnalyticsNotificationsSummaryCreated"
+    status: "QueryAnalyticsAnalyticsNotificationsSummaryStatus"
+    types: "QueryAnalyticsAnalyticsNotificationsSummaryTypes"
+
+
+class QueryAnalyticsAnalyticsNotificationsSummaryCreated(BaseModel):
+    past_3_days: int = Field(alias="past3Days")
+    past_day: int = Field(alias="pastDay")
+    past_month: int = Field(alias="pastMonth")
+    past_week: int = Field(alias="pastWeek")
+
+
+class QueryAnalyticsAnalyticsNotificationsSummaryStatus(BaseModel):
+    all: int
+    unread: int
+
+
+class QueryAnalyticsAnalyticsNotificationsSummaryTypes(BaseModel):
+    asset: int
+    sbom: int
+    setting: int
+    vulnerability: int
+
+
 class QueryAnalyticsAnalyticsVulnerabilitiesByAge(BaseModel):
     age: Optional[str]
     age_group_id: int = Field(alias="ageGroupId")
@@ -100,3 +128,4 @@ class QueryAnalyticsAnalyticsVulnerabilitiesOfInterest(BaseModel):
 QueryAnalytics.model_rebuild()
 QueryAnalyticsAnalytics.model_rebuild()
 QueryAnalyticsAnalyticsAssetsByRiskCategory.model_rebuild()
+QueryAnalyticsAnalyticsNotificationsSummary.model_rebuild()

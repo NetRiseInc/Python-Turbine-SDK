@@ -22,6 +22,8 @@ from .enums import (
     CertificateValidityPeriod,
     ComponentType,
     CredentialsField,
+    CryptoLibrariesSortField,
+    CryptoRemediationStatus,
     DependencyField,
     DependencyGroupByField,
     DependencySortField,
@@ -76,6 +78,64 @@ from .enums import (
 )
 
 
+class OrgLevelSettingsInput(BaseModel):
+    heuristic_enabled: Optional[bool] = Field(alias="heuristicEnabled", default=None)
+    cryptographic_hash_enabled: Optional[bool] = Field(
+        alias="cryptographicHashEnabled", default=None
+    )
+    package_manager_enabled: Optional[bool] = Field(
+        alias="packageManagerEnabled", default=None
+    )
+    function_hashing_enabled: Optional[bool] = Field(
+        alias="functionHashingEnabled", default=None
+    )
+    symbol_index_enabled: Optional[bool] = Field(
+        alias="symbolIndexEnabled", default=None
+    )
+    kernel_module_enabled: Optional[bool] = Field(
+        alias="kernelModuleEnabled", default=None
+    )
+    curated_hash_enabled: Optional[bool] = Field(
+        alias="curatedHashEnabled", default=None
+    )
+    legacy_hash_enabled: Optional[bool] = Field(alias="legacyHashEnabled", default=None)
+    package_manifest_enabled: Optional[bool] = Field(
+        alias="packageManifestEnabled", default=None
+    )
+    signature_enabled: Optional[bool] = Field(alias="signatureEnabled", default=None)
+    pe_meta_data_enabled: Optional[bool] = Field(
+        alias="peMetaDataEnabled", default=None
+    )
+    library_version_enabled: Optional[bool] = Field(
+        alias="libraryVersionEnabled", default=None
+    )
+    library_name_enabled: Optional[bool] = Field(
+        alias="libraryNameEnabled", default=None
+    )
+    binary_fingerprint_enabled: Optional[bool] = Field(
+        alias="binaryFingerprintEnabled", default=None
+    )
+    kernel_vulnerabilities_enabled: Optional[bool] = Field(
+        alias="kernelVulnerabilitiesEnabled", default=None
+    )
+    status: Optional[VexStatus] = None
+    justification: Optional[VexJustification] = None
+    response: Optional[list[Optional[RemediationResponses]]] = None
+    idle_timout_enabled: bool = Field(alias="idleTimoutEnabled")
+    idle_timeout_seconds: Optional[int] = Field(
+        alias="idleTimeoutSeconds", default=None
+    )
+    rise_ai_conversational_gpt_enabled: Optional[bool] = Field(
+        alias="riseAiConversationalGptEnabled", default=None
+    )
+    rise_ai_insights_report_enabled: Optional[bool] = Field(
+        alias="riseAiInsightsReportEnabled", default=None
+    )
+    verify_credentials_enabled: Optional[bool] = Field(
+        alias="verifyCredentialsEnabled", default=None
+    )
+
+
 class BinaryProtectionsInput(BaseModel):
     asset_id: str = Field(alias="assetId")
     cursor: "Cursor"
@@ -109,6 +169,9 @@ class CertificatesInput(BaseModel):
 
 class ListCertificatesFilter(BaseModel):
     fields: Optional[list[Optional["ListCertificatesFilterField"]]] = None
+    algorithm_type: Optional["StringFilter"] = Field(
+        alias="algorithmType", default=None
+    )
 
 
 class ListCertificatesFilterField(BaseModel):
@@ -120,6 +183,22 @@ class ListCertificatesFilterField(BaseModel):
 class ListCertificatesSort(BaseModel):
     field: Optional[CertificatesField] = None
     order: Optional[SortOrder] = None
+
+
+class CertificateExternalFiltersInput(BaseModel):
+    asset_id: str = Field(alias="assetId")
+
+
+class CertificateIdentifierInput(BaseModel):
+    file_path: str = Field(alias="filePath")
+    sha_256: str = Field(alias="sha256")
+
+
+class RemediateCertificatesInput(BaseModel):
+    asset_id: str = Field(alias="assetId")
+    certificates: list[Optional["CertificateIdentifierInput"]]
+    status: CryptoRemediationStatus
+    details: Optional[str] = None
 
 
 class HashesInput(BaseModel):
@@ -163,6 +242,18 @@ class CredentialsFieldFilter(BaseModel):
 
 class CredentialsSort(BaseModel):
     field: Optional[CredentialsField] = None
+    order: Optional[SortOrder] = None
+
+
+class ListAssetCryptoLibrariesInput(BaseModel):
+    asset_id: str = Field(alias="assetId")
+    cursor: "Cursor"
+    filter: Optional[str] = None
+    sort: Optional["ListCryptoLibrariesSort"] = None
+
+
+class ListCryptoLibrariesSort(BaseModel):
+    field: Optional[CryptoLibrariesSortField] = None
     order: Optional[SortOrder] = None
 
 
@@ -236,6 +327,7 @@ class RemediateLicenseIssuesInput(BaseModel):
 
 class LicenseInput(BaseModel):
     spdx_id: str = Field(alias="spdxId")
+    asset_id: str = Field(alias="assetId")
 
 
 class NotificationsInput(BaseModel):
@@ -354,16 +446,6 @@ class UserManagementControlInput(BaseModel):
     events: Optional[list[UserManagementEventSelection]] = None
 
 
-class OrgLevelSettingsInput(BaseModel):
-    idle_timout_enabled: bool = Field(alias="idleTimoutEnabled")
-    idle_timeout_seconds: Optional[int] = Field(
-        alias="idleTimeoutSeconds", default=None
-    )
-    rise_ai_insights_report_enabled: Optional[bool] = Field(
-        alias="riseAiInsightsReportEnabled", default=None
-    )
-
-
 class CursorV3(BaseModel):
     first: int
     after: Optional[str] = None
@@ -386,6 +468,9 @@ class PrivateKeysInput(BaseModel):
 
 class ListPrivateKeysFilter(BaseModel):
     fields: Optional[list[Optional["ListPrivateKeysFilterField"]]] = None
+    algorithm_type: Optional["StringFilter"] = Field(
+        alias="algorithmType", default=None
+    )
 
 
 class ListPrivateKeysFilterField(BaseModel):
@@ -399,6 +484,22 @@ class ListPrivateKeysSort(BaseModel):
     order: Optional[SortOrder] = None
 
 
+class PrivateKeyExternalFiltersInput(BaseModel):
+    asset_id: str = Field(alias="assetId")
+
+
+class PrivateKeyIdentifierInput(BaseModel):
+    file_path: str = Field(alias="filePath")
+    match_hash: str = Field(alias="matchHash")
+
+
+class RemediatePrivateKeysInput(BaseModel):
+    asset_id: str = Field(alias="assetId")
+    private_keys: list["PrivateKeyIdentifierInput"] = Field(alias="privateKeys")
+    status: CryptoRemediationStatus
+    details: Optional[str] = None
+
+
 class PublicKeysInput(BaseModel):
     asset_id: str = Field(alias="assetId")
     cursor: "Cursor"
@@ -408,6 +509,9 @@ class PublicKeysInput(BaseModel):
 
 class ListPublicKeysFilter(BaseModel):
     fields: Optional[list[Optional["ListPublicKeysFilterField"]]] = None
+    algorithm_type: Optional["StringFilter"] = Field(
+        alias="algorithmType", default=None
+    )
 
 
 class ListPublicKeysFilterField(BaseModel):
@@ -419,6 +523,26 @@ class ListPublicKeysFilterField(BaseModel):
 class ListPublicKeysSort(BaseModel):
     field: Optional[PublicKeysField] = None
     order: Optional[SortOrder] = None
+
+
+class PublicKeyExternalFiltersInput(BaseModel):
+    asset_id: str = Field(alias="assetId")
+
+
+class PublicKeyIdentifierInput(BaseModel):
+    file_path: str = Field(alias="filePath")
+    match_hash: str = Field(alias="matchHash")
+
+
+class RemediatePublicKeysInput(BaseModel):
+    asset_id: str = Field(alias="assetId")
+    public_keys: list["PublicKeyIdentifierInput"] = Field(alias="publicKeys")
+    status: CryptoRemediationStatus
+    details: Optional[str] = None
+
+
+class RiseAIAnalysisDataInput(BaseModel):
+    asset_id: str = Field(alias="assetId")
 
 
 class SearchInput(BaseModel):
@@ -1166,18 +1290,16 @@ class VulnerabilityExternalFiltersInput(BaseModel):
     asset_id: str = Field(alias="assetId")
 
 
-class RiseAIAnalysisDataInput(BaseModel):
-    asset_id: str = Field(alias="assetId")
-
-
 BinaryProtectionsInput.model_rebuild()
 BinaryProtectionsFilter.model_rebuild()
 CertificatesInput.model_rebuild()
 ListCertificatesFilter.model_rebuild()
+RemediateCertificatesInput.model_rebuild()
 HashesInput.model_rebuild()
 HashesFilter.model_rebuild()
 CredentialsInput.model_rebuild()
 CredentialsFilter.model_rebuild()
+ListAssetCryptoLibrariesInput.model_rebuild()
 LicenseIssuesFilter.model_rebuild()
 LicenseIssuesInput.model_rebuild()
 NotificationsInput.model_rebuild()
@@ -1188,8 +1310,10 @@ NotificationPreferenceInput.model_rebuild()
 NotificationControlInput.model_rebuild()
 PrivateKeysInput.model_rebuild()
 ListPrivateKeysFilter.model_rebuild()
+RemediatePrivateKeysInput.model_rebuild()
 PublicKeysInput.model_rebuild()
 ListPublicKeysFilter.model_rebuild()
+RemediatePublicKeysInput.model_rebuild()
 SearchInput.model_rebuild()
 SecretsInput.model_rebuild()
 SecretCategoriesInput.model_rebuild()
