@@ -37,6 +37,7 @@ organization_id=<org_id>
 ```
 
 The SDK will automatically load these when you call `TurbineClientConfig.from_env()`. The `.env` file is searched in:
+
 - Current working directory (most common)
 - Parent directories (walks up the directory tree)
 
@@ -62,6 +63,36 @@ cfg = TurbineClientConfig.from_env(load_env_file=False)
 ```
 
 Populate the missing values. Reach out to [mailto:support@netrise.io](support@netrise.io) if you need assistance.
+
+## Union Field Aliasing Convention
+
+When GraphQL union types have members with identically-named fields that return different types, the SDK automatically applies aliases to disambiguate them. This is necessary because code generators cannot create a single Python type for fields with conflicting return types.
+
+### Naming Convention
+
+Aliased fields follow the pattern: `{camelCaseTypeName}{PascalCaseFieldName}`
+
+For example, the `NotificationControl` union has `AssetAnalysisControl` and `UserManagementControl` types that both define an `events` field with different return types. In the generated SDK, these become:
+
+- `AssetAnalysisControl.events` → `assetAnalysisControlEvents`
+- `UserManagementControl.events` → `userManagementControlEvents`
+
+### Example Usage
+
+```python
+# Accessing aliased fields on union type members
+notification_settings = client.query_notification_settings()
+
+for pref in notification_settings.preferences:
+    for control in pref.controls:
+        # Access the aliased field based on the control type
+        if hasattr(control, 'assetAnalysisControlEvents'):
+            events = control.assetAnalysisControlEvents
+        elif hasattr(control, 'userManagementControlEvents'):
+            events = control.userManagementControlEvents
+```
+
+This aliasing is applied automatically during SDK generation and only affects fields that would otherwise cause type conflicts.
 
 ## License
 

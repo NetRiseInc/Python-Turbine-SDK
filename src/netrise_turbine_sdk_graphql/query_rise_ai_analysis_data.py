@@ -6,6 +6,7 @@ from typing import Optional
 from pydantic import Field
 
 from .base_model import BaseModel
+from .enums import Architecture
 
 
 class QueryRiseAIAnalysisData(BaseModel):
@@ -15,9 +16,7 @@ class QueryRiseAIAnalysisData(BaseModel):
 
 
 class QueryRiseAIAnalysisDataRiseAiAnalysisData(BaseModel):
-    architectures: Optional[
-        list["QueryRiseAIAnalysisDataRiseAiAnalysisDataArchitectures"]
-    ]
+    architectures: Optional[list[Architecture]]
     components: Optional[list["QueryRiseAIAnalysisDataRiseAiAnalysisDataComponents"]]
     entropy_data: Optional[
         list["QueryRiseAIAnalysisDataRiseAiAnalysisDataEntropyData"]
@@ -31,11 +30,6 @@ class QueryRiseAIAnalysisDataRiseAiAnalysisData(BaseModel):
     ] = Field(alias="securityInsights")
     synopsis: Optional[str]
     totals: Optional["QueryRiseAIAnalysisDataRiseAiAnalysisDataTotals"]
-
-
-class QueryRiseAIAnalysisDataRiseAiAnalysisDataArchitectures(BaseModel):
-    name: str
-    percentage: int
 
 
 class QueryRiseAIAnalysisDataRiseAiAnalysisDataComponents(BaseModel):

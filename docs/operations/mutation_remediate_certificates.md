@@ -1,14 +1,14 @@
 <!-- Generated file: do not edit by hand -->
 
-# query_caas_availability
+# mutation_remediate_certificates
 
-Check for the availability of the RISE AI analysis report.
+Update remediation status and notes for certificate issues found in assets.
 
 ## Parameters
 
 | name | type | required |
 | --- | --- | --- |
-| `caas_availability_args` | `RiseAIAnalysisDataInput` | `true` |
+| `remediate_certificates_args` | `RemediateCertificatesInput` | `true` |
 
 ## Example
 
@@ -17,7 +17,10 @@ from __future__ import annotations
 
 from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
 from netrise_turbine_sdk_graphql.input_types import (
-    RiseAIAnalysisDataInput,
+    RemediateCertificatesInput,
+)
+from netrise_turbine_sdk_graphql.enums import (
+    CryptoRemediationStatus,
 )
 
 
@@ -26,7 +29,7 @@ def main() -> None:
     sdk = TurbineClient(cfg)
 
     with sdk.graphql() as client:
-        resp = client.query_caas_availability(caas_availability_args=RiseAIAnalysisDataInput(asset_id='asset_123'))
+        resp = client.mutation_remediate_certificates(remediate_certificates_args=RemediateCertificatesInput(asset_id='asset_123', certificates=[None], status=CryptoRemediationStatus.UNSPECIFIED))
         print(resp.model_dump())
 
 

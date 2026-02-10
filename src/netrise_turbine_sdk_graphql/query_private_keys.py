@@ -6,7 +6,7 @@ from typing import Optional
 from pydantic import Field
 
 from .base_model import BaseModel
-from .enums import RiskCategory
+from .enums import CryptoAlgorithmType, CryptoRemediationStatus, RiskCategory
 
 
 class QueryPrivateKeys(BaseModel):
@@ -26,15 +26,26 @@ class QueryPrivateKeysPrivateKeysEdges(BaseModel):
 class QueryPrivateKeysPrivateKeysEdgesNode(BaseModel):
     id: Optional[str]
     algorithm: Optional[str]
+    algorithm_type: Optional[CryptoAlgorithmType] = Field(alias="algorithmType")
     bit_size: Optional[str] = Field(alias="bitSize")
     correlations: list[Optional["QueryPrivateKeysPrivateKeysEdgesNodeCorrelations"]]
     correlations_count: Optional[int] = Field(alias="correlationsCount")
+    current_remediation: Optional[
+        "QueryPrivateKeysPrivateKeysEdgesNodeCurrentRemediation"
+    ] = Field(alias="currentRemediation")
+    decapsulation_key: Optional[str] = Field(alias="decapsulationKey")
     e: Optional[str]
     effective_permissions: Optional[str] = Field(alias="effectivePermissions")
+    encapsulation_key: Optional[str] = Field(alias="encapsulationKey")
+    file_offset: Optional[int] = Field(alias="fileOffset")
     file_path: Optional[str] = Field(alias="filePath")
     found_public_key: Optional[bool] = Field(alias="foundPublicKey")
     found_public_key_count: Optional[int] = Field(alias="foundPublicKeyCount")
     match_hash: Optional[str] = Field(alias="matchHash")
+    private_dsa_key: Optional[str] = Field(alias="privateDsaKey")
+    public_dsa_key: Optional[str] = Field(alias="publicDsaKey")
+    seed: Optional[str]
+    unique_hash: Optional[str] = Field(alias="uniqueHash")
 
 
 class QueryPrivateKeysPrivateKeysEdgesNodeCorrelations(BaseModel):
@@ -52,6 +63,22 @@ class QueryPrivateKeysPrivateKeysEdgesNodeCorrelationsRisk(BaseModel):
     score: Optional[float]
 
 
+class QueryPrivateKeysPrivateKeysEdgesNodeCurrentRemediation(BaseModel):
+    author: Optional[str]
+    created_at: Optional[str] = Field(alias="createdAt")
+    description: Optional[str]
+    error_message: Optional[str] = Field(alias="errorMessage")
+    private_key: "QueryPrivateKeysPrivateKeysEdgesNodeCurrentRemediationPrivateKey" = (
+        Field(alias="privateKey")
+    )
+    status: CryptoRemediationStatus
+
+
+class QueryPrivateKeysPrivateKeysEdgesNodeCurrentRemediationPrivateKey(BaseModel):
+    file_path: str = Field(alias="filePath")
+    match_hash: str = Field(alias="matchHash")
+
+
 class QueryPrivateKeysPrivateKeysPageInfo(BaseModel):
     end_cursor: Optional[str] = Field(alias="endCursor")
     has_next_page: bool = Field(alias="hasNextPage")
@@ -65,3 +92,4 @@ QueryPrivateKeysPrivateKeys.model_rebuild()
 QueryPrivateKeysPrivateKeysEdges.model_rebuild()
 QueryPrivateKeysPrivateKeysEdgesNode.model_rebuild()
 QueryPrivateKeysPrivateKeysEdgesNodeCorrelations.model_rebuild()
+QueryPrivateKeysPrivateKeysEdgesNodeCurrentRemediation.model_rebuild()

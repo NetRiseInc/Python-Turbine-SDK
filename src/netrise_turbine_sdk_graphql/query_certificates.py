@@ -6,7 +6,7 @@ from typing import Optional
 from pydantic import Field
 
 from .base_model import BaseModel
-from .enums import RiskCategory
+from .enums import CryptoAlgorithmType, CryptoRemediationStatus, RiskCategory
 
 
 class QueryCertificates(BaseModel):
@@ -26,28 +26,74 @@ class QueryCertificatesCertificatesEdges(BaseModel):
 
 
 class QueryCertificatesCertificatesEdgesNode(BaseModel):
+    algorithm_type: Optional[CryptoAlgorithmType] = Field(alias="algorithmType")
+    alt_dns_names: list[Optional[str]] = Field(alias="altDnsNames")
+    alt_email_addresses: list[Optional[str]] = Field(alias="altEmailAddresses")
+    alt_ips: list[Optional[str]] = Field(alias="altIps")
+    alt_uris: list[Optional[str]] = Field(alias="altUris")
+    basic_constraints_valid: Optional[bool] = Field(alias="basicConstraintsValid")
     bit_size: Optional[str] = Field(alias="bitSize")
     correlations: list[Optional["QueryCertificatesCertificatesEdgesNodeCorrelations"]]
     correlations_count: Optional[int] = Field(alias="correlationsCount")
+    crl_distribution_points: list[Optional[str]] = Field(alias="crlDistributionPoints")
+    current_remediation: Optional[
+        "QueryCertificatesCertificatesEdgesNodeCurrentRemediation"
+    ] = Field(alias="currentRemediation")
     curve: Optional[str]
+    decapsulation_key: Optional[str] = Field(alias="decapsulationKey")
     e: Optional[str]
     effective_permissions: Optional[str] = Field(alias="effectivePermissions")
+    encapsulation_key: Optional[str] = Field(alias="encapsulationKey")
     expire_date: Optional[str] = Field(alias="expireDate")
     expired: Optional[bool]
+    file_offset: Optional[int] = Field(alias="fileOffset")
     file_path: Optional[str] = Field(alias="filePath")
+    invalid: Optional[bool]
     invalidities: list[Optional[str]]
     invalidities_count: int = Field(alias="invaliditiesCount")
     is_ca: Optional[bool] = Field(alias="isCa")
+    issuer_common_name: Optional[str] = Field(alias="issuerCommonName")
+    issuer_country: Optional[str] = Field(alias="issuerCountry")
     issuer_dn: Optional[str] = Field(alias="issuerDN")
+    issuer_locality: Optional[str] = Field(alias="issuerLocality")
+    issuer_org_unit: Optional[str] = Field(alias="issuerOrgUnit")
+    issuer_organization: Optional[str] = Field(alias="issuerOrganization")
+    issuer_postal_code: Optional[str] = Field(alias="issuerPostalCode")
+    issuer_province: Optional[str] = Field(alias="issuerProvince")
+    issuer_rdn: Optional[str] = Field(alias="issuerRdn")
+    issuer_serial_number: Optional[str] = Field(alias="issuerSerialNumber")
+    issuer_street_address: Optional[str] = Field(alias="issuerStreetAddress")
+    issuing_cert_url: Optional[str] = Field(alias="issuingCertUrl")
+    key_usage: list[Optional[str]] = Field(alias="keyUsage")
+    ocsp_server: Optional[str] = Field(alias="ocspServer")
+    password_protected: Optional[bool] = Field(alias="passwordProtected")
+    priv_key_compromised: Optional[bool] = Field(alias="privKeyCompromised")
+    private_dsa_key: Optional[str] = Field(alias="privateDsaKey")
+    public_dsa_key: Optional[str] = Field(alias="publicDsaKey")
     public_key_algorithm: Optional[str] = Field(alias="publicKeyAlgorithm")
+    revoked: list[Optional[str]]
+    seed: Optional[str]
     self_signed: Optional[bool] = Field(alias="selfSigned")
     serial: Optional[str]
     sha_1: Optional[str] = Field(alias="sha1")
     sha_256: Optional[str] = Field(alias="sha256")
     signature: Optional[str]
     signature_algorithm: Optional[str] = Field(alias="signatureAlgorithm")
+    signature_valid: Optional[bool] = Field(alias="signatureValid")
     start_date: Optional[str] = Field(alias="startDate")
+    subject_common_name: Optional[str] = Field(alias="subjectCommonName")
+    subject_country: Optional[str] = Field(alias="subjectCountry")
     subject_dn: Optional[str] = Field(alias="subjectDN")
+    subject_locality: Optional[str] = Field(alias="subjectLocality")
+    subject_org_unit: Optional[str] = Field(alias="subjectOrgUnit")
+    subject_organization: Optional[str] = Field(alias="subjectOrganization")
+    subject_postal_code: Optional[str] = Field(alias="subjectPostalCode")
+    subject_province: Optional[str] = Field(alias="subjectProvince")
+    subject_rdn: Optional[str] = Field(alias="subjectRdn")
+    subject_serial_number: Optional[str] = Field(alias="subjectSerialNumber")
+    subject_street_address: Optional[str] = Field(alias="subjectStreetAddress")
+    unique_hash: Optional[str] = Field(alias="uniqueHash")
+    version: Optional[int]
 
 
 class QueryCertificatesCertificatesEdgesNodeCorrelations(BaseModel):
@@ -65,6 +111,20 @@ class QueryCertificatesCertificatesEdgesNodeCorrelationsRisk(BaseModel):
     score: Optional[float]
 
 
+class QueryCertificatesCertificatesEdgesNodeCurrentRemediation(BaseModel):
+    author: Optional[str]
+    certificate: "QueryCertificatesCertificatesEdgesNodeCurrentRemediationCertificate"
+    created_at: Optional[str] = Field(alias="createdAt")
+    description: Optional[str]
+    error_message: Optional[str] = Field(alias="errorMessage")
+    status: CryptoRemediationStatus
+
+
+class QueryCertificatesCertificatesEdgesNodeCurrentRemediationCertificate(BaseModel):
+    file_path: str = Field(alias="filePath")
+    sha_256: str = Field(alias="sha256")
+
+
 class QueryCertificatesCertificatesPageInfo(BaseModel):
     end_cursor: Optional[str] = Field(alias="endCursor")
     has_next_page: bool = Field(alias="hasNextPage")
@@ -78,3 +138,4 @@ QueryCertificatesCertificates.model_rebuild()
 QueryCertificatesCertificatesEdges.model_rebuild()
 QueryCertificatesCertificatesEdgesNode.model_rebuild()
 QueryCertificatesCertificatesEdgesNodeCorrelations.model_rebuild()
+QueryCertificatesCertificatesEdgesNodeCurrentRemediation.model_rebuild()

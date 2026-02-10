@@ -6,7 +6,7 @@ from typing import Optional
 from pydantic import Field
 
 from .base_model import BaseModel
-from .enums import RiskCategory
+from .enums import CryptoAlgorithmType, CryptoRemediationStatus, RiskCategory
 
 
 class QueryPublicKeys(BaseModel):
@@ -25,15 +25,21 @@ class QueryPublicKeysPublicKeysEdges(BaseModel):
 
 class QueryPublicKeysPublicKeysEdgesNode(BaseModel):
     algorithm: Optional[str]
+    algorithm_type: Optional[CryptoAlgorithmType] = Field(alias="algorithmType")
     bit_size: Optional[str] = Field(alias="bitSize")
     correlations: list[Optional["QueryPublicKeysPublicKeysEdgesNodeCorrelations"]]
     correlations_count: Optional[int] = Field(alias="correlationsCount")
+    current_remediation: Optional[
+        "QueryPublicKeysPublicKeysEdgesNodeCurrentRemediation"
+    ] = Field(alias="currentRemediation")
     e: Optional[str]
     effective_permissions: Optional[str] = Field(alias="effectivePermissions")
+    file_offset: Optional[int] = Field(alias="fileOffset")
     file_path: Optional[str] = Field(alias="filePath")
     found_private_key: Optional[bool] = Field(alias="foundPrivateKey")
     found_private_key_count: Optional[int] = Field(alias="foundPrivateKeyCount")
     match_hash: Optional[str] = Field(alias="matchHash")
+    unique_hash: Optional[str] = Field(alias="uniqueHash")
 
 
 class QueryPublicKeysPublicKeysEdgesNodeCorrelations(BaseModel):
@@ -51,6 +57,23 @@ class QueryPublicKeysPublicKeysEdgesNodeCorrelationsRisk(BaseModel):
     score: Optional[float]
 
 
+class QueryPublicKeysPublicKeysEdgesNodeCurrentRemediation(BaseModel):
+    asset_id: Optional[str] = Field(alias="assetId")
+    author: str
+    created_at: str = Field(alias="createdAt")
+    description: Optional[str]
+    public_key: "QueryPublicKeysPublicKeysEdgesNodeCurrentRemediationPublicKey" = Field(
+        alias="publicKey"
+    )
+    public_key_id: str = Field(alias="publicKeyId")
+    status: CryptoRemediationStatus
+
+
+class QueryPublicKeysPublicKeysEdgesNodeCurrentRemediationPublicKey(BaseModel):
+    file_path: str = Field(alias="filePath")
+    match_hash: str = Field(alias="matchHash")
+
+
 class QueryPublicKeysPublicKeysPageInfo(BaseModel):
     end_cursor: Optional[str] = Field(alias="endCursor")
     has_next_page: bool = Field(alias="hasNextPage")
@@ -64,3 +87,4 @@ QueryPublicKeysPublicKeys.model_rebuild()
 QueryPublicKeysPublicKeysEdges.model_rebuild()
 QueryPublicKeysPublicKeysEdgesNode.model_rebuild()
 QueryPublicKeysPublicKeysEdgesNodeCorrelations.model_rebuild()
+QueryPublicKeysPublicKeysEdgesNodeCurrentRemediation.model_rebuild()
