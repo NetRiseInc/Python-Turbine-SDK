@@ -37,6 +37,7 @@ organization_id=<org_id>
 ```
 
 The SDK will automatically load these when you call `TurbineClientConfig.from_env()`. The `.env` file is searched in:
+
 - Current working directory (most common)
 - Parent directories (walks up the directory tree)
 
@@ -60,6 +61,83 @@ load_dotenv()  # Your custom loading logic
 
 cfg = TurbineClientConfig.from_env(load_env_file=False)
 ```
+
+## Helper Methods
+
+The SDK provides convenience methods on `TurbineClient` for common workflows.
+
+### upload_asset
+
+Upload a single file and submit it as an asset.
+
+```python
+from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
+from netrise_turbine_sdk_graphql.input_types import SubmitAssetInput
+
+cfg = TurbineClientConfig.from_env()
+sdk = TurbineClient(cfg)
+
+# Simple upload (uses filename as asset name)
+resp = sdk.upload_asset("./firmware.bin")
+print(f"Asset ID: {resp.asset.submit.asset.id}")
+
+# With custom name
+resp = sdk.upload_asset("./firmware.bin", name="My Firmware v1.0")
+
+# With full metadata
+resp = sdk.upload_asset(
+    "./image.tar",
+    submit_args=SubmitAssetInput(
+        name="Router Firmware",
+        product="home-router",
+        manufacturer="Acme Corp",
+        version="2.1.0",
+    ),
+)
+```
+
+**Parameters:**
+
+- `file_path` (str | Path): Path to the file to upload.
+- `submit_args` (SubmitAssetInput, optional): Metadata for the asset (name, manufacturer, model, version, type, etc.).
+- `name` (str, optional): Display name for the asset. Defaults to the filename. Ignored if `submit_args.name` is set.
+
+**Returns:** `MutationAssetSubmit` response containing asset info and upload details.
+
+### upload_assets
+
+Upload all files in a directory as assets (bulk upload).
+
+```python
+from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
+from netrise_turbine_sdk_graphql.input_types import SubmitAssetInput
+
+cfg = TurbineClientConfig.from_env()
+sdk = TurbineClient(cfg)
+
+# Simple: upload all files with default names
+results = sdk.upload_assets("./firmware_images/")
+
+# Custom: add metadata per file
+def make_args(path):
+    return SubmitAssetInput(
+        name=f"device-{path.name}",
+        product="iot-devices",
+    )
+
+results = sdk.upload_assets("./firmware/", submit_args_fn=make_args)
+
+# Process results
+for file_path, resp in results:
+    print(f"{file_path.name}: {resp.asset.submit.upload_id}")
+```
+
+**Parameters:**
+
+- `directory` (str | Path): Path to directory containing files to upload.
+- `submit_args_fn` (callable, optional): Function that takes a file `Path` and returns a `SubmitAssetInput`. If not provided, each file is uploaded with its filename as the asset name.
+
+**Returns:** List of `(Path, MutationAssetSubmit)` tuples for successfully uploaded files. Failed uploads are printed to stderr but do not stop the batch.
 
 ## API Documentation & Code Samples
 
