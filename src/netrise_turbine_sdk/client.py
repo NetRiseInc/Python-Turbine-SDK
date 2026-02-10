@@ -149,6 +149,129 @@ class TurbineClient:
             http_client=http_client,
         )
 
+    def upload_asset(
+        self,
+        file_path: str | Path,
+        *,
+        submit_args: Optional[Any] = None,
+        name: Optional[str] = None,
+    ) -> Any:
+        """Upload a file and submit it as an asset.
+
+        Args:
+            file_path: Path to the file to upload.
+            submit_args: Optional SubmitAssetInput with metadata (name, manufacturer,
+                model, version, type, etc.). Import from netrise_turbine_sdk_graphql.input_types.
+            name: Optional display name for the asset. Defaults to the filename.
+                Ignored if submit_args.name is already set.
+
+        Returns:
+            MutationAssetSubmit response containing asset info and upload details.
+
+        Example:
+            >>> from netrise_turbine_sdk_graphql.input_types import SubmitAssetInput
+            >>> sdk = TurbineClient(TurbineClientConfig.from_env())
+            >>> resp = sdk.upload_asset("firmware.bin", name="My Firmware v1.0")
+            >>> print(resp.asset.submit.asset.id)
+        """
+        # Lazy import to avoid import-time coupling with generated code
+        from netrise_turbine_sdk_graphql.input_types import SubmitAssetInput
+
+        path = Path(file_path)
+        if not path.exists():
+            raise FileNotFoundError(f"File not found: {path}")
+
+        file_name = path.name
+
+        # Build submit_args if not provided
+        if submit_args is None:
+            submit_args = SubmitAssetInput(name=name or file_name)
+        elif name and submit_args.name is None:
+            # User provided submit_args but no name in it; use the name param
+            submit_args = SubmitAssetInput(
+                **{**submit_args.model_dump(exclude_unset=True), "name": name}
+            )
+
+        with self.graphql() as client:
+            # Step 1: Submit asset metadata and get presigned URL
+            resp = client.mutation_asset_submit(
+                asset_submit_file_name=file_name,
+                asset_submit_args=submit_args,
+            )
+
+            upload_url = resp.asset.submit.upload_url
+
+            # Step 2: Upload file content to presigned URL
+            file_content = path.read_bytes()
+            with httpx.Client(timeout=self._timeout) as http:
+                put_resp = http.put(upload_url, content=file_content)
+                put_resp.raise_for_status()
+
+        return resp
+
+    def upload_assets(
+        self,
+        directory: str | Path,
+        *,
+        submit_args_fn: Optional[Any] = None,
+    ) -> list[tuple[Path, Any]]:
+        """Upload all files in a directory as assets.
+
+        Args:
+            directory: Path to directory containing files to upload.
+            submit_args_fn: Optional callable that takes a file Path and returns
+                a SubmitAssetInput for that file. If not provided, each file is
+                uploaded with its filename as the asset name.
+
+        Returns:
+            List of (Path, MutationAssetSubmit) tuples for successfully uploaded files.
+            Failed uploads are printed to stderr but do not stop the batch.
+
+        Example:
+            >>> from netrise_turbine_sdk_graphql.input_types import SubmitAssetInput
+            >>> sdk = TurbineClient(TurbineClientConfig.from_env())
+            >>>
+            >>> # Simple: upload all files with default names
+            >>> results = sdk.upload_assets("./firmware_images/")
+            >>>
+            >>> # Custom: add metadata per file
+            >>> def make_args(path):
+            ...     return SubmitAssetInput(
+            ...         name=f"chainguard-{path.name}",
+            ...         product="chainguard",
+            ...     )
+            >>> results = sdk.upload_assets("./images/", submit_args_fn=make_args)
+        """
+        import sys
+
+        dir_path = Path(directory)
+        if not dir_path.exists():
+            raise FileNotFoundError(f"Directory not found: {dir_path}")
+        if not dir_path.is_dir():
+            raise NotADirectoryError(f"Not a directory: {dir_path}")
+
+        files = [f for f in dir_path.iterdir() if f.is_file()]
+        if not files:
+            print(f"No files found in {dir_path}", file=sys.stderr)
+            return []
+
+        results: list[tuple[Path, Any]] = []
+
+        for file_path in files:
+            try:
+                submit_args = None
+                if submit_args_fn is not None:
+                    submit_args = submit_args_fn(file_path)
+
+                resp = self.upload_asset(file_path, submit_args=submit_args)
+                results.append((file_path, resp))
+                print(f"[OK] Uploaded: {file_path.name}")
+
+            except Exception as e:
+                print(f"[FAILED] {file_path.name}: {e}", file=sys.stderr)
+
+        return results
+
 
 def _strip_or_none(v: Optional[str]) -> Optional[str]:
     if v is None:
