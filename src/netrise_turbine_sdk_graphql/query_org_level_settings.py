@@ -6,7 +6,6 @@ from typing import Optional
 from pydantic import Field
 
 from .base_model import BaseModel
-from .enums import RemediationResponses, VexJustification, VexStatus
 
 
 class QueryOrgLevelSettings(BaseModel):
@@ -16,35 +15,11 @@ class QueryOrgLevelSettings(BaseModel):
 
 
 class QueryOrgLevelSettingsOrgLevelSettings(BaseModel):
-    binary_fingerprint_enabled: Optional[bool] = Field(alias="binaryFingerprintEnabled")
-    cryptographic_hash_enabled: Optional[bool] = Field(alias="cryptographicHashEnabled")
-    curated_hash_enabled: Optional[bool] = Field(alias="curatedHashEnabled")
-    function_hashing_enabled: Optional[bool] = Field(alias="functionHashingEnabled")
-    heuristic_enabled: Optional[bool] = Field(alias="heuristicEnabled")
     idle_timeout_seconds: Optional[int] = Field(alias="idleTimeoutSeconds")
     idle_timout_enabled: Optional[bool] = Field(alias="idleTimoutEnabled")
-    justification: Optional[VexJustification]
-    kernel_module_enabled: Optional[bool] = Field(alias="kernelModuleEnabled")
-    kernel_vulnerabilities_enabled: Optional[bool] = Field(
-        alias="kernelVulnerabilitiesEnabled"
-    )
-    legacy_hash_enabled: Optional[bool] = Field(alias="legacyHashEnabled")
-    library_name_enabled: Optional[bool] = Field(alias="libraryNameEnabled")
-    library_version_enabled: Optional[bool] = Field(alias="libraryVersionEnabled")
-    package_manager_enabled: Optional[bool] = Field(alias="packageManagerEnabled")
-    package_manifest_enabled: Optional[bool] = Field(alias="packageManifestEnabled")
-    pe_meta_data_enabled: Optional[bool] = Field(alias="peMetaDataEnabled")
-    response: Optional[list[Optional[RemediationResponses]]]
-    rise_ai_conversational_gpt_enabled: Optional[bool] = Field(
-        alias="riseAiConversationalGptEnabled"
-    )
     rise_ai_insights_report_enabled: Optional[bool] = Field(
         alias="riseAiInsightsReportEnabled"
     )
-    signature_enabled: Optional[bool] = Field(alias="signatureEnabled")
-    status: Optional[VexStatus]
-    symbol_index_enabled: Optional[bool] = Field(alias="symbolIndexEnabled")
-    verify_credentials_enabled: Optional[bool] = Field(alias="verifyCredentialsEnabled")
 
 
 QueryOrgLevelSettings.model_rebuild()

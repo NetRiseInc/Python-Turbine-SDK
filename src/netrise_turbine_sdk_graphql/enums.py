@@ -469,6 +469,7 @@ class SecretsField(str, Enum):
     DESCRIPTION = "DESCRIPTION"
     SEVERITY = "SEVERITY"
     CORRELATIONS = "CORRELATIONS"
+    STATUS = "STATUS"
 
 
 class SecretCategory(str, Enum):

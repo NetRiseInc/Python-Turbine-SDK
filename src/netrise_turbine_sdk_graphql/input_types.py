@@ -79,60 +79,12 @@ from .enums import (
 
 
 class OrgLevelSettingsInput(BaseModel):
-    heuristic_enabled: Optional[bool] = Field(alias="heuristicEnabled", default=None)
-    cryptographic_hash_enabled: Optional[bool] = Field(
-        alias="cryptographicHashEnabled", default=None
-    )
-    package_manager_enabled: Optional[bool] = Field(
-        alias="packageManagerEnabled", default=None
-    )
-    function_hashing_enabled: Optional[bool] = Field(
-        alias="functionHashingEnabled", default=None
-    )
-    symbol_index_enabled: Optional[bool] = Field(
-        alias="symbolIndexEnabled", default=None
-    )
-    kernel_module_enabled: Optional[bool] = Field(
-        alias="kernelModuleEnabled", default=None
-    )
-    curated_hash_enabled: Optional[bool] = Field(
-        alias="curatedHashEnabled", default=None
-    )
-    legacy_hash_enabled: Optional[bool] = Field(alias="legacyHashEnabled", default=None)
-    package_manifest_enabled: Optional[bool] = Field(
-        alias="packageManifestEnabled", default=None
-    )
-    signature_enabled: Optional[bool] = Field(alias="signatureEnabled", default=None)
-    pe_meta_data_enabled: Optional[bool] = Field(
-        alias="peMetaDataEnabled", default=None
-    )
-    library_version_enabled: Optional[bool] = Field(
-        alias="libraryVersionEnabled", default=None
-    )
-    library_name_enabled: Optional[bool] = Field(
-        alias="libraryNameEnabled", default=None
-    )
-    binary_fingerprint_enabled: Optional[bool] = Field(
-        alias="binaryFingerprintEnabled", default=None
-    )
-    kernel_vulnerabilities_enabled: Optional[bool] = Field(
-        alias="kernelVulnerabilitiesEnabled", default=None
-    )
-    status: Optional[VexStatus] = None
-    justification: Optional[VexJustification] = None
-    response: Optional[list[Optional[RemediationResponses]]] = None
     idle_timout_enabled: bool = Field(alias="idleTimoutEnabled")
     idle_timeout_seconds: Optional[int] = Field(
         alias="idleTimeoutSeconds", default=None
     )
-    rise_ai_conversational_gpt_enabled: Optional[bool] = Field(
-        alias="riseAiConversationalGptEnabled", default=None
-    )
     rise_ai_insights_report_enabled: Optional[bool] = Field(
         alias="riseAiInsightsReportEnabled", default=None
-    )
-    verify_credentials_enabled: Optional[bool] = Field(
-        alias="verifyCredentialsEnabled", default=None
     )
 
 
