@@ -79,7 +79,7 @@ sdk = TurbineClient(cfg)
 
 # Simple upload (uses filename as asset name)
 resp = sdk.upload_asset("./firmware.bin")
-print(f"Asset ID: {resp.asset.submit.asset.id}")
+print(f"Upload ID: {resp.asset.submit.upload_id}")
 
 # With custom name
 resp = sdk.upload_asset("./firmware.bin", name="My Firmware v1.0")
@@ -166,7 +166,6 @@ for file_path, resp in results:
 - [mutation_set_assets_to_asset_group](operations/mutation_set_assets_to_asset_group.md): Overwrite the member list of an asset group with new assets.
 - [mutation_submit_rise_ai_analysis](operations/mutation_submit_rise_ai_analysis.md): Request a RISE AI analysis for an eligible asset to generate insights.
 - [mutation_update_asset_group](operations/mutation_update_asset_group.md): Rename or update the description of an existing asset group.
-- [mutation_update_notification_settings](operations/mutation_update_notification_settings.md): Configure notification preferences and alert delivery settings for the organization.
 - [mutation_update_org_level_settings](operations/mutation_update_org_level_settings.md): Configure global organization settings such as idle session timeout duration.
 - [mutation_user_action](operations/mutation_user_action.md): Perform administrative actions like enabling or disabling specific user accounts.
 - [mutation_user_delete](operations/mutation_user_delete.md): Permanently delete a user account and remove their access rights.
@@ -210,8 +209,6 @@ for file_path, resp in results:
 - [query_match_vulnerabilities](operations/query_match_vulnerabilities.md): Find specific vulnerabilities matching a provided component identifier or package.
 - [query_metrics](operations/query_metrics.md): View organization-wide statistics on asset counts, processing, and risk.
 - [query_misconfigurations](operations/query_misconfigurations.md): List failed security checks and configuration risks found in assets.
-- [query_notification_settings](operations/query_notification_settings.md): Retrieve current notification configuration and alert preferences.
-- [query_notifications](operations/query_notifications.md): List notification events and alerts for the organization or user.
 - [query_org_level_settings](operations/query_org_level_settings.md): Check how the tenant organization is configured.
 - [query_package_dependencies_by_id](operations/query_package_dependencies_by_id.md): View the dependency tree hierarchy for a specific software package.
 - [query_private_key_external_filters](operations/query_private_key_external_filters.md): Retrieve available filter options for private key queries.

@@ -49,7 +49,6 @@ from .input_types import (
     MatchVulnerabilitiesInput,
     MisconfigurationsInput,
     ModifyDependencyInput,
-    NotificationsInput,
     OrgLevelSettingsInput,
     PaginatedDetailedVulnerabilitiesInput,
     PaginatedVulnerabilitiesInput,
@@ -77,7 +76,6 @@ from .input_types import (
     SubmitAssetInput,
     UpdateAssetGroupInput,
     UpdateAssetInput,
-    UpdateNotificationSettingsInput,
     UpdateUserInput,
     UserActionInput,
     UserInput,
@@ -116,7 +114,6 @@ from .mutation_set_asset_groups_to_asset import MutationSetAssetGroupsToAsset
 from .mutation_set_assets_to_asset_group import MutationSetAssetsToAssetGroup
 from .mutation_submit_rise_ai_analysis import MutationSubmitRiseAIAnalysis
 from .mutation_update_asset_group import MutationUpdateAssetGroup
-from .mutation_update_notification_settings import MutationUpdateNotificationSettings
 from .mutation_update_org_level_settings import MutationUpdateOrgLevelSettings
 from .mutation_user_action import MutationUserAction
 from .mutation_user_delete import MutationUserDelete
@@ -160,8 +157,6 @@ from .query_list_asset_crypto_libraries import QueryListAssetCryptoLibraries
 from .query_match_vulnerabilities import QueryMatchVulnerabilities
 from .query_metrics import QueryMetrics
 from .query_misconfigurations import QueryMisconfigurations
-from .query_notification_settings import QueryNotificationSettings
-from .query_notifications import QueryNotifications
 from .query_org_level_settings import QueryOrgLevelSettings
 from .query_package_dependencies_by_id import QueryPackageDependenciesById
 from .query_private_key_external_filters import QueryPrivateKeyExternalFilters
@@ -343,24 +338,6 @@ class Client(BaseClient):
                   affectedAssets
                   pastDue
                   uniqueKevs
-                }
-                notificationsSummary {
-                  created {
-                    past3Days
-                    pastDay
-                    pastMonth
-                    pastWeek
-                  }
-                  status {
-                    all
-                    unread
-                  }
-                  types {
-                    asset
-                    sbom
-                    setting
-                    vulnerability
-                  }
                 }
                 vulnerabilitiesByAge {
                   age
@@ -2577,163 +2554,14 @@ class Client(BaseClient):
         data = self.get_data(response)
         return QueryMisconfigurations.model_validate(data)
 
-    def query_notification_settings(self, **kwargs: Any) -> QueryNotificationSettings:
-        query = gql(
-            """
-            query QueryNotificationSettings {
-              notificationSettings {
-                allowUserOverrides
-                emailNotificationsEnabled
-                notificationTimeframe
-                preferences {
-                  category
-                  console
-                  consoleEnabled
-                  controls {
-                    __typename
-                    ... on VulnerabilityControl {
-                      exploits
-                      severities
-                    }
-                    ... on CertificateControl {
-                      maxValidity
-                      minValidity
-                    }
-                    ... on AssetAnalysisControl {
-                      assetAnalysisControlEvents: events
-                    }
-                    ... on SbomFindingsControl {
-                      findings
-                    }
-                    ... on UserManagementControl {
-                      userManagementControlEvents: events
-                    }
-                  }
-                  email
-                  emailEnabled
-                  name
-                  type
-                  webhook
-                  webhookEnabled
-                }
-              }
-            }
-            """
-        )
-        variables: dict[str, object] = {}
-        response = self.execute(
-            query=query,
-            operation_name="QueryNotificationSettings",
-            variables=variables,
-            **kwargs
-        )
-        data = self.get_data(response)
-        return QueryNotificationSettings.model_validate(data)
-
-    def query_notifications(
-        self, notifications_args: NotificationsInput, **kwargs: Any
-    ) -> QueryNotifications:
-        query = gql(
-            """
-            query QueryNotifications($notifications_args: NotificationsInput!) {
-              notifications(args: $notifications_args) {
-                edges {
-                  cursor
-                  node {
-                    id
-                    assetId
-                    assetName
-                    createdAt
-                    description
-                    entry {
-                      __typename
-                      ... on CveNotificationEntry {
-                        cveId
-                      }
-                      ... on ComponentNotificationEntry {
-                        componentName
-                        componentVersion
-                        vendor
-                      }
-                      ... on BinaryProtectionsNotificationEntry {
-                        filePath
-                      }
-                      ... on CertificateNotificationEntry {
-                        filePath
-                        sha256Thumbprint
-                      }
-                      ... on CredentialUserNotificationEntry {
-                        filePath
-                        username
-                      }
-                      ... on CredentialHashNotificationEntry {
-                        filePath
-                        hash
-                      }
-                      ... on PrivateKeyNotificationEntry {
-                        filePath
-                        matchHash
-                      }
-                      ... on EmptyNotificationEntry {
-                        _empty
-                      }
-                    }
-                    isUnread
-                    parser
-                    title
-                    type
-                    user
-                  }
-                }
-                pageInfo {
-                  endCursor
-                  hasNextPage
-                  hasPreviousPage
-                  startCursor
-                  totalCount
-                }
-              }
-            }
-            """
-        )
-        variables: dict[str, object] = {"notifications_args": notifications_args}
-        response = self.execute(
-            query=query,
-            operation_name="QueryNotifications",
-            variables=variables,
-            **kwargs
-        )
-        data = self.get_data(response)
-        return QueryNotifications.model_validate(data)
-
     def query_org_level_settings(self, **kwargs: Any) -> QueryOrgLevelSettings:
         query = gql(
             """
             query QueryOrgLevelSettings {
               orgLevelSettings {
-                binaryFingerprintEnabled
-                cryptographicHashEnabled
-                curatedHashEnabled
-                functionHashingEnabled
-                heuristicEnabled
                 idleTimeoutSeconds
                 idleTimoutEnabled
-                justification
-                kernelModuleEnabled
-                kernelVulnerabilitiesEnabled
-                legacyHashEnabled
-                libraryNameEnabled
-                libraryVersionEnabled
-                packageManagerEnabled
-                packageManifestEnabled
-                peMetaDataEnabled
-                response
-                riseAiConversationalGptEnabled
                 riseAiInsightsReportEnabled
-                signatureEnabled
-                status
-                symbolIndexEnabled
-                verifyCredentialsEnabled
               }
             }
             """
@@ -4974,65 +4802,6 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return MutationUpdateAssetGroup.model_validate(data)
-
-    def mutation_update_notification_settings(
-        self,
-        update_notification_settings_args: UpdateNotificationSettingsInput,
-        **kwargs: Any
-    ) -> MutationUpdateNotificationSettings:
-        query = gql(
-            """
-            mutation MutationUpdateNotificationSettings($updateNotificationSettings_args: UpdateNotificationSettingsInput!) {
-              updateNotificationSettings(args: $updateNotificationSettings_args) {
-                allowUserOverrides
-                emailNotificationsEnabled
-                notificationTimeframe
-                preferences {
-                  category
-                  console
-                  consoleEnabled
-                  controls {
-                    __typename
-                    ... on VulnerabilityControl {
-                      exploits
-                      severities
-                    }
-                    ... on CertificateControl {
-                      maxValidity
-                      minValidity
-                    }
-                    ... on AssetAnalysisControl {
-                      assetAnalysisControlEvents: events
-                    }
-                    ... on SbomFindingsControl {
-                      findings
-                    }
-                    ... on UserManagementControl {
-                      userManagementControlEvents: events
-                    }
-                  }
-                  email
-                  emailEnabled
-                  name
-                  type
-                  webhook
-                  webhookEnabled
-                }
-              }
-            }
-            """
-        )
-        variables: dict[str, object] = {
-            "updateNotificationSettings_args": update_notification_settings_args
-        }
-        response = self.execute(
-            query=query,
-            operation_name="MutationUpdateNotificationSettings",
-            variables=variables,
-            **kwargs
-        )
-        data = self.get_data(response)
-        return MutationUpdateNotificationSettings.model_validate(data)
 
     def mutation_update_org_level_settings(
         self, update_org_level_settings_args: OrgLevelSettingsInput, **kwargs: Any
