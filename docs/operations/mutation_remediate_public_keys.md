@@ -10,6 +10,21 @@ Update remediation status for public key issues identified in assets.
 | --- | --- | --- |
 | `remediate_public_keys_args` | `RemediatePublicKeysInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `remediatePublicKeys[]` | `object` | yes |
+| `remediatePublicKeys[].assetId` | `string` | yes |
+| `remediatePublicKeys[].author` | `string` | no |
+| `remediatePublicKeys[].createdAt` | `string` | no |
+| `remediatePublicKeys[].description` | `string` | yes |
+| `remediatePublicKeys[].publicKey` | `object` | no |
+| `remediatePublicKeys[].publicKey.filePath` | `string` | no |
+| `remediatePublicKeys[].publicKey.matchHash` | `string` | no |
+| `remediatePublicKeys[].publicKeyId` | `string` | no |
+| `remediatePublicKeys[].status` | `CryptoRemediationStatus` | no |
+
 ## Example
 
 ```python

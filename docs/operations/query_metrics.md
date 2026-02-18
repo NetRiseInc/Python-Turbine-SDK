@@ -9,6 +9,27 @@ View organization-wide statistics on asset counts, processing, and risk.
 | name | type | required |
 | --- | --- | --- |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `metrics` | `object` | no |
+| `metrics.assetsByRiskCategory[]` | `object` | no |
+| `metrics.assetsByRiskCategory[].count` | `integer` | no |
+| `metrics.assetsByRiskCategory[].status` | `string` | yes |
+| `metrics.assetsByStatus[]` | `object` | no |
+| `metrics.assetsByStatus[].count` | `integer` | no |
+| `metrics.assetsByStatus[].status` | `string` | yes |
+| `metrics.assetsCount[]` | `object` | no |
+| `metrics.assetsCount[].count` | `integer` | no |
+| `metrics.assetsCount[].status` | `string` | yes |
+| `metrics.filesCount[]` | `object` | no |
+| `metrics.filesCount[].count` | `integer` | no |
+| `metrics.filesCount[].status` | `string` | yes |
+| `metrics.vulnerabilitiesCount[]` | `object` | no |
+| `metrics.vulnerabilitiesCount[].count` | `integer` | no |
+| `metrics.vulnerabilitiesCount[].status` | `string` | yes |
+
 ## Example
 
 ```python

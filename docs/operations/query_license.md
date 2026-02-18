@@ -10,6 +10,22 @@ Retrieve detailed information for a specific software license.
 | --- | --- | --- |
 | `license_args` | `LicenseInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `license` | `object` | yes |
+| `license.additionalCounts` | `object` | yes |
+| `license.additionalCounts.associatedComponents` | `integer` | yes |
+| `license.additionalCounts.issues` | `integer` | yes |
+| `license.additionalInfoUrlsList[]` | `string` | yes |
+| `license.licenseName` | `string` | yes |
+| `license.licenseNotes` | `string` | yes |
+| `license.licenseType` | `string` | yes |
+| `license.licenseUrl` | `string` | yes |
+| `license.spdxId` | `string` | yes |
+| `license.url` | `string` | yes |
+
 ## Example
 
 ```python
@@ -26,7 +42,7 @@ def main() -> None:
     sdk = TurbineClient(cfg)
 
     with sdk.graphql() as client:
-        resp = client.query_license(license_args=LicenseInput(spdx_id='id_123', asset_id='asset_123'))
+        resp = client.query_license(license_args=LicenseInput(spdx_id='MIT', asset_id='asset_123'))
         print(resp.model_dump())
 
 

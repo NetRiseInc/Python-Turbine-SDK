@@ -10,6 +10,14 @@ Remove specific dependencies from the component list of an asset.
 | --- | --- | --- |
 | `asset_remove_dependencies_args` | `IdentificationInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `asset` | `object` | yes |
+| `asset.removeDependencies` | `object` | yes |
+| `asset.removeDependencies.err` | `string` | yes |
+
 ## Example
 
 ```python
@@ -26,7 +34,7 @@ def main() -> None:
     sdk = TurbineClient(cfg)
 
     with sdk.graphql() as client:
-        resp = client.mutation_asset_remove_dependencies(asset_remove_dependencies_args=IdentificationInput(composed_asset_id='asset_123', identification_ids=['example']))
+        resp = client.mutation_asset_remove_dependencies(asset_remove_dependencies_args=IdentificationInput(composed_asset_id='composed_asset_123', identification_ids=['value']))
         print(resp.model_dump())
 
 

@@ -10,6 +10,14 @@ Retrieve available filter options for certificate queries.
 | --- | --- | --- |
 | `certificate_external_filters_args` | `CertificateExternalFiltersInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `certificateExternalFilters` | `object` | yes |
+| `certificateExternalFilters.totalClassical` | `integer` | yes |
+| `certificateExternalFilters.totalPqc` | `integer` | yes |
+
 ## Example
 
 ```python

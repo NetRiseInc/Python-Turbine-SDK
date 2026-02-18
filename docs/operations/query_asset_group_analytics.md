@@ -10,6 +10,17 @@ View risk metrics and exploit counts for a specific group.
 | --- | --- | --- |
 | `asset_group_analytics_args` | `AssetGroupAnalyticsInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `assetGroupAnalytics` | `object` | yes |
+| `assetGroupAnalytics.crackedCredentials` | `integer` | yes |
+| `assetGroupAnalytics.exploits` | `integer` | yes |
+| `assetGroupAnalytics.invalidCertificates` | `integer` | yes |
+| `assetGroupAnalytics.misconfigurations` | `integer` | yes |
+| `assetGroupAnalytics.totalComponents` | `integer` | yes |
+
 ## Example
 
 ```python

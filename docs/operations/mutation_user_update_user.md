@@ -10,6 +10,31 @@ Modify user profile information including name and contact email details.
 | --- | --- | --- |
 | `user_update_user_args` | `UpdateUserInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `user` | `object` | yes |
+| `user.updateUser` | `object` | yes |
+| `user.updateUser.id` | `string` | no |
+| `user.updateUser.createdAt` | `string` | yes |
+| `user.updateUser.deletedAt` | `string` | yes |
+| `user.updateUser.disabled` | `boolean` | yes |
+| `user.updateUser.disabledReason` | `string` | yes |
+| `user.updateUser.email` | `string` | no |
+| `user.updateUser.failedLoginAttempts` | `integer` | yes |
+| `user.updateUser.isOrgDomainUser` | `boolean` | yes |
+| `user.updateUser.lastFailedLogin` | `string` | yes |
+| `user.updateUser.lastPasswordReset` | `string` | yes |
+| `user.updateUser.lastSuccessfulLogin` | `string` | yes |
+| `user.updateUser.name` | `string` | no |
+| `user.updateUser.organization` | `string` | yes |
+| `user.updateUser.passwordDisabled` | `boolean` | yes |
+| `user.updateUser.picture` | `string` | yes |
+| `user.updateUser.role` | `string` | yes |
+| `user.updateUser.updatedAt` | `string` | yes |
+| `user.updateUser.verified` | `boolean` | yes |
+
 ## Example
 
 ```python

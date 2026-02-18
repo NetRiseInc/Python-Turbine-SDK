@@ -9,6 +9,12 @@ List available SPDX license identifiers for filtering and reference.
 | name | type | required |
 | --- | --- | --- |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `licensesSpdxIds[]` | `string` | yes |
+
 ## Example
 
 ```python

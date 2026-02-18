@@ -10,6 +10,13 @@ Configure global organization settings such as idle session timeout duration.
 | --- | --- | --- |
 | `update_org_level_settings_args` | `OrgLevelSettingsInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `updateOrgLevelSettings` | `object` | yes |
+| `updateOrgLevelSettings.err` | `string` | yes |
+
 ## Example
 
 ```python

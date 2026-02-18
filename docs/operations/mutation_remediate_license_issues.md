@@ -10,6 +10,13 @@ Update status and add notes to resolve identified license issues.
 | --- | --- | --- |
 | `remediate_license_issues_args` | `RemediateLicenseIssuesInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `remediateLicenseIssues` | `object` | yes |
+| `remediateLicenseIssues.err` | `string` | yes |
+
 ## Example
 
 ```python
@@ -29,7 +36,7 @@ def main() -> None:
     sdk = TurbineClient(cfg)
 
     with sdk.graphql() as client:
-        resp = client.mutation_remediate_license_issues(remediate_license_issues_args=RemediateLicenseIssuesInput(asset_id='asset_123', issue_ids=['example'], status=LicenseIssueStatus.RESOLVED))
+        resp = client.mutation_remediate_license_issues(remediate_license_issues_args=RemediateLicenseIssuesInput(asset_id='asset_123', issue_ids=['value'], status=LicenseIssueStatus.RESOLVED))
         print(resp.model_dump())
 
 

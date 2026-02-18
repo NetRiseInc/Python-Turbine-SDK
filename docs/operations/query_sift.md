@@ -9,6 +9,18 @@ Perform fuzzy hash matching to find similar code or files.
 | name | type | required |
 | --- | --- | --- |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `sift` | `object` | yes |
+| `sift.count` | `object` | yes |
+| `sift.count.assetCount` | `integer` | no |
+| `sift.count.fileCount` | `integer` | no |
+| `sift.count.pythonFileCount` | `integer` | no |
+| `sift.count.scriptFileCount` | `integer` | no |
+| `sift.count.textFileCount` | `integer` | no |
+
 ## Example
 
 ```python

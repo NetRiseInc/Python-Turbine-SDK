@@ -10,6 +10,12 @@ Remove selected assets from a specific asset group container configuration.
 | --- | --- | --- |
 | `remove_assets_from_asset_group_args` | `RemoveAssetsFromAssetGroupInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `removeAssetsFromAssetGroup` | `boolean` | no |
+
 ## Example
 
 ```python
@@ -26,7 +32,7 @@ def main() -> None:
     sdk = TurbineClient(cfg)
 
     with sdk.graphql() as client:
-        resp = client.mutation_remove_assets_from_asset_group(remove_assets_from_asset_group_args=RemoveAssetsFromAssetGroupInput(id='id_123', asset_ids=['example']))
+        resp = client.mutation_remove_assets_from_asset_group(remove_assets_from_asset_group_args=RemoveAssetsFromAssetGroupInput(id='id_123', asset_ids=['value']))
         print(resp.model_dump())
 
 

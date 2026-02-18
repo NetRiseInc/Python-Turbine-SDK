@@ -10,6 +10,21 @@ Retrieve available filter options for license issue queries.
 | --- | --- | --- |
 | `license_issues_external_filters_args` | `LicenseIssuesExternalFiltersInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `licenseIssuesExternalFilters` | `object` | no |
+| `licenseIssuesExternalFilters.blocker` | `integer` | no |
+| `licenseIssuesExternalFilters.inReview` | `integer` | no |
+| `licenseIssuesExternalFilters.major` | `integer` | no |
+| `licenseIssuesExternalFilters.minor` | `integer` | no |
+| `licenseIssuesExternalFilters.resolved` | `integer` | no |
+| `licenseIssuesExternalFilters.types[]` | `object` | yes |
+| `licenseIssuesExternalFilters.types[].count` | `integer` | yes |
+| `licenseIssuesExternalFilters.types[].type` | `string` | yes |
+| `licenseIssuesExternalFilters.unreviewed` | `integer` | no |
+
 ## Example
 
 ```python

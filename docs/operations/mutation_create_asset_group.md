@@ -10,6 +10,16 @@ Create a new named group to organize and track assets.
 | --- | --- | --- |
 | `create_asset_group_args` | `CreateAssetGroupInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `createAssetGroup` | `object` | no |
+| `createAssetGroup.assetGroup` | `object` | yes |
+| `createAssetGroup.assetGroup.id` | `string` | no |
+| `createAssetGroup.assetGroup.description` | `string` | yes |
+| `createAssetGroup.assetGroup.name` | `string` | no |
+
 ## Example
 
 ```python
@@ -26,7 +36,7 @@ def main() -> None:
     sdk = TurbineClient(cfg)
 
     with sdk.graphql() as client:
-        resp = client.mutation_create_asset_group(create_asset_group_args=CreateAssetGroupInput(name='example'))
+        resp = client.mutation_create_asset_group(create_asset_group_args=CreateAssetGroupInput(name='my-example'))
         print(resp.model_dump())
 
 

@@ -10,6 +10,15 @@ Generate a link to download the original uploaded firmware image.
 | --- | --- | --- |
 | `download_firmware_args` | `FirmwareDownloadInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `download` | `object` | yes |
+| `download.firmware` | `object` | no |
+| `download.firmware.downloadUrlsList[]` | `string` | yes |
+| `download.firmware.pathsList[]` | `string` | yes |
+
 ## Example
 
 ```python

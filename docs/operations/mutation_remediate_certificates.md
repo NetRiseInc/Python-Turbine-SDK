@@ -10,6 +10,20 @@ Update remediation status and notes for certificate issues found in assets.
 | --- | --- | --- |
 | `remediate_certificates_args` | `RemediateCertificatesInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `remediateCertificates[]` | `object` | yes |
+| `remediateCertificates[].author` | `string` | yes |
+| `remediateCertificates[].certificate` | `object` | no |
+| `remediateCertificates[].certificate.filePath` | `string` | no |
+| `remediateCertificates[].certificate.sha256` | `string` | no |
+| `remediateCertificates[].createdAt` | `string` | yes |
+| `remediateCertificates[].description` | `string` | yes |
+| `remediateCertificates[].errorMessage` | `string` | yes |
+| `remediateCertificates[].status` | `CryptoRemediationStatus` | no |
+
 ## Example
 
 ```python

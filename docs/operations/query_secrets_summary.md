@@ -10,6 +10,17 @@ Get a high-level overview of secret findings and exposure metrics.
 | --- | --- | --- |
 | `secrets_summary_args` | `SecretsSummaryInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `secretsSummary` | `object` | no |
+| `secretsSummary.high` | `integer` | no |
+| `secretsSummary.invalid` | `integer` | no |
+| `secretsSummary.low` | `integer` | no |
+| `secretsSummary.medium` | `integer` | no |
+| `secretsSummary.total` | `integer` | no |
+
 ## Example
 
 ```python

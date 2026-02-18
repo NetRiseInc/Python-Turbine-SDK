@@ -10,6 +10,16 @@ Rename or update the description of an existing asset group.
 | --- | --- | --- |
 | `update_asset_group_args` | `UpdateAssetGroupInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `updateAssetGroup` | `object` | no |
+| `updateAssetGroup.assetGroup` | `object` | yes |
+| `updateAssetGroup.assetGroup.id` | `string` | no |
+| `updateAssetGroup.assetGroup.description` | `string` | yes |
+| `updateAssetGroup.assetGroup.name` | `string` | no |
+
 ## Example
 
 ```python
@@ -26,7 +36,7 @@ def main() -> None:
     sdk = TurbineClient(cfg)
 
     with sdk.graphql() as client:
-        resp = client.mutation_update_asset_group(update_asset_group_args=UpdateAssetGroupInput(id='id_123', name='example'))
+        resp = client.mutation_update_asset_group(update_asset_group_args=UpdateAssetGroupInput(id='id_123', name='my-example'))
         print(resp.model_dump())
 
 

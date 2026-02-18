@@ -10,6 +10,13 @@ Apply a remediation status to all vulnerabilities matching specific filters.
 | --- | --- | --- |
 | `remediate_all_asset_vulnerabilities_args` | `CreateAllAssetVulnerabilitiesRemediationInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `remediateAllAssetVulnerabilities` | `object` | no |
+| `remediateAllAssetVulnerabilities.err` | `string` | yes |
+
 ## Example
 
 ```python

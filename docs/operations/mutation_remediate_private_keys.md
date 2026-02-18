@@ -10,6 +10,20 @@ Apply remediation status to private key exposures discovered in assets.
 | --- | --- | --- |
 | `remediate_private_keys_args` | `RemediatePrivateKeysInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `remediatePrivateKeys[]` | `object` | yes |
+| `remediatePrivateKeys[].author` | `string` | yes |
+| `remediatePrivateKeys[].createdAt` | `string` | yes |
+| `remediatePrivateKeys[].description` | `string` | yes |
+| `remediatePrivateKeys[].errorMessage` | `string` | yes |
+| `remediatePrivateKeys[].privateKey` | `object` | no |
+| `remediatePrivateKeys[].privateKey.filePath` | `string` | no |
+| `remediatePrivateKeys[].privateKey.matchHash` | `string` | no |
+| `remediatePrivateKeys[].status` | `CryptoRemediationStatus` | no |
+
 ## Example
 
 ```python

@@ -10,6 +10,17 @@ Apply remediation status and justification to exposed secrets in assets.
 | --- | --- | --- |
 | `remediate_secrets_args` | `CreateSecretsRemediationInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `remediateSecrets[]` | `object` | yes |
+| `remediateSecrets[].author` | `string` | yes |
+| `remediateSecrets[].createdAt` | `string` | yes |
+| `remediateSecrets[].description` | `string` | yes |
+| `remediateSecrets[].secretId` | `string` | yes |
+| `remediateSecrets[].status` | `SecretRemediationStatus` | yes |
+
 ## Example
 
 ```python
@@ -29,7 +40,7 @@ def main() -> None:
     sdk = TurbineClient(cfg)
 
     with sdk.graphql() as client:
-        resp = client.mutation_remediate_secrets(remediate_secrets_args=CreateSecretsRemediationInput(asset_id='asset_123', secret_ids=['example'], status=SecretRemediationStatus.UNSPECIFIED))
+        resp = client.mutation_remediate_secrets(remediate_secrets_args=CreateSecretsRemediationInput(asset_id='asset_123', secret_ids=['value'], status=SecretRemediationStatus.UNSPECIFIED))
         print(resp.model_dump())
 
 

@@ -10,6 +10,39 @@ List cryptographic hashes for files identified within the asset filesystem.
 | --- | --- | --- |
 | `hashes_args` | `HashesInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `hashes` | `object` | yes |
+| `hashes.edges[]` | `object` | yes |
+| `hashes.edges[].cursor` | `string` | yes |
+| `hashes.edges[].node` | `object` | yes |
+| `hashes.edges[].node.correlations[]` | `object` | yes |
+| `hashes.edges[].node.correlations[].artifact` | `string` | yes |
+| `hashes.edges[].node.correlations[].assetId` | `string` | yes |
+| `hashes.edges[].node.correlations[].assetName` | `string` | yes |
+| `hashes.edges[].node.correlations[].location` | `string` | yes |
+| `hashes.edges[].node.correlations[].risk` | `object` | yes |
+| `hashes.edges[].node.correlations[].risk.category` | `RiskCategory` | yes |
+| `hashes.edges[].node.correlations[].risk.rawScore` | `float` | yes |
+| `hashes.edges[].node.correlations[].risk.score` | `float` | yes |
+| `hashes.edges[].node.correlations[].updatedAt` | `string` | yes |
+| `hashes.edges[].node.correlationsCount` | `integer` | yes |
+| `hashes.edges[].node.cracked` | `boolean` | yes |
+| `hashes.edges[].node.filePath` | `string` | yes |
+| `hashes.edges[].node.hash` | `string` | yes |
+| `hashes.edges[].node.hashType` | `string` | yes |
+| `hashes.edges[].node.hashcatNumber` | `integer` | yes |
+| `hashes.edges[].node.numRounds` | `integer` | yes |
+| `hashes.edges[].node.type` | `string` | yes |
+| `hashes.pageInfo` | `object` | no |
+| `hashes.pageInfo.endCursor` | `string` | yes |
+| `hashes.pageInfo.hasNextPage` | `boolean` | no |
+| `hashes.pageInfo.hasPreviousPage` | `boolean` | no |
+| `hashes.pageInfo.startCursor` | `string` | yes |
+| `hashes.pageInfo.totalCount` | `integer` | yes |
+
 ## Example
 
 ```python
