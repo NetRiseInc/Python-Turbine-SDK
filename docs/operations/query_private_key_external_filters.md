@@ -10,6 +10,14 @@ Retrieve available filter options for private key queries.
 | --- | --- | --- |
 | `private_key_external_filters_args` | `PrivateKeyExternalFiltersInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `privateKeyExternalFilters` | `object` | yes |
+| `privateKeyExternalFilters.totalClassical` | `integer` | yes |
+| `privateKeyExternalFilters.totalPqc` | `integer` | yes |
+
 ## Example
 
 ```python

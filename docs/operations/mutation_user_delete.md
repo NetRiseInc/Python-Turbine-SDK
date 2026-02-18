@@ -10,6 +10,14 @@ Permanently delete a user account and remove their access rights.
 | --- | --- | --- |
 | `user_delete_args` | `UserInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `user` | `object` | yes |
+| `user.delete` | `object` | yes |
+| `user.delete.err` | `string` | yes |
+
 ## Example
 
 ```python

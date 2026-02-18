@@ -10,6 +10,15 @@ Check if an asset is currently processing or has finished.
 | --- | --- | --- |
 | `asset_status_args` | `AssetStatusInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `assetStatus` | `object` | no |
+| `assetStatus.assetId` | `string` | no |
+| `assetStatus.hasRunningJob` | `boolean` | no |
+| `assetStatus.lastUpdatedTime` | `string` | yes |
+
 ## Example
 
 ```python

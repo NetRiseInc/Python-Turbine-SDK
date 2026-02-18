@@ -10,6 +10,20 @@ Get aggregated counts of secrets grouped by category type.
 | --- | --- | --- |
 | `secret_categories_summary_args` | `SecretCategoriesInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `secretCategoriesSummary[]` | `object` | yes |
+| `secretCategoriesSummary[].category` | `SecretCategory` | yes |
+| `secretCategoriesSummary[].categoryLabel` | `string` | yes |
+| `secretCategoriesSummary[].remediationStatusCounts[]` | `object` | yes |
+| `secretCategoriesSummary[].remediationStatusCounts[].count` | `integer` | yes |
+| `secretCategoriesSummary[].remediationStatusCounts[].status` | `SecretRemediationStatus` | yes |
+| `secretCategoriesSummary[].severityCounts[]` | `object` | yes |
+| `secretCategoriesSummary[].severityCounts[].count` | `integer` | yes |
+| `secretCategoriesSummary[].severityCounts[].severity` | `SecretSeverity` | yes |
+
 ## Example
 
 ```python

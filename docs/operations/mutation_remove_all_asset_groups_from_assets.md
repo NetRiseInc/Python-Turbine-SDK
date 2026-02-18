@@ -10,6 +10,12 @@ Disassociate all asset groups from a specified list of assets.
 | --- | --- | --- |
 | `remove_all_asset_groups_from_assets_args` | `RemoveAllAssetGroupsFromAssetsInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `removeAllAssetGroupsFromAssets` | `boolean` | no |
+
 ## Example
 
 ```python
@@ -26,7 +32,7 @@ def main() -> None:
     sdk = TurbineClient(cfg)
 
     with sdk.graphql() as client:
-        resp = client.mutation_remove_all_asset_groups_from_assets(remove_all_asset_groups_from_assets_args=RemoveAllAssetGroupsFromAssetsInput(asset_ids=['example']))
+        resp = client.mutation_remove_all_asset_groups_from_assets(remove_all_asset_groups_from_assets_args=RemoveAllAssetGroupsFromAssetsInput(asset_ids=['value']))
         print(resp.model_dump())
 
 

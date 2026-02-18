@@ -10,6 +10,12 @@ Permanently remove an asset group while keeping contained assets intact.
 | --- | --- | --- |
 | `delete_asset_group_args` | `DeleteAssetGroupInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `deleteAssetGroup` | `boolean` | no |
+
 ## Example
 
 ```python

@@ -10,6 +10,14 @@ Retrieve available filter options for public key queries.
 | --- | --- | --- |
 | `public_key_external_filters_args` | `PublicKeyExternalFiltersInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `publicKeyExternalFilters` | `object` | yes |
+| `publicKeyExternalFilters.totalClassical` | `integer` | yes |
+| `publicKeyExternalFilters.totalPqc` | `integer` | yes |
+
 ## Example
 
 ```python

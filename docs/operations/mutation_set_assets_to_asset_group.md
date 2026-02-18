@@ -10,6 +10,12 @@ Overwrite the member list of an asset group with new assets.
 | --- | --- | --- |
 | `set_assets_to_asset_group_args` | `SetAssetsToAssetGroupInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `setAssetsToAssetGroup` | `boolean` | no |
+
 ## Example
 
 ```python

@@ -10,6 +10,12 @@ Replace all current group associations for an asset with new ones.
 | --- | --- | --- |
 | `set_asset_groups_to_asset_args` | `SetAssetGroupsToAssetInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `setAssetGroupsToAsset` | `boolean` | no |
+
 ## Example
 
 ```python

@@ -10,6 +10,31 @@ Perform administrative actions like enabling or disabling specific user accounts
 | --- | --- | --- |
 | `user_action_args` | `UserActionInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `user` | `object` | yes |
+| `user.action` | `object` | yes |
+| `user.action.id` | `string` | no |
+| `user.action.createdAt` | `string` | yes |
+| `user.action.deletedAt` | `string` | yes |
+| `user.action.disabled` | `boolean` | yes |
+| `user.action.disabledReason` | `string` | yes |
+| `user.action.email` | `string` | no |
+| `user.action.failedLoginAttempts` | `integer` | yes |
+| `user.action.isOrgDomainUser` | `boolean` | yes |
+| `user.action.lastFailedLogin` | `string` | yes |
+| `user.action.lastPasswordReset` | `string` | yes |
+| `user.action.lastSuccessfulLogin` | `string` | yes |
+| `user.action.name` | `string` | no |
+| `user.action.organization` | `string` | yes |
+| `user.action.passwordDisabled` | `boolean` | yes |
+| `user.action.picture` | `string` | yes |
+| `user.action.role` | `string` | yes |
+| `user.action.updatedAt` | `string` | yes |
+| `user.action.verified` | `boolean` | yes |
+
 ## Example
 
 ```python

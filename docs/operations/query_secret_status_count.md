@@ -10,6 +10,14 @@ Retrieve counts of secrets grouped by remediation status.
 | --- | --- | --- |
 | `secret_status_count_args` | `SecretStatusCountInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `secretStatusCount[]` | `object` | yes |
+| `secretStatusCount[].count` | `integer` | yes |
+| `secretStatusCount[].name` | `SecretRemediationStatus` | yes |
+
 ## Example
 
 ```python

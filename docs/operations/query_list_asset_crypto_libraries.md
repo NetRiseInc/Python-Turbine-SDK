@@ -10,6 +10,27 @@ List cryptographic libraries and algorithms detected within an asset.
 | --- | --- | --- |
 | `list_asset_crypto_libraries_args` | `ListAssetCryptoLibrariesInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `listAssetCryptoLibraries` | `object` | yes |
+| `listAssetCryptoLibraries.edges[]` | `object` | yes |
+| `listAssetCryptoLibraries.edges[].cursor` | `string` | no |
+| `listAssetCryptoLibraries.edges[].node` | `object` | yes |
+| `listAssetCryptoLibraries.edges[].node.fips` | `string` | yes |
+| `listAssetCryptoLibraries.edges[].node.name` | `string` | yes |
+| `listAssetCryptoLibraries.edges[].node.pqcReady` | `boolean` | yes |
+| `listAssetCryptoLibraries.edges[].node.purl` | `string` | yes |
+| `listAssetCryptoLibraries.edges[].node.vendor` | `string` | yes |
+| `listAssetCryptoLibraries.edges[].node.version` | `string` | yes |
+| `listAssetCryptoLibraries.pageInfo` | `object` | yes |
+| `listAssetCryptoLibraries.pageInfo.endCursor` | `string` | yes |
+| `listAssetCryptoLibraries.pageInfo.hasNextPage` | `boolean` | no |
+| `listAssetCryptoLibraries.pageInfo.hasPreviousPage` | `boolean` | no |
+| `listAssetCryptoLibraries.pageInfo.startCursor` | `string` | yes |
+| `listAssetCryptoLibraries.pageInfo.totalCount` | `integer` | yes |
+
 ## Example
 
 ```python

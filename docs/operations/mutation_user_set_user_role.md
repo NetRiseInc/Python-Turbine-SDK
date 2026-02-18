@@ -10,6 +10,31 @@ Assign a new permission role like Owner or Operator to users.
 | --- | --- | --- |
 | `user_set_user_role_args` | `SetUserRoleInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `user` | `object` | yes |
+| `user.setUserRole` | `object` | yes |
+| `user.setUserRole.id` | `string` | no |
+| `user.setUserRole.createdAt` | `string` | yes |
+| `user.setUserRole.deletedAt` | `string` | yes |
+| `user.setUserRole.disabled` | `boolean` | yes |
+| `user.setUserRole.disabledReason` | `string` | yes |
+| `user.setUserRole.email` | `string` | no |
+| `user.setUserRole.failedLoginAttempts` | `integer` | yes |
+| `user.setUserRole.isOrgDomainUser` | `boolean` | yes |
+| `user.setUserRole.lastFailedLogin` | `string` | yes |
+| `user.setUserRole.lastPasswordReset` | `string` | yes |
+| `user.setUserRole.lastSuccessfulLogin` | `string` | yes |
+| `user.setUserRole.name` | `string` | no |
+| `user.setUserRole.organization` | `string` | yes |
+| `user.setUserRole.passwordDisabled` | `boolean` | yes |
+| `user.setUserRole.picture` | `string` | yes |
+| `user.setUserRole.role` | `string` | yes |
+| `user.setUserRole.updatedAt` | `string` | yes |
+| `user.setUserRole.verified` | `boolean` | yes |
+
 ## Example
 
 ```python
@@ -26,7 +51,7 @@ def main() -> None:
     sdk = TurbineClient(cfg)
 
     with sdk.graphql() as client:
-        resp = client.mutation_user_set_user_role(user_set_user_role_args=SetUserRoleInput(next_role='example', user_id='user_123'))
+        resp = client.mutation_user_set_user_role(user_set_user_role_args=SetUserRoleInput(next_role='VIEWER', user_id='user_123'))
         print(resp.model_dump())
 
 

@@ -10,6 +10,15 @@ Check eligibility and status of RISE AI analysis for an asset.
 | --- | --- | --- |
 | `rise_ai_availability_args` | `RiseAIAnalysisDataInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `riseAIAvailability` | `object` | no |
+| `riseAIAvailability.available` | `boolean` | yes |
+| `riseAIAvailability.eligible` | `boolean` | yes |
+| `riseAIAvailability.status` | `RiseAIStatus` | yes |
+
 ## Example
 
 ```python

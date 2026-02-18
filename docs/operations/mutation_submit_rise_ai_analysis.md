@@ -10,6 +10,13 @@ Request a RISE AI analysis for an eligible asset to generate insights.
 | --- | --- | --- |
 | `submit_rise_ai_analysis_args` | `RiseAIAnalysisDataInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `submitRiseAIAnalysis` | `object` | no |
+| `submitRiseAIAnalysis.status` | `RiseAIStatus` | yes |
+
 ## Example
 
 ```python

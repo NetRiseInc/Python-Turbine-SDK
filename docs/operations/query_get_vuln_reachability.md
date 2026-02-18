@@ -10,6 +10,19 @@ Determine if a vulnerability can be executed via system paths.
 | --- | --- | --- |
 | `get_vuln_reachability_args` | `GetVulnReachabilityInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `getVulnReachability[]` | `object` | yes |
+| `getVulnReachability[].cveId` | `string` | yes |
+| `getVulnReachability[].entryPoint` | `string` | yes |
+| `getVulnReachability[].entryType` | `EvidenceEntryType` | yes |
+| `getVulnReachability[].scripts[]` | `object` | yes |
+| `getVulnReachability[].scripts[].invocation` | `string` | yes |
+| `getVulnReachability[].scripts[].path` | `string` | yes |
+| `getVulnReachability[].user` | `string` | yes |
+
 ## Example
 
 ```python
@@ -26,7 +39,7 @@ def main() -> None:
     sdk = TurbineClient(cfg)
 
     with sdk.graphql() as client:
-        resp = client.query_get_vuln_reachability(get_vuln_reachability_args=GetVulnReachabilityInput(asset_id='asset_123', advisory_id='id_123', identification_ids=['example']))
+        resp = client.query_get_vuln_reachability(get_vuln_reachability_args=GetVulnReachabilityInput(asset_id='asset_123', advisory_id='CVE-2024-1234', identification_ids=['value']))
         print(resp.model_dump())
 
 

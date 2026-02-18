@@ -9,6 +9,14 @@ List all organizations the current user is authorized to access.
 | name | type | required |
 | --- | --- | --- |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `userOrgs[]` | `object` | yes |
+| `userOrgs[].DisplayName` | `string` | no |
+| `userOrgs[].Id` | `string` | no |
+
 ## Example
 
 ```python

@@ -10,6 +10,16 @@ List secret types discovered with their occurrence counts.
 | --- | --- | --- |
 | `secret_types_and_count_args` | `SecretTypesAndCountInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `secretTypesAndCount` | `object` | yes |
+| `secretTypesAndCount.totalTypes` | `integer` | yes |
+| `secretTypesAndCount.typeCounts[]` | `object` | yes |
+| `secretTypesAndCount.typeCounts[].count` | `integer` | yes |
+| `secretTypesAndCount.typeCounts[].type` | `SecretType` | yes |
+
 ## Example
 
 ```python

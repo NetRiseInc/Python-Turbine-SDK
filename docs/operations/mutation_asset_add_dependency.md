@@ -10,6 +10,14 @@ Manually inject a missing dependency component into an asset's inventory.
 | --- | --- | --- |
 | `asset_add_dependency_args` | `AddDependencyInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `asset` | `object` | yes |
+| `asset.addDependency` | `object` | yes |
+| `asset.addDependency.err` | `string` | yes |
+
 ## Example
 
 ```python
@@ -30,7 +38,7 @@ def main() -> None:
     sdk = TurbineClient(cfg)
 
     with sdk.graphql() as client:
-        resp = client.mutation_asset_add_dependency(asset_add_dependency_args=AddDependencyInput(composed_asset_id='asset_123', dependency_fields=DependencyDetailsInput(name='example', type=ComponentType.UNSPECIFIED)))
+        resp = client.mutation_asset_add_dependency(asset_add_dependency_args=AddDependencyInput(composed_asset_id='composed_asset_123', dependency_fields=DependencyDetailsInput(name='my-example', type=ComponentType.UNSPECIFIED)))
         print(resp.model_dump())
 
 

@@ -10,6 +10,15 @@ Generate a URL to download a list of all files.
 | --- | --- | --- |
 | `download_file_list_args` | `FileListDownloadInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `download` | `object` | yes |
+| `download.fileList` | `object` | no |
+| `download.fileList.downloadUrlsList[]` | `string` | yes |
+| `download.fileList.pathsList[]` | `string` | yes |
+
 ## Example
 
 ```python

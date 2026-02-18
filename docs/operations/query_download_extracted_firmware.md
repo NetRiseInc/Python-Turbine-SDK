@@ -10,6 +10,15 @@ Generate a URL to download the full unpacked file system.
 | --- | --- | --- |
 | `download_extracted_firmware_args` | `ExtractedFirmwareDownloadInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `download` | `object` | yes |
+| `download.extractedFirmware` | `object` | no |
+| `download.extractedFirmware.downloadUrlsList[]` | `string` | yes |
+| `download.extractedFirmware.pathsList[]` | `string` | yes |
+
 ## Example
 
 ```python

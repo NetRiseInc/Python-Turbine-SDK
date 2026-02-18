@@ -9,6 +9,15 @@ Check how the tenant organization is configured.
 | name | type | required |
 | --- | --- | --- |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `orgLevelSettings` | `object` | yes |
+| `orgLevelSettings.idleTimeoutSeconds` | `integer` | yes |
+| `orgLevelSettings.idleTimoutEnabled` | `boolean` | yes |
+| `orgLevelSettings.riseAiInsightsReportEnabled` | `boolean` | yes |
+
 ## Example
 
 ```python

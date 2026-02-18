@@ -10,6 +10,12 @@ Associate a list of existing asset groups with selected assets.
 | --- | --- | --- |
 | `add_asset_groups_to_assets_args` | `AddAssetGroupsToAssetsInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `addAssetGroupsToAssets` | `boolean` | no |
+
 ## Example
 
 ```python
@@ -26,7 +32,7 @@ def main() -> None:
     sdk = TurbineClient(cfg)
 
     with sdk.graphql() as client:
-        resp = client.mutation_add_asset_groups_to_assets(add_asset_groups_to_assets_args=AddAssetGroupsToAssetsInput(asset_ids=['example']))
+        resp = client.mutation_add_asset_groups_to_assets(add_asset_groups_to_assets_args=AddAssetGroupsToAssetsInput(asset_ids=['value']))
         print(resp.model_dump())
 
 

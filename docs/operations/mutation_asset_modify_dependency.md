@@ -10,6 +10,14 @@ Update metadata or details for a manually added asset dependency.
 | --- | --- | --- |
 | `asset_modify_dependency_args` | `ModifyDependencyInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `asset` | `object` | yes |
+| `asset.modifyDependency` | `object` | yes |
+| `asset.modifyDependency.err` | `string` | yes |
+
 ## Example
 
 ```python
@@ -31,7 +39,7 @@ def main() -> None:
     sdk = TurbineClient(cfg)
 
     with sdk.graphql() as client:
-        resp = client.mutation_asset_modify_dependency(asset_modify_dependency_args=ModifyDependencyInput(identification=IdentificationInput(composed_asset_id='asset_123', identification_ids=[None  # TODO: fill]), dependency_fields=DependencyDetailsInput(name='example', type=ComponentType.UNSPECIFIED)))
+        resp = client.mutation_asset_modify_dependency(asset_modify_dependency_args=ModifyDependencyInput(identification=IdentificationInput(composed_asset_id='composed_asset_123', identification_ids=[None  # TODO: fill]), dependency_fields=DependencyDetailsInput(name='my-example', type=ComponentType.UNSPECIFIED)))
         print(resp.model_dump())
 
 

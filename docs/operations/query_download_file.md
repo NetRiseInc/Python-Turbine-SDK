@@ -10,6 +10,15 @@ Create a secure link to download a specific individual file.
 | --- | --- | --- |
 | `download_file_args` | `FileDownloadInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `download` | `object` | yes |
+| `download.file` | `object` | no |
+| `download.file.downloadUrlsList[]` | `string` | yes |
+| `download.file.pathsList[]` | `string` | yes |
+
 ## Example
 
 ```python

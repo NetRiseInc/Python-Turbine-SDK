@@ -10,6 +10,50 @@ Bulk apply VEX remediation status to multiple vulnerabilities on assets.
 | --- | --- | --- |
 | `remediate_asset_vulnerabilities_args` | `CreateAssetVulnerabilityRemediationsInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `remediateAssetVulnerabilities[]` | `object` | no |
+| `remediateAssetVulnerabilities[].id` | `string` | no |
+| `remediateAssetVulnerabilities[].attackComplexity` | `string` | yes |
+| `remediateAssetVulnerabilities[].attackVector` | `string` | yes |
+| `remediateAssetVulnerabilities[].correlations[]` | `object` | yes |
+| `remediateAssetVulnerabilities[].correlations[].artifact` | `string` | yes |
+| `remediateAssetVulnerabilities[].correlations[].assetId` | `string` | yes |
+| `remediateAssetVulnerabilities[].correlations[].assetName` | `string` | yes |
+| `remediateAssetVulnerabilities[].correlations[].location` | `string` | yes |
+| `remediateAssetVulnerabilities[].correlations[].risk` | `object` | yes |
+| `remediateAssetVulnerabilities[].correlations[].risk.category` | `RiskCategory` | yes |
+| `remediateAssetVulnerabilities[].correlations[].risk.rawScore` | `float` | yes |
+| `remediateAssetVulnerabilities[].correlations[].risk.score` | `float` | yes |
+| `remediateAssetVulnerabilities[].correlations[].updatedAt` | `string` | yes |
+| `remediateAssetVulnerabilities[].correlationsCount` | `integer` | yes |
+| `remediateAssetVulnerabilities[].currentRemediation` | `object` | yes |
+| `remediateAssetVulnerabilities[].currentRemediation.assetId` | `string` | yes |
+| `remediateAssetVulnerabilities[].currentRemediation.author` | `string` | no |
+| `remediateAssetVulnerabilities[].currentRemediation.createdAt` | `string` | no |
+| `remediateAssetVulnerabilities[].currentRemediation.description` | `string` | yes |
+| `remediateAssetVulnerabilities[].currentRemediation.identificationIds[]` | `string` | yes |
+| `remediateAssetVulnerabilities[].currentRemediation.justification` | `VexJustification` | yes |
+| `remediateAssetVulnerabilities[].currentRemediation.response` | `RemediationResponses` | yes |
+| `remediateAssetVulnerabilities[].currentRemediation.status` | `VexStatus` | no |
+| `remediateAssetVulnerabilities[].currentRemediation.vulnerabilityId` | `string` | no |
+| `remediateAssetVulnerabilities[].cve` | `string` | yes |
+| `remediateAssetVulnerabilities[].cvssScore` | `float` | yes |
+| `remediateAssetVulnerabilities[].epssPercentile` | `float` | yes |
+| `remediateAssetVulnerabilities[].epssScore` | `float` | yes |
+| `remediateAssetVulnerabilities[].filePath` | `string` | yes |
+| `remediateAssetVulnerabilities[].fixVersions[]` | `string` | yes |
+| `remediateAssetVulnerabilities[].identificationIds[]` | `string` | yes |
+| `remediateAssetVulnerabilities[].inKnownExploitedVulnerabilities` | `boolean` | yes |
+| `remediateAssetVulnerabilities[].isReachable` | `boolean` | yes |
+| `remediateAssetVulnerabilities[].maturity` | `string` | yes |
+| `remediateAssetVulnerabilities[].name` | `string` | yes |
+| `remediateAssetVulnerabilities[].severity` | `string` | yes |
+| `remediateAssetVulnerabilities[].vendor` | `string` | yes |
+| `remediateAssetVulnerabilities[].version` | `string` | yes |
+
 ## Example
 
 ```python

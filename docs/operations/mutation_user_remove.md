@@ -10,6 +10,14 @@ Remove a user from the organization without deleting their account.
 | --- | --- | --- |
 | `user_remove_args` | `UserInput` | `true` |
 
+## Response Schema
+
+| Field | Type | Nullable |
+| --- | --- | --- |
+| `user` | `object` | yes |
+| `user.remove` | `object` | yes |
+| `user.remove.err` | `string` | yes |
+
 ## Example
 
 ```python
