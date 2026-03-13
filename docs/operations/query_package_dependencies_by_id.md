@@ -73,6 +73,7 @@ View the dependency tree hierarchy for a specific software package.
 | `packageDependenciesById.associatedFiles[].component.license[]` | `string` | yes |
 | `packageDependenciesById.associatedFiles[].component.name` | `string` | no |
 | `packageDependenciesById.associatedFiles[].component.namespace` | `string` | yes |
+| `packageDependenciesById.associatedFiles[].component.onDisk` | `boolean` | yes |
 | `packageDependenciesById.associatedFiles[].component.operatingSystem` | `string` | yes |
 | `packageDependenciesById.associatedFiles[].component.operatingSystemKernelVersion` | `string` | yes |
 | `packageDependenciesById.associatedFiles[].component.package` | `object` | yes |
@@ -148,6 +149,7 @@ View the dependency tree hierarchy for a specific software package.
 | `packageDependenciesById.dependencies.dependents[].component.license[]` | `string` | yes |
 | `packageDependenciesById.dependencies.dependents[].component.name` | `string` | no |
 | `packageDependenciesById.dependencies.dependents[].component.namespace` | `string` | yes |
+| `packageDependenciesById.dependencies.dependents[].component.onDisk` | `boolean` | yes |
 | `packageDependenciesById.dependencies.dependents[].component.operatingSystem` | `string` | yes |
 | `packageDependenciesById.dependencies.dependents[].component.operatingSystemKernelVersion` | `string` | yes |
 | `packageDependenciesById.dependencies.dependents[].component.package` | `object` | yes |
@@ -196,6 +198,7 @@ View the dependency tree hierarchy for a specific software package.
 | `packageDependenciesById.dependencies.direct[].component.license[]` | `string` | yes |
 | `packageDependenciesById.dependencies.direct[].component.name` | `string` | no |
 | `packageDependenciesById.dependencies.direct[].component.namespace` | `string` | yes |
+| `packageDependenciesById.dependencies.direct[].component.onDisk` | `boolean` | yes |
 | `packageDependenciesById.dependencies.direct[].component.operatingSystem` | `string` | yes |
 | `packageDependenciesById.dependencies.direct[].component.operatingSystemKernelVersion` | `string` | yes |
 | `packageDependenciesById.dependencies.direct[].component.package` | `object` | yes |
@@ -244,6 +247,7 @@ View the dependency tree hierarchy for a specific software package.
 | `packageDependenciesById.dependencies.indirect[].component.license[]` | `string` | yes |
 | `packageDependenciesById.dependencies.indirect[].component.name` | `string` | no |
 | `packageDependenciesById.dependencies.indirect[].component.namespace` | `string` | yes |
+| `packageDependenciesById.dependencies.indirect[].component.onDisk` | `boolean` | yes |
 | `packageDependenciesById.dependencies.indirect[].component.operatingSystem` | `string` | yes |
 | `packageDependenciesById.dependencies.indirect[].component.operatingSystemKernelVersion` | `string` | yes |
 | `packageDependenciesById.dependencies.indirect[].component.package` | `object` | yes |

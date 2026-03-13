@@ -44,6 +44,11 @@ from .enums import (
     ListFilesSortField,
     MisconfigurationsField,
     NewSBOMFindingsSelection,
+    NotificationConfigurationChannel,
+    NotificationConfigurationType,
+    NotificationEventKind,
+    NotificationEventThresholdField,
+    NotificationEventThresholdOperator,
     NotificationField,
     NotificationParser,
     NotificationSettingsType,
@@ -78,7 +83,66 @@ from .enums import (
 )
 
 
+class IdentifiedComponentsPreviewInput(BaseModel):
+    """Org-level: which component identification methods are enabled.
+    Each field corresponds to one method (e.g. symbol index, hashes, signatures).
+    Used when fetching or filtering org component data by verification method."""
+
+    symbol_index_enabled: Optional[bool] = Field(
+        alias="symbolIndexEnabled", default=None
+    )
+    kernel_module_enabled: Optional[bool] = Field(
+        alias="kernelModuleEnabled", default=None
+    )
+    curated_hash_enabled: Optional[bool] = Field(
+        alias="curatedHashEnabled", default=None
+    )
+    legacy_hash_enabled: Optional[bool] = Field(alias="legacyHashEnabled", default=None)
+    package_manifest_enabled: Optional[bool] = Field(
+        alias="packageManifestEnabled", default=None
+    )
+    signature_enabled: Optional[bool] = Field(alias="signatureEnabled", default=None)
+    pe_meta_data_enabled: Optional[bool] = Field(
+        alias="peMetaDataEnabled", default=None
+    )
+    library_version_enabled: Optional[bool] = Field(
+        alias="libraryVersionEnabled", default=None
+    )
+    library_name_enabled: Optional[bool] = Field(
+        alias="libraryNameEnabled", default=None
+    )
+    binary_fingerprint_enabled: Optional[bool] = Field(
+        alias="binaryFingerprintEnabled", default=None
+    )
+
+
 class OrgLevelSettingsInput(BaseModel):
+    symbol_index_enabled: Optional[bool] = Field(
+        alias="symbolIndexEnabled", default=None
+    )
+    kernel_module_enabled: Optional[bool] = Field(
+        alias="kernelModuleEnabled", default=None
+    )
+    curated_hash_enabled: Optional[bool] = Field(
+        alias="curatedHashEnabled", default=None
+    )
+    legacy_hash_enabled: Optional[bool] = Field(alias="legacyHashEnabled", default=None)
+    package_manifest_enabled: Optional[bool] = Field(
+        alias="packageManifestEnabled", default=None
+    )
+    signature_enabled: Optional[bool] = Field(alias="signatureEnabled", default=None)
+    pe_meta_data_enabled: Optional[bool] = Field(
+        alias="peMetaDataEnabled", default=None
+    )
+    library_version_enabled: Optional[bool] = Field(
+        alias="libraryVersionEnabled", default=None
+    )
+    library_name_enabled: Optional[bool] = Field(
+        alias="libraryNameEnabled", default=None
+    )
+    binary_fingerprint_enabled: Optional[bool] = Field(
+        alias="binaryFingerprintEnabled", default=None
+    )
     idle_timout_enabled: bool = Field(alias="idleTimoutEnabled")
     idle_timeout_seconds: Optional[int] = Field(
         alias="idleTimeoutSeconds", default=None
@@ -396,6 +460,92 @@ class SbomFindingsControlInput(BaseModel):
 
 class UserManagementControlInput(BaseModel):
     events: Optional[list[UserManagementEventSelection]] = None
+
+
+class ListNotificationConfigurationsInput(BaseModel):
+    cursor: Optional["Cursor"] = None
+    "Cursor for pagination. Use `first` to limit the number of configurations returned."
+
+
+class CreateNotificationConfigurationInput(BaseModel):
+    """Payload for creating a notification configuration."""
+
+    configuration: "NotificationConfigurationInput"
+
+
+class UpdateNotificationConfigurationInput(BaseModel):
+    """Payload for updating a notification configuration."""
+
+    configuration: "NotificationConfigurationInput"
+
+
+class DeleteNotificationConfigurationInput(BaseModel):
+    """Payload for deleting a notification configuration."""
+
+    id: str
+
+
+class NotificationConfigurationInput(BaseModel):
+    """Input shape matching NotificationConfiguration (excluding read-only fields)."""
+
+    id: Optional[str] = None
+    disabled: Optional[bool] = None
+    silenced: Optional[bool] = None
+    type: NotificationConfigurationType
+    channel: NotificationConfigurationChannel
+    interval_seconds: Optional[float] = Field(alias="intervalSeconds", default=None)
+    "Interval between deliveries in seconds (e.g. 3600). Not relevant for APPLICATION channel."
+    inventory_scopes: Optional[list["NotificationInventoryScopeInput"]] = Field(
+        alias="inventoryScopes", default=None
+    )
+    event_scopes: list["NotificationEventScopeInput"] = Field(alias="eventScopes")
+    channel_configuration: Optional["NotificationChannelConfigurationInput"] = Field(
+        alias="channelConfiguration", default=None
+    )
+    "Channel-specific config; exactly one variant must be set (matches channel). Oneof: webhook | email | application."
+
+
+class NotificationChannelConfigurationInput(BaseModel):
+    """Oneof: exactly one of webhook, email, or application must be set."""
+
+    webhook: Optional["NotificationConfigurationWebhookInput"] = None
+    email: Optional["NotificationConfigurationEmailInput"] = None
+    application: Optional["NotificationConfigurationApplicationInput"] = None
+
+
+class NotificationInventoryScopeInput(BaseModel):
+    organization: Optional[bool] = None
+    group_id: Optional[str] = Field(alias="groupId", default=None)
+    asset_id: Optional[str] = Field(alias="assetId", default=None)
+
+
+class NotificationEventScopeInput(BaseModel):
+    event: NotificationEventKind
+    threshold: Optional["NotificationEventThresholdInput"] = None
+
+
+class NotificationEventThresholdInput(BaseModel):
+    key: NotificationEventThresholdField
+    value: str
+    operator: NotificationEventThresholdOperator
+
+
+class NotificationConfigurationWebhookInput(BaseModel):
+    url: str
+
+
+class NotificationConfigurationEmailInput(BaseModel):
+    address: str
+
+
+class NotificationConfigurationApplicationInput(BaseModel):
+    """Application channel has no extra fields, but we keep an explicit input for future extensibility."""
+
+    empty: Optional[bool] = Field(alias="_empty", default=None)
+
+
+class OrgLevelInformationInput(BaseModel):
+    asset_group_ids: Optional[list[str]] = Field(alias="assetGroupIds", default=None)
 
 
 class CursorV3(BaseModel):
@@ -1260,6 +1410,12 @@ UpdateNotificationSettingsInput.model_rebuild()
 NotificationSettingsInput.model_rebuild()
 NotificationPreferenceInput.model_rebuild()
 NotificationControlInput.model_rebuild()
+ListNotificationConfigurationsInput.model_rebuild()
+CreateNotificationConfigurationInput.model_rebuild()
+UpdateNotificationConfigurationInput.model_rebuild()
+NotificationConfigurationInput.model_rebuild()
+NotificationChannelConfigurationInput.model_rebuild()
+NotificationEventScopeInput.model_rebuild()
 PrivateKeysInput.model_rebuild()
 ListPrivateKeysFilter.model_rebuild()
 RemediatePrivateKeysInput.model_rebuild()
