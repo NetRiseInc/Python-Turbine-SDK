@@ -78,6 +78,7 @@ List X.509 certificates and validity status found in the asset.
 | `certificates.edges[].node.privateDsaKey` | `string` | yes |
 | `certificates.edges[].node.publicDsaKey` | `string` | yes |
 | `certificates.edges[].node.publicKeyAlgorithm` | `string` | yes |
+| `certificates.edges[].node.publicKeyMatchHash` | `string` | yes |
 | `certificates.edges[].node.revoked[]` | `string` | yes |
 | `certificates.edges[].node.seed` | `string` | yes |
 | `certificates.edges[].node.selfSigned` | `boolean` | yes |

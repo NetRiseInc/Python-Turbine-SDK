@@ -73,6 +73,7 @@ List all software components and libraries identified in the asset.
 | `dependencies.edges[].node.associatedFiles[].component.license[]` | `string` | yes |
 | `dependencies.edges[].node.associatedFiles[].component.name` | `string` | no |
 | `dependencies.edges[].node.associatedFiles[].component.namespace` | `string` | yes |
+| `dependencies.edges[].node.associatedFiles[].component.onDisk` | `boolean` | yes |
 | `dependencies.edges[].node.associatedFiles[].component.operatingSystem` | `string` | yes |
 | `dependencies.edges[].node.associatedFiles[].component.operatingSystemKernelVersion` | `string` | yes |
 | `dependencies.edges[].node.associatedFiles[].component.path` | `string` | yes |
@@ -130,6 +131,7 @@ List all software components and libraries identified in the asset.
 | `dependencies.edges[].node.dependency.license[]` | `string` | yes |
 | `dependencies.edges[].node.dependency.name` | `string` | no |
 | `dependencies.edges[].node.dependency.namespace` | `string` | yes |
+| `dependencies.edges[].node.dependency.onDisk` | `boolean` | yes |
 | `dependencies.edges[].node.dependency.operatingSystem` | `string` | yes |
 | `dependencies.edges[].node.dependency.operatingSystemKernelVersion` | `string` | yes |
 | `dependencies.edges[].node.dependency.package` | `object` | yes |
@@ -158,7 +160,7 @@ List all software components and libraries identified in the asset.
 | `dependencies.edges[].node.latestRemediation.operationType` | `IdentificationRemediationOperationType` | yes |
 | `dependencies.edges[].node.latestRemediation.reason` | `string` | yes |
 | `dependencies.edges[].node.latestRemediation.remediationAction` | `IdentificationRemediationAction` | yes |
-| `dependencies.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1090d31a0>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `dependencies.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10ab17100>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `dependencies.edges[].node.verification` | `object` | no |
 | `dependencies.edges[].node.verification.cryptographic` | `boolean` | no |
 | `dependencies.edges[].node.verification.functionHashing` | `boolean` | no |

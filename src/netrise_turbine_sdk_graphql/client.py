@@ -40,6 +40,7 @@ from .input_types import (
     GroupedDependenciesInput,
     HashesInput,
     IdentificationInput,
+    IdentifiedComponentsPreviewInput,
     InviteUserInput,
     LicenseInput,
     LicenseIssueInput,
@@ -49,6 +50,7 @@ from .input_types import (
     MatchVulnerabilitiesInput,
     MisconfigurationsInput,
     ModifyDependencyInput,
+    OrgLevelInformationInput,
     OrgLevelSettingsInput,
     PaginatedDetailedVulnerabilitiesInput,
     PaginatedVulnerabilitiesInput,
@@ -148,6 +150,7 @@ from .query_download_firmware import QueryDownloadFirmware
 from .query_get_vuln_reachability import QueryGetVulnReachability
 from .query_grouped_dependencies import QueryGroupedDependencies
 from .query_hashes import QueryHashes
+from .query_identified_components_preview import QueryIdentifiedComponentsPreview
 from .query_license import QueryLicense
 from .query_license_issue import QueryLicenseIssue
 from .query_license_issues import QueryLicenseIssues
@@ -157,6 +160,7 @@ from .query_list_asset_crypto_libraries import QueryListAssetCryptoLibraries
 from .query_match_vulnerabilities import QueryMatchVulnerabilities
 from .query_metrics import QueryMetrics
 from .query_misconfigurations import QueryMisconfigurations
+from .query_org_level_information import QueryOrgLevelInformation
 from .query_org_level_settings import QueryOrgLevelSettings
 from .query_package_dependencies_by_id import QueryPackageDependenciesById
 from .query_private_key_external_filters import QueryPrivateKeyExternalFilters
@@ -1112,6 +1116,7 @@ class Client(BaseClient):
                     privateDsaKey
                     publicDsaKey
                     publicKeyAlgorithm
+                    publicKeyMatchHash
                     revoked
                     seed
                     selfSigned
@@ -1284,6 +1289,7 @@ class Client(BaseClient):
                         license
                         name
                         namespace
+                        onDisk
                         operatingSystem
                         operatingSystemKernelVersion
                         path
@@ -1352,6 +1358,7 @@ class Client(BaseClient):
                       license
                       name
                       namespace
+                      onDisk
                       operatingSystem
                       operatingSystemKernelVersion
                       package {
@@ -1947,6 +1954,67 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return QueryHashes.model_validate(data)
+
+    def query_identified_components_preview(
+        self,
+        identified_components_preview_args: IdentifiedComponentsPreviewInput,
+        **kwargs: Any
+    ) -> QueryIdentifiedComponentsPreview:
+        query = gql(
+            """
+            query QueryIdentifiedComponentsPreview($identifiedComponentsPreview_args: IdentifiedComponentsPreviewInput!) {
+              identifiedComponentsPreview(args: $identifiedComponentsPreview_args) {
+                application {
+                  afterCount
+                  beforeCount
+                }
+                container {
+                  afterCount
+                  beforeCount
+                }
+                device {
+                  afterCount
+                  beforeCount
+                }
+                framework {
+                  afterCount
+                  beforeCount
+                }
+                kernel {
+                  afterCount
+                  beforeCount
+                }
+                kernelModule {
+                  afterCount
+                  beforeCount
+                }
+                library {
+                  afterCount
+                  beforeCount
+                }
+                os {
+                  afterCount
+                  beforeCount
+                }
+                package {
+                  afterCount
+                  beforeCount
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "identifiedComponentsPreview_args": identified_components_preview_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryIdentifiedComponentsPreview",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryIdentifiedComponentsPreview.model_validate(data)
 
     def query_license(self, license_args: LicenseInput, **kwargs: Any) -> QueryLicense:
         query = gql(
@@ -2554,14 +2622,94 @@ class Client(BaseClient):
         data = self.get_data(response)
         return QueryMisconfigurations.model_validate(data)
 
+    def query_org_level_information(
+        self, org_level_information_args: OrgLevelInformationInput, **kwargs: Any
+    ) -> QueryOrgLevelInformation:
+        query = gql(
+            """
+            query QueryOrgLevelInformation($orgLevelInformation_args: OrgLevelInformationInput!) {
+              orgLevelInformation(args: $orgLevelInformation_args) {
+                lastUpdatedAt
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "orgLevelInformation_args": org_level_information_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryOrgLevelInformation",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryOrgLevelInformation.model_validate(data)
+
     def query_org_level_settings(self, **kwargs: Any) -> QueryOrgLevelSettings:
         query = gql(
             """
             query QueryOrgLevelSettings {
               orgLevelSettings {
+                advancedSettingsJobsProcessing
+                binaryFingerprintEnabled {
+                  componentCount
+                  confidence
+                  enabled
+                }
+                curatedHashEnabled {
+                  componentCount
+                  confidence
+                  enabled
+                }
                 idleTimeoutSeconds
                 idleTimoutEnabled
+                kernelModuleEnabled {
+                  componentCount
+                  confidence
+                  enabled
+                }
+                legacyHashEnabled {
+                  componentCount
+                  confidence
+                  enabled
+                }
+                libraryNameEnabled {
+                  componentCount
+                  confidence
+                  enabled
+                }
+                libraryVersionEnabled {
+                  componentCount
+                  confidence
+                  enabled
+                }
+                packageManifestEnabled {
+                  componentCount
+                  confidence
+                  enabled
+                }
+                peMetaDataEnabled {
+                  componentCount
+                  confidence
+                  enabled
+                }
                 riseAiInsightsReportEnabled
+                signatureEnabled {
+                  componentCount
+                  confidence
+                  enabled
+                }
+                symbolIndexEnabled {
+                  componentCount
+                  confidence
+                  enabled
+                }
+                userModifiedEnabled {
+                  componentCount
+                  confidence
+                  enabled
+                }
               }
             }
             """
@@ -2649,6 +2797,7 @@ class Client(BaseClient):
                     license
                     name
                     namespace
+                    onDisk
                     operatingSystem
                     operatingSystemKernelVersion
                     package {
@@ -2739,6 +2888,7 @@ class Client(BaseClient):
                       license
                       name
                       namespace
+                      onDisk
                       operatingSystem
                       operatingSystemKernelVersion
                       package {
@@ -2794,6 +2944,7 @@ class Client(BaseClient):
                       license
                       name
                       namespace
+                      onDisk
                       operatingSystem
                       operatingSystemKernelVersion
                       package {
@@ -2849,6 +3000,7 @@ class Client(BaseClient):
                       license
                       name
                       namespace
+                      onDisk
                       operatingSystem
                       operatingSystemKernelVersion
                       package {

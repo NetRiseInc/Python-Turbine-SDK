@@ -33,7 +33,7 @@ List license compliance issues identified across asset components.
 | `licenseIssues.edges[].node.issueDescription` | `string` | yes |
 | `licenseIssues.edges[].node.issueId` | `string` | no |
 | `licenseIssues.edges[].node.issueName` | `string` | no |
-| `licenseIssues.edges[].node.lastModified` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1090d31a0>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `licenseIssues.edges[].node.lastModified` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10ab17100>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `licenseIssues.edges[].node.license` | `object` | yes |
 | `licenseIssues.edges[].node.license.additionalCounts` | `object` | yes |
 | `licenseIssues.edges[].node.license.additionalCounts.associatedComponents` | `integer` | yes |
@@ -47,7 +47,7 @@ List license compliance issues identified across asset components.
 | `licenseIssues.edges[].node.license.url` | `string` | yes |
 | `licenseIssues.edges[].node.potentialSolution` | `string` | yes |
 | `licenseIssues.edges[].node.remediation` | `object` | yes |
-| `licenseIssues.edges[].node.remediation.createdTime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1090d31a0>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `licenseIssues.edges[].node.remediation.createdTime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10ab17100>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `licenseIssues.edges[].node.remediation.detail` | `string` | yes |
 | `licenseIssues.edges[].node.remediation.user` | `string` | yes |
 | `licenseIssues.edges[].node.severity` | `LicenseIssueSeverity` | yes |

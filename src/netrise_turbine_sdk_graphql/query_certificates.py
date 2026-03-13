@@ -71,6 +71,7 @@ class QueryCertificatesCertificatesEdgesNode(BaseModel):
     private_dsa_key: Optional[str] = Field(alias="privateDsaKey")
     public_dsa_key: Optional[str] = Field(alias="publicDsaKey")
     public_key_algorithm: Optional[str] = Field(alias="publicKeyAlgorithm")
+    public_key_match_hash: Optional[str] = Field(alias="publicKeyMatchHash")
     revoked: list[Optional[str]]
     seed: Optional[str]
     self_signed: Optional[bool] = Field(alias="selfSigned")

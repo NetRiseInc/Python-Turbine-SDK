@@ -69,6 +69,7 @@ class QueryPackageDependenciesByIdPackageDependenciesByIdAssociatedFilesComponen
     license: Optional[list[Optional[str]]]
     name: str
     namespace: Optional[str]
+    on_disk: Optional[bool] = Field(alias="onDisk")
     operating_system: Optional[str] = Field(alias="operatingSystem")
     operating_system_kernel_version: Optional[str] = Field(
         alias="operatingSystemKernelVersion"
@@ -328,6 +329,7 @@ class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDependentsC
     license: Optional[list[Optional[str]]]
     name: str
     namespace: Optional[str]
+    on_disk: Optional[bool] = Field(alias="onDisk")
     operating_system: Optional[str] = Field(alias="operatingSystem")
     operating_system_kernel_version: Optional[str] = Field(
         alias="operatingSystemKernelVersion"
@@ -424,6 +426,7 @@ class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDirectCompo
     license: Optional[list[Optional[str]]]
     name: str
     namespace: Optional[str]
+    on_disk: Optional[bool] = Field(alias="onDisk")
     operating_system: Optional[str] = Field(alias="operatingSystem")
     operating_system_kernel_version: Optional[str] = Field(
         alias="operatingSystemKernelVersion"
@@ -520,6 +523,7 @@ class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesIndirectCom
     license: Optional[list[Optional[str]]]
     name: str
     namespace: Optional[str]
+    on_disk: Optional[bool] = Field(alias="onDisk")
     operating_system: Optional[str] = Field(alias="operatingSystem")
     operating_system_kernel_version: Optional[str] = Field(
         alias="operatingSystemKernelVersion"

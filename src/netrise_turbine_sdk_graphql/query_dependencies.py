@@ -141,6 +141,7 @@ class QueryDependenciesDependenciesEdgesNodeAssociatedFilesComponent(BaseModel):
     license: Optional[list[Optional[str]]]
     name: str
     namespace: Optional[str]
+    on_disk: Optional[bool] = Field(alias="onDisk")
     operating_system: Optional[str] = Field(alias="operatingSystem")
     operating_system_kernel_version: Optional[str] = Field(
         alias="operatingSystemKernelVersion"
@@ -210,6 +211,7 @@ class QueryDependenciesDependenciesEdgesNodeDependency(BaseModel):
     license: Optional[list[Optional[str]]]
     name: str
     namespace: Optional[str]
+    on_disk: Optional[bool] = Field(alias="onDisk")
     operating_system: Optional[str] = Field(alias="operatingSystem")
     operating_system_kernel_version: Optional[str] = Field(
         alias="operatingSystemKernelVersion"

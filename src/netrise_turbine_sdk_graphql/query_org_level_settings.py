@@ -6,6 +6,7 @@ from typing import Optional
 from pydantic import Field
 
 from .base_model import BaseModel
+from .enums import Confidence
 
 
 class QueryOrgLevelSettings(BaseModel):
@@ -15,11 +16,114 @@ class QueryOrgLevelSettings(BaseModel):
 
 
 class QueryOrgLevelSettingsOrgLevelSettings(BaseModel):
+    advanced_settings_jobs_processing: Optional[bool] = Field(
+        alias="advancedSettingsJobsProcessing"
+    )
+    binary_fingerprint_enabled: Optional[
+        "QueryOrgLevelSettingsOrgLevelSettingsBinaryFingerprintEnabled"
+    ] = Field(alias="binaryFingerprintEnabled")
+    curated_hash_enabled: Optional[
+        "QueryOrgLevelSettingsOrgLevelSettingsCuratedHashEnabled"
+    ] = Field(alias="curatedHashEnabled")
     idle_timeout_seconds: Optional[int] = Field(alias="idleTimeoutSeconds")
     idle_timout_enabled: Optional[bool] = Field(alias="idleTimoutEnabled")
+    kernel_module_enabled: Optional[
+        "QueryOrgLevelSettingsOrgLevelSettingsKernelModuleEnabled"
+    ] = Field(alias="kernelModuleEnabled")
+    legacy_hash_enabled: Optional[
+        "QueryOrgLevelSettingsOrgLevelSettingsLegacyHashEnabled"
+    ] = Field(alias="legacyHashEnabled")
+    library_name_enabled: Optional[
+        "QueryOrgLevelSettingsOrgLevelSettingsLibraryNameEnabled"
+    ] = Field(alias="libraryNameEnabled")
+    library_version_enabled: Optional[
+        "QueryOrgLevelSettingsOrgLevelSettingsLibraryVersionEnabled"
+    ] = Field(alias="libraryVersionEnabled")
+    package_manifest_enabled: Optional[
+        "QueryOrgLevelSettingsOrgLevelSettingsPackageManifestEnabled"
+    ] = Field(alias="packageManifestEnabled")
+    pe_meta_data_enabled: Optional[
+        "QueryOrgLevelSettingsOrgLevelSettingsPeMetaDataEnabled"
+    ] = Field(alias="peMetaDataEnabled")
     rise_ai_insights_report_enabled: Optional[bool] = Field(
         alias="riseAiInsightsReportEnabled"
     )
+    signature_enabled: Optional[
+        "QueryOrgLevelSettingsOrgLevelSettingsSignatureEnabled"
+    ] = Field(alias="signatureEnabled")
+    symbol_index_enabled: Optional[
+        "QueryOrgLevelSettingsOrgLevelSettingsSymbolIndexEnabled"
+    ] = Field(alias="symbolIndexEnabled")
+    user_modified_enabled: Optional[
+        "QueryOrgLevelSettingsOrgLevelSettingsUserModifiedEnabled"
+    ] = Field(alias="userModifiedEnabled")
+
+
+class QueryOrgLevelSettingsOrgLevelSettingsBinaryFingerprintEnabled(BaseModel):
+    component_count: Optional[int] = Field(alias="componentCount")
+    confidence: Optional[Confidence]
+    enabled: Optional[bool]
+
+
+class QueryOrgLevelSettingsOrgLevelSettingsCuratedHashEnabled(BaseModel):
+    component_count: Optional[int] = Field(alias="componentCount")
+    confidence: Optional[Confidence]
+    enabled: Optional[bool]
+
+
+class QueryOrgLevelSettingsOrgLevelSettingsKernelModuleEnabled(BaseModel):
+    component_count: Optional[int] = Field(alias="componentCount")
+    confidence: Optional[Confidence]
+    enabled: Optional[bool]
+
+
+class QueryOrgLevelSettingsOrgLevelSettingsLegacyHashEnabled(BaseModel):
+    component_count: Optional[int] = Field(alias="componentCount")
+    confidence: Optional[Confidence]
+    enabled: Optional[bool]
+
+
+class QueryOrgLevelSettingsOrgLevelSettingsLibraryNameEnabled(BaseModel):
+    component_count: Optional[int] = Field(alias="componentCount")
+    confidence: Optional[Confidence]
+    enabled: Optional[bool]
+
+
+class QueryOrgLevelSettingsOrgLevelSettingsLibraryVersionEnabled(BaseModel):
+    component_count: Optional[int] = Field(alias="componentCount")
+    confidence: Optional[Confidence]
+    enabled: Optional[bool]
+
+
+class QueryOrgLevelSettingsOrgLevelSettingsPackageManifestEnabled(BaseModel):
+    component_count: Optional[int] = Field(alias="componentCount")
+    confidence: Optional[Confidence]
+    enabled: Optional[bool]
+
+
+class QueryOrgLevelSettingsOrgLevelSettingsPeMetaDataEnabled(BaseModel):
+    component_count: Optional[int] = Field(alias="componentCount")
+    confidence: Optional[Confidence]
+    enabled: Optional[bool]
+
+
+class QueryOrgLevelSettingsOrgLevelSettingsSignatureEnabled(BaseModel):
+    component_count: Optional[int] = Field(alias="componentCount")
+    confidence: Optional[Confidence]
+    enabled: Optional[bool]
+
+
+class QueryOrgLevelSettingsOrgLevelSettingsSymbolIndexEnabled(BaseModel):
+    component_count: Optional[int] = Field(alias="componentCount")
+    confidence: Optional[Confidence]
+    enabled: Optional[bool]
+
+
+class QueryOrgLevelSettingsOrgLevelSettingsUserModifiedEnabled(BaseModel):
+    component_count: Optional[int] = Field(alias="componentCount")
+    confidence: Optional[Confidence]
+    enabled: Optional[bool]
 
 
 QueryOrgLevelSettings.model_rebuild()
+QueryOrgLevelSettingsOrgLevelSettings.model_rebuild()
