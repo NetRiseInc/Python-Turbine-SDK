@@ -62,66 +62,6 @@ load_dotenv()  # Your custom loading logic
 cfg = TurbineClientConfig.from_env(load_env_file=False)
 ```
 
-## SSL / TLS Verification
-
-By default the SDK verifies SSL certificates using the system CA bundle. In enterprise environments where a corporate proxy intercepts TLS traffic with a self-signed certificate, you may see:
-
-```
-ssl.SSLError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain
-```
-
-Use the `verify` parameter on `TurbineClient` to configure certificate verification. It accepts the same values as `httpx.Client(verify=...)`:
-
-### Custom CA bundle
-
-Point to the PEM file that contains your corporate root CA:
-
-```python
-sdk = TurbineClient(
-    TurbineClientConfig.from_env(),
-    verify="/path/to/corporate-ca-bundle.pem",
-)
-```
-
-### Disable verification (debugging only)
-
-> **Warning**: Disabling verification exposes the connection to man-in-the-middle attacks. Only use this for local debugging -- never in production.
-
-```python
-sdk = TurbineClient(
-    TurbineClientConfig.from_env(),
-    verify=False,
-)
-```
-
-### Custom `ssl.SSLContext`
-
-For full control, pass an `ssl.SSLContext`:
-
-```python
-import ssl
-
-ctx = ssl.create_default_context(cafile="/path/to/corporate-ca-bundle.pem")
-sdk = TurbineClient(
-    TurbineClientConfig.from_env(),
-    verify=ctx,
-)
-```
-
-### Using a custom `httpx_client`
-
-When you supply your own `httpx.Client` via the `httpx_client` parameter, the SDK does **not** override its SSL settings -- you control them directly:
-
-```python
-import httpx
-
-http = httpx.Client(verify="/path/to/corporate-ca-bundle.pem", timeout=60)
-sdk = TurbineClient(
-    TurbineClientConfig.from_env(),
-    httpx_client=http,
-)
-```
-
 ## Helper Methods
 
 The SDK provides convenience methods on `TurbineClient` for common workflows.
@@ -260,7 +200,7 @@ for file_path, resp in results:
 - [query_get_vuln_reachability](operations/query_get_vuln_reachability.md): Determine if a vulnerability can be executed via system paths.
 - [query_grouped_dependencies](operations/query_grouped_dependencies.md): View dependencies aggregated by vendor, license, or specific component type.
 - [query_hashes](operations/query_hashes.md): List cryptographic hashes for files identified within the asset filesystem.
-- [query_identified_components_preview](operations/query_identified_components_preview.md): Preview how component identification counts change with different detection method settings.
+- [query_identified_components_preview](operations/query_identified_components_preview.md): Return organization-wide component counts filtered by enabled identification methods, with before/after deltas when verification settings change.
 - [query_license](operations/query_license.md): Retrieve detailed information for a specific software license.
 - [query_license_issue](operations/query_license_issue.md): Get details about a specific license compliance issue.
 - [query_license_issues](operations/query_license_issues.md): List license compliance issues identified across asset components.
@@ -270,7 +210,7 @@ for file_path, resp in results:
 - [query_match_vulnerabilities](operations/query_match_vulnerabilities.md): Find specific vulnerabilities matching a provided component identifier or package.
 - [query_metrics](operations/query_metrics.md): View organization-wide statistics on asset counts, processing, and risk.
 - [query_misconfigurations](operations/query_misconfigurations.md): List failed security checks and configuration risks found in assets.
-- [query_org_level_information](operations/query_org_level_information.md): Retrieve organization-level metadata such as the last updated timestamp.
+- [query_org_level_information](operations/query_org_level_information.md): Retrieve organization-level metadata such as last-updated time, optionally scoped by asset groups.
 - [query_org_level_settings](operations/query_org_level_settings.md): Check how the tenant organization is configured.
 - [query_package_dependencies_by_id](operations/query_package_dependencies_by_id.md): View the dependency tree hierarchy for a specific software package.
 - [query_private_key_external_filters](operations/query_private_key_external_filters.md): Retrieve available filter options for private key queries.

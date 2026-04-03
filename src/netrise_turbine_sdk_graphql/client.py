@@ -1372,6 +1372,11 @@ class Client(BaseClient):
                       product
                       purls
                       sbomDependenciesCount
+                      scope {
+                        actualScope
+                        description
+                        value
+                      }
                       subtype
                       type
                       vendor
@@ -1390,6 +1395,11 @@ class Client(BaseClient):
                       operationType
                       reason
                       remediationAction
+                    }
+                    scope {
+                      actualScope
+                      description
+                      value
                     }
                     submitDatetime
                     verification {
@@ -2694,6 +2704,7 @@ class Client(BaseClient):
                   confidence
                   enabled
                 }
+                riseAiConversationalGptEnabled
                 riseAiInsightsReportEnabled
                 signatureEnabled {
                   componentCount
@@ -2845,6 +2856,11 @@ class Client(BaseClient):
                     product
                     purls
                     sbomDependenciesCount
+                    scope {
+                      actualScope
+                      description
+                      value
+                    }
                     subtype
                     type
                     vendor
@@ -2902,6 +2918,11 @@ class Client(BaseClient):
                       product
                       purls
                       sbomDependenciesCount
+                      scope {
+                        actualScope
+                        description
+                        value
+                      }
                       subtype
                       type
                       vendor
@@ -2958,6 +2979,11 @@ class Client(BaseClient):
                       product
                       purls
                       sbomDependenciesCount
+                      scope {
+                        actualScope
+                        description
+                        value
+                      }
                       subtype
                       type
                       vendor
@@ -3014,6 +3040,11 @@ class Client(BaseClient):
                       product
                       purls
                       sbomDependenciesCount
+                      scope {
+                        actualScope
+                        description
+                        value
+                      }
                       subtype
                       type
                       vendor

@@ -11,6 +11,7 @@ from .custom_scalars import parse_datetime
 from .enums import (
     Architecture,
     ComponentBadge,
+    ComponentScope,
     ComponentSubType,
     ComponentType,
     Confidence,
@@ -55,6 +56,7 @@ class QueryDependenciesDependenciesEdgesNode(BaseModel):
     latest_remediation: Optional[
         "QueryDependenciesDependenciesEdgesNodeLatestRemediation"
     ] = Field(alias="latestRemediation")
+    scope: Optional[list[Optional["QueryDependenciesDependenciesEdgesNodeScope"]]]
     submit_datetime: Optional[Annotated[datetime, BeforeValidator(parse_datetime)]] = (
         Field(alias="submitDatetime")
     )
@@ -221,6 +223,9 @@ class QueryDependenciesDependenciesEdgesNodeDependency(BaseModel):
     product: Optional[str]
     purls: Optional[list[Optional[str]]]
     sbom_dependencies_count: Optional[int] = Field(alias="sbomDependenciesCount")
+    scope: Optional[
+        list[Optional["QueryDependenciesDependenciesEdgesNodeDependencyScope"]]
+    ]
     subtype: Optional[ComponentSubType]
     type: ComponentType
     vendor: Optional[str]
@@ -256,6 +261,12 @@ class QueryDependenciesDependenciesEdgesNodeDependencyPackage(BaseModel):
     type: Optional[str]
 
 
+class QueryDependenciesDependenciesEdgesNodeDependencyScope(BaseModel):
+    actual_scope: Optional[str] = Field(alias="actualScope")
+    description: Optional[str]
+    value: Optional[ComponentScope]
+
+
 class QueryDependenciesDependenciesEdgesNodeDependencyVersion(BaseModel):
     id: Optional[str]
     alternatives: Optional[list[str]]
@@ -274,6 +285,12 @@ class QueryDependenciesDependenciesEdgesNodeLatestRemediation(BaseModel):
     remediation_action: Optional[IdentificationRemediationAction] = Field(
         alias="remediationAction"
     )
+
+
+class QueryDependenciesDependenciesEdgesNodeScope(BaseModel):
+    actual_scope: Optional[str] = Field(alias="actualScope")
+    description: Optional[str]
+    value: Optional[ComponentScope]
 
 
 class QueryDependenciesDependenciesEdgesNodeVerification(BaseModel):

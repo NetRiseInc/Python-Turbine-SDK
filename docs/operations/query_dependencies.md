@@ -144,6 +144,10 @@ List all software components and libraries identified in the asset.
 | `dependencies.edges[].node.dependency.product` | `string` | yes |
 | `dependencies.edges[].node.dependency.purls[]` | `string` | yes |
 | `dependencies.edges[].node.dependency.sbomDependenciesCount` | `integer` | yes |
+| `dependencies.edges[].node.dependency.scope[]` | `object` | yes |
+| `dependencies.edges[].node.dependency.scope[].actualScope` | `string` | yes |
+| `dependencies.edges[].node.dependency.scope[].description` | `string` | yes |
+| `dependencies.edges[].node.dependency.scope[].value` | `ComponentScope` | yes |
 | `dependencies.edges[].node.dependency.subtype` | `ComponentSubType` | yes |
 | `dependencies.edges[].node.dependency.type` | `ComponentType` | no |
 | `dependencies.edges[].node.dependency.vendor` | `string` | yes |
@@ -160,7 +164,11 @@ List all software components and libraries identified in the asset.
 | `dependencies.edges[].node.latestRemediation.operationType` | `IdentificationRemediationOperationType` | yes |
 | `dependencies.edges[].node.latestRemediation.reason` | `string` | yes |
 | `dependencies.edges[].node.latestRemediation.remediationAction` | `IdentificationRemediationAction` | yes |
-| `dependencies.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10ab17100>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `dependencies.edges[].node.scope[]` | `object` | yes |
+| `dependencies.edges[].node.scope[].actualScope` | `string` | yes |
+| `dependencies.edges[].node.scope[].description` | `string` | yes |
+| `dependencies.edges[].node.scope[].value` | `ComponentScope` | yes |
+| `dependencies.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1093f3060>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `dependencies.edges[].node.verification` | `object` | no |
 | `dependencies.edges[].node.verification.cryptographic` | `boolean` | no |
 | `dependencies.edges[].node.verification.functionHashing` | `boolean` | no |

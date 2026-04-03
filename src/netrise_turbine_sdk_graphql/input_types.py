@@ -45,11 +45,13 @@ from .enums import (
     MisconfigurationsField,
     NewSBOMFindingsSelection,
     NotificationConfigurationChannel,
+    NotificationConfigurationsField,
     NotificationConfigurationType,
     NotificationEventKind,
     NotificationEventThresholdField,
     NotificationEventThresholdOperator,
     NotificationField,
+    NotificationLogsField,
     NotificationParser,
     NotificationSettingsType,
     NotificationSortField,
@@ -146,6 +148,9 @@ class OrgLevelSettingsInput(BaseModel):
     idle_timout_enabled: bool = Field(alias="idleTimoutEnabled")
     idle_timeout_seconds: Optional[int] = Field(
         alias="idleTimeoutSeconds", default=None
+    )
+    rise_ai_conversational_gpt_enabled: Optional[bool] = Field(
+        alias="riseAiConversationalGptEnabled", default=None
     )
     rise_ai_insights_report_enabled: Optional[bool] = Field(
         alias="riseAiInsightsReportEnabled", default=None
@@ -465,18 +470,61 @@ class UserManagementControlInput(BaseModel):
 class ListNotificationConfigurationsInput(BaseModel):
     cursor: Optional["Cursor"] = None
     "Cursor for pagination. Use `first` to limit the number of configurations returned."
+    filter: Optional["NotificationConfigurationsFilter"] = None
+    sort: Optional["NotificationConfigurationsSort"] = None
+
+
+class ListNotificationLogsInput(BaseModel):
+    """Input for listing notification logs."""
+
+    cursor: Optional["Cursor"] = None
+    "Cursor for pagination. Uses `Cursor` / `PageRequest` under the hood."
+    filter: Optional["NotificationLogsFilter"] = None
+    sort: Optional["NotificationLogsSort"] = None
+
+
+class NotificationConfigurationsFilter(BaseModel):
+    fields: Optional[list[Optional["NotificationConfigurationsFilterField"]]] = None
+
+
+class NotificationConfigurationsFilterField(BaseModel):
+    field_name: Optional[NotificationConfigurationsField] = Field(
+        alias="fieldName", default=None
+    )
+    value: Optional[Any] = None
+    operation: Optional[FilterFieldOperation] = None
+
+
+class NotificationConfigurationsSort(BaseModel):
+    field: Optional[NotificationConfigurationsField] = None
+    order: Optional[SortOrder] = None
+
+
+class NotificationLogsFilter(BaseModel):
+    fields: Optional[list[Optional["NotificationLogsFilterField"]]] = None
+
+
+class NotificationLogsFilterField(BaseModel):
+    field_name: Optional[NotificationLogsField] = Field(alias="fieldName", default=None)
+    value: Optional[Any] = None
+    operation: Optional[FilterFieldOperation] = None
+
+
+class NotificationLogsSort(BaseModel):
+    field: Optional[NotificationLogsField] = None
+    order: Optional[SortOrder] = None
 
 
 class CreateNotificationConfigurationInput(BaseModel):
     """Payload for creating a notification configuration."""
 
-    configuration: "NotificationConfigurationInput"
+    configuration: "NotificationConfigurationCreateInput"
 
 
 class UpdateNotificationConfigurationInput(BaseModel):
-    """Payload for updating a notification configuration."""
+    """Payload for updating a notification configuration. Id is required; other fields are optional (only sent fields are updated)."""
 
-    configuration: "NotificationConfigurationInput"
+    configuration: "NotificationConfigurationUpdateInput"
 
 
 class DeleteNotificationConfigurationInput(BaseModel):
@@ -485,15 +533,15 @@ class DeleteNotificationConfigurationInput(BaseModel):
     id: str
 
 
-class NotificationConfigurationInput(BaseModel):
-    """Input shape matching NotificationConfiguration (excluding read-only fields)."""
+class NotificationConfigurationCreateInput(BaseModel):
+    """Input for creating a notification configuration. Id is not set by the client."""
 
-    id: Optional[str] = None
+    name: Optional[str] = None
     disabled: Optional[bool] = None
     silenced: Optional[bool] = None
     type: NotificationConfigurationType
     channel: NotificationConfigurationChannel
-    interval_seconds: Optional[float] = Field(alias="intervalSeconds", default=None)
+    interval_seconds: float = Field(alias="intervalSeconds")
     "Interval between deliveries in seconds (e.g. 3600). Not relevant for APPLICATION channel."
     inventory_scopes: Optional[list["NotificationInventoryScopeInput"]] = Field(
         alias="inventoryScopes", default=None
@@ -501,6 +549,27 @@ class NotificationConfigurationInput(BaseModel):
     event_scopes: list["NotificationEventScopeInput"] = Field(alias="eventScopes")
     channel_configuration: Optional["NotificationChannelConfigurationInput"] = Field(
         alias="channelConfiguration", default=None
+    )
+    "Channel-specific config; exactly one variant must be set (matches channel). Oneof: webhook | email | application."
+
+
+class NotificationConfigurationUpdateInput(BaseModel):
+    """Input for updating a notification configuration. Id is required; other fields are optional."""
+
+    id: str
+    name: str
+    disabled: bool
+    silenced: bool
+    type: NotificationConfigurationType
+    channel: NotificationConfigurationChannel
+    interval_seconds: float = Field(alias="intervalSeconds")
+    "Interval between deliveries in seconds (e.g. 3600). Not relevant for APPLICATION channel."
+    inventory_scopes: Optional[list["NotificationInventoryScopeInput"]] = Field(
+        alias="inventoryScopes", default=None
+    )
+    event_scopes: list["NotificationEventScopeInput"] = Field(alias="eventScopes")
+    channel_configuration: "NotificationChannelConfigurationInput" = Field(
+        alias="channelConfiguration"
     )
     "Channel-specific config; exactly one variant must be set (matches channel). Oneof: webhook | email | application."
 
@@ -1411,9 +1480,13 @@ NotificationSettingsInput.model_rebuild()
 NotificationPreferenceInput.model_rebuild()
 NotificationControlInput.model_rebuild()
 ListNotificationConfigurationsInput.model_rebuild()
+ListNotificationLogsInput.model_rebuild()
+NotificationConfigurationsFilter.model_rebuild()
+NotificationLogsFilter.model_rebuild()
 CreateNotificationConfigurationInput.model_rebuild()
 UpdateNotificationConfigurationInput.model_rebuild()
-NotificationConfigurationInput.model_rebuild()
+NotificationConfigurationCreateInput.model_rebuild()
+NotificationConfigurationUpdateInput.model_rebuild()
 NotificationChannelConfigurationInput.model_rebuild()
 NotificationEventScopeInput.model_rebuild()
 PrivateKeysInput.model_rebuild()

@@ -112,6 +112,10 @@ View the dependency tree hierarchy for a specific software package.
 | `packageDependenciesById.associatedFiles[].component.product` | `string` | yes |
 | `packageDependenciesById.associatedFiles[].component.purls[]` | `string` | yes |
 | `packageDependenciesById.associatedFiles[].component.sbomDependenciesCount` | `integer` | yes |
+| `packageDependenciesById.associatedFiles[].component.scope[]` | `object` | yes |
+| `packageDependenciesById.associatedFiles[].component.scope[].actualScope` | `string` | yes |
+| `packageDependenciesById.associatedFiles[].component.scope[].description` | `string` | yes |
+| `packageDependenciesById.associatedFiles[].component.scope[].value` | `ComponentScope` | yes |
 | `packageDependenciesById.associatedFiles[].component.subtype` | `ComponentSubType` | yes |
 | `packageDependenciesById.associatedFiles[].component.type` | `ComponentType` | no |
 | `packageDependenciesById.associatedFiles[].component.vendor` | `string` | yes |
@@ -162,6 +166,10 @@ View the dependency tree hierarchy for a specific software package.
 | `packageDependenciesById.dependencies.dependents[].component.product` | `string` | yes |
 | `packageDependenciesById.dependencies.dependents[].component.purls[]` | `string` | yes |
 | `packageDependenciesById.dependencies.dependents[].component.sbomDependenciesCount` | `integer` | yes |
+| `packageDependenciesById.dependencies.dependents[].component.scope[]` | `object` | yes |
+| `packageDependenciesById.dependencies.dependents[].component.scope[].actualScope` | `string` | yes |
+| `packageDependenciesById.dependencies.dependents[].component.scope[].description` | `string` | yes |
+| `packageDependenciesById.dependencies.dependents[].component.scope[].value` | `ComponentScope` | yes |
 | `packageDependenciesById.dependencies.dependents[].component.subtype` | `ComponentSubType` | yes |
 | `packageDependenciesById.dependencies.dependents[].component.type` | `ComponentType` | no |
 | `packageDependenciesById.dependencies.dependents[].component.vendor` | `string` | yes |
@@ -211,6 +219,10 @@ View the dependency tree hierarchy for a specific software package.
 | `packageDependenciesById.dependencies.direct[].component.product` | `string` | yes |
 | `packageDependenciesById.dependencies.direct[].component.purls[]` | `string` | yes |
 | `packageDependenciesById.dependencies.direct[].component.sbomDependenciesCount` | `integer` | yes |
+| `packageDependenciesById.dependencies.direct[].component.scope[]` | `object` | yes |
+| `packageDependenciesById.dependencies.direct[].component.scope[].actualScope` | `string` | yes |
+| `packageDependenciesById.dependencies.direct[].component.scope[].description` | `string` | yes |
+| `packageDependenciesById.dependencies.direct[].component.scope[].value` | `ComponentScope` | yes |
 | `packageDependenciesById.dependencies.direct[].component.subtype` | `ComponentSubType` | yes |
 | `packageDependenciesById.dependencies.direct[].component.type` | `ComponentType` | no |
 | `packageDependenciesById.dependencies.direct[].component.vendor` | `string` | yes |
@@ -260,6 +272,10 @@ View the dependency tree hierarchy for a specific software package.
 | `packageDependenciesById.dependencies.indirect[].component.product` | `string` | yes |
 | `packageDependenciesById.dependencies.indirect[].component.purls[]` | `string` | yes |
 | `packageDependenciesById.dependencies.indirect[].component.sbomDependenciesCount` | `integer` | yes |
+| `packageDependenciesById.dependencies.indirect[].component.scope[]` | `object` | yes |
+| `packageDependenciesById.dependencies.indirect[].component.scope[].actualScope` | `string` | yes |
+| `packageDependenciesById.dependencies.indirect[].component.scope[].description` | `string` | yes |
+| `packageDependenciesById.dependencies.indirect[].component.scope[].value` | `ComponentScope` | yes |
 | `packageDependenciesById.dependencies.indirect[].component.subtype` | `ComponentSubType` | yes |
 | `packageDependenciesById.dependencies.indirect[].component.type` | `ComponentType` | no |
 | `packageDependenciesById.dependencies.indirect[].component.vendor` | `string` | yes |

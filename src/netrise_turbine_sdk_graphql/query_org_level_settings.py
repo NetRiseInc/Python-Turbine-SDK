@@ -45,6 +45,9 @@ class QueryOrgLevelSettingsOrgLevelSettings(BaseModel):
     pe_meta_data_enabled: Optional[
         "QueryOrgLevelSettingsOrgLevelSettingsPeMetaDataEnabled"
     ] = Field(alias="peMetaDataEnabled")
+    rise_ai_conversational_gpt_enabled: Optional[bool] = Field(
+        alias="riseAiConversationalGptEnabled"
+    )
     rise_ai_insights_report_enabled: Optional[bool] = Field(
         alias="riseAiInsightsReportEnabled"
     )

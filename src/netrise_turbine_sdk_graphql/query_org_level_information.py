@@ -2,7 +2,7 @@
 # Source: ../sdk-artifacts/synthetic_operations.graphql
 
 from datetime import datetime
-from typing import Annotated
+from typing import Annotated, Optional
 
 from pydantic import BeforeValidator, Field
 
@@ -17,8 +17,8 @@ class QueryOrgLevelInformation(BaseModel):
 
 
 class QueryOrgLevelInformationOrgLevelInformation(BaseModel):
-    last_updated_at: Annotated[datetime, BeforeValidator(parse_datetime)] = Field(
-        alias="lastUpdatedAt"
+    last_updated_at: Optional[Annotated[datetime, BeforeValidator(parse_datetime)]] = (
+        Field(alias="lastUpdatedAt")
     )
 
 

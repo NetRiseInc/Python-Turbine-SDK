@@ -10,6 +10,7 @@ from .enums import (
     Architecture,
     AssetType,
     ComponentBadge,
+    ComponentScope,
     ComponentSubType,
     ComponentType,
     Confidence,
@@ -81,6 +82,13 @@ class QueryPackageDependenciesByIdPackageDependenciesByIdAssociatedFilesComponen
     product: Optional[str]
     purls: Optional[list[Optional[str]]]
     sbom_dependencies_count: Optional[int] = Field(alias="sbomDependenciesCount")
+    scope: Optional[
+        list[
+            Optional[
+                "QueryPackageDependenciesByIdPackageDependenciesByIdAssociatedFilesComponentScope"
+            ]
+        ]
+    ]
     subtype: Optional[ComponentSubType]
     type: ComponentType
     vendor: Optional[str]
@@ -275,6 +283,14 @@ class QueryPackageDependenciesByIdPackageDependenciesByIdAssociatedFilesComponen
     is_concrete: bool = Field(alias="isConcrete")
 
 
+class QueryPackageDependenciesByIdPackageDependenciesByIdAssociatedFilesComponentScope(
+    BaseModel
+):
+    actual_scope: Optional[str] = Field(alias="actualScope")
+    description: Optional[str]
+    value: Optional[ComponentScope]
+
+
 class QueryPackageDependenciesByIdPackageDependenciesByIdAssociatedFilesComponentVersion(
     BaseModel
 ):
@@ -341,6 +357,13 @@ class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDependentsC
     product: Optional[str]
     purls: Optional[list[Optional[str]]]
     sbom_dependencies_count: Optional[int] = Field(alias="sbomDependenciesCount")
+    scope: Optional[
+        list[
+            Optional[
+                "QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDependentsComponentScope"
+            ]
+        ]
+    ]
     subtype: Optional[ComponentSubType]
     type: ComponentType
     vendor: Optional[str]
@@ -384,6 +407,14 @@ class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDependentsC
     name: str
     summary: Optional[str]
     type: Optional[str]
+
+
+class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDependentsComponentScope(
+    BaseModel
+):
+    actual_scope: Optional[str] = Field(alias="actualScope")
+    description: Optional[str]
+    value: Optional[ComponentScope]
 
 
 class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDependentsComponentVersion(
@@ -438,6 +469,13 @@ class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDirectCompo
     product: Optional[str]
     purls: Optional[list[Optional[str]]]
     sbom_dependencies_count: Optional[int] = Field(alias="sbomDependenciesCount")
+    scope: Optional[
+        list[
+            Optional[
+                "QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDirectComponentScope"
+            ]
+        ]
+    ]
     subtype: Optional[ComponentSubType]
     type: ComponentType
     vendor: Optional[str]
@@ -481,6 +519,14 @@ class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDirectCompo
     name: str
     summary: Optional[str]
     type: Optional[str]
+
+
+class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDirectComponentScope(
+    BaseModel
+):
+    actual_scope: Optional[str] = Field(alias="actualScope")
+    description: Optional[str]
+    value: Optional[ComponentScope]
 
 
 class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesDirectComponentVersion(
@@ -535,6 +581,13 @@ class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesIndirectCom
     product: Optional[str]
     purls: Optional[list[Optional[str]]]
     sbom_dependencies_count: Optional[int] = Field(alias="sbomDependenciesCount")
+    scope: Optional[
+        list[
+            Optional[
+                "QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesIndirectComponentScope"
+            ]
+        ]
+    ]
     subtype: Optional[ComponentSubType]
     type: ComponentType
     vendor: Optional[str]
@@ -578,6 +631,14 @@ class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesIndirectCom
     name: str
     summary: Optional[str]
     type: Optional[str]
+
+
+class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesIndirectComponentScope(
+    BaseModel
+):
+    actual_scope: Optional[str] = Field(alias="actualScope")
+    description: Optional[str]
+    value: Optional[ComponentScope]
 
 
 class QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesIndirectComponentVersion(

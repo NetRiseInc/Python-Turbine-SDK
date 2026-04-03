@@ -4,8 +4,7 @@ import os
 import time
 from dataclasses import dataclass
 from pathlib import Path
-import ssl
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 
 import httpx
 from dotenv import find_dotenv, load_dotenv
@@ -88,12 +87,10 @@ class TurbineClient:
         config: TurbineClientConfig,
         *,
         timeout: float = 30.0,
-        verify: Union[bool, str, ssl.SSLContext] = True,
         httpx_client: Optional[httpx.Client] = None,
     ) -> None:
         self._config = config
         self._timeout = timeout
-        self._verify = verify
         self._httpx_client = httpx_client
 
         self._cached_token: Optional[str] = None
@@ -127,7 +124,6 @@ class TurbineClient:
             audience=self._config.audience,
             organization_id=self._config.organization_id,
             timeout=self._timeout,
-            verify=self._verify,
         )
 
         # Cache with a small safety buffer.
@@ -147,7 +143,7 @@ class TurbineClient:
                 http_client=self._httpx_client,
             )
 
-        http_client = httpx.Client(timeout=self._timeout, headers=headers, verify=self._verify)
+        http_client = httpx.Client(timeout=self._timeout, headers=headers)
         return GeneratedClient(
             url=self._config.endpoint,
             http_client=http_client,
@@ -207,7 +203,7 @@ class TurbineClient:
 
             # Step 2: Upload file content to presigned URL
             file_content = path.read_bytes()
-            with httpx.Client(timeout=self._timeout, verify=self._verify) as http:
+            with httpx.Client(timeout=self._timeout) as http:
                 put_resp = http.put(upload_url, content=file_content)
                 put_resp.raise_for_status()
 
@@ -292,7 +288,6 @@ def _fetch_token(
     audience: Optional[str],
     organization_id: Optional[str],
     timeout: float,
-    verify: Union[bool, str, ssl.SSLContext] = True,
 ) -> tuple[str, int]:
     if not domain:
         raise ValueError("domain is required when TURBINE_API_TOKEN is not set")
@@ -317,7 +312,7 @@ def _fetch_token(
     if organization_id:
         payload["organization"] = organization_id
 
-    with httpx.Client(timeout=timeout, verify=verify) as c:
+    with httpx.Client(timeout=timeout) as c:
         r = c.post(token_url, json=payload)
         r.raise_for_status()
         data = r.json()
