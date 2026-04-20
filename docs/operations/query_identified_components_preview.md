@@ -2,7 +2,7 @@
 
 # query_identified_components_preview
 
-Preview how component identification counts change with different detection method settings.
+Return organization-wide component counts filtered by enabled identification methods, with before/after deltas when verification settings change.
 
 ## Parameters
 

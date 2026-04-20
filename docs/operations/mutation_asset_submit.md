@@ -20,8 +20,10 @@ Upload firmware or SBOMs with metadata, group assignments, and CPEs.
 | `asset.submit.asset` | `object` | yes |
 | `asset.submit.asset.id` | `string` | yes |
 | `asset.submit.asset.analytic` | `object` | yes |
+| `asset.submit.asset.analytic.aiComponents` | `integer` | no |
 | `asset.submit.asset.analytic.binaries` | `integer` | no |
 | `asset.submit.asset.analytic.components` | `object` | no |
+| `asset.submit.asset.analytic.components.aiModel` | `integer` | no |
 | `asset.submit.asset.analytic.components.application` | `integer` | no |
 | `asset.submit.asset.analytic.components.container` | `integer` | no |
 | `asset.submit.asset.analytic.components.device` | `integer` | no |

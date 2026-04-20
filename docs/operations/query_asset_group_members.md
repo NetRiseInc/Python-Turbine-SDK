@@ -20,8 +20,10 @@ List all assets associated with a specific asset group container.
 | `assetGroupMembers.edges[].node` | `object` | yes |
 | `assetGroupMembers.edges[].node.id` | `string` | yes |
 | `assetGroupMembers.edges[].node.analytic` | `object` | yes |
+| `assetGroupMembers.edges[].node.analytic.aiComponents` | `integer` | no |
 | `assetGroupMembers.edges[].node.analytic.binaries` | `integer` | no |
 | `assetGroupMembers.edges[].node.analytic.components` | `object` | no |
+| `assetGroupMembers.edges[].node.analytic.components.aiModel` | `integer` | no |
 | `assetGroupMembers.edges[].node.analytic.components.application` | `integer` | no |
 | `assetGroupMembers.edges[].node.analytic.components.container` | `integer` | no |
 | `assetGroupMembers.edges[].node.analytic.components.device` | `integer` | no |

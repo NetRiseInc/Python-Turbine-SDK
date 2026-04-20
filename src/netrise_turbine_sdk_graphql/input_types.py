@@ -9,8 +9,10 @@ from pydantic import Field, PlainSerializer
 from .base_model import BaseModel
 from .custom_scalars import serialize_datetime
 from .enums import (
+    ActivityEntityType,
     ArtifactName,
     AssetAnalysisEventSelection,
+    AssetCorrelationType,
     AssetGroupsField,
     AssetOverviewRiskCategory,
     AssetOverviewSortField,
@@ -44,12 +46,14 @@ from .enums import (
     ListFilesSortField,
     MisconfigurationsField,
     NewSBOMFindingsSelection,
+    NotificationActivityKind,
+    NotificationActivityThresholdField,
+    NotificationActivityThresholdOperator,
     NotificationConfigurationChannel,
+    NotificationConfigurationsField,
     NotificationConfigurationType,
-    NotificationEventKind,
-    NotificationEventThresholdField,
-    NotificationEventThresholdOperator,
     NotificationField,
+    NotificationLogsField,
     NotificationParser,
     NotificationSettingsType,
     NotificationSortField,
@@ -147,9 +151,20 @@ class OrgLevelSettingsInput(BaseModel):
     idle_timeout_seconds: Optional[int] = Field(
         alias="idleTimeoutSeconds", default=None
     )
+    rise_ai_conversational_gpt_enabled: Optional[bool] = Field(
+        alias="riseAiConversationalGptEnabled", default=None
+    )
     rise_ai_insights_report_enabled: Optional[bool] = Field(
         alias="riseAiInsightsReportEnabled", default=None
     )
+
+
+class ListAssetCorrelationsInput(BaseModel):
+    composed_asset_id: Optional[str] = Field(alias="composedAssetId", default=None)
+    identifier: str
+    correlation_type: AssetCorrelationType = Field(alias="correlationType")
+    cursor: Optional["Cursor"] = None
+    "Cursor-based pagination (Relay-style). Uses the same `Cursor` / page request shape as other data queries."
 
 
 class BinaryProtectionsInput(BaseModel):
@@ -465,18 +480,61 @@ class UserManagementControlInput(BaseModel):
 class ListNotificationConfigurationsInput(BaseModel):
     cursor: Optional["Cursor"] = None
     "Cursor for pagination. Use `first` to limit the number of configurations returned."
+    filter: Optional["NotificationConfigurationsFilter"] = None
+    sort: Optional["NotificationConfigurationsSort"] = None
+
+
+class ListNotificationLogsInput(BaseModel):
+    """Input for listing notification logs."""
+
+    cursor: Optional["Cursor"] = None
+    "Cursor for pagination. Uses `Cursor` / `PageRequest` under the hood."
+    filter: Optional["NotificationLogsFilter"] = None
+    sort: Optional["NotificationLogsSort"] = None
+
+
+class NotificationConfigurationsFilter(BaseModel):
+    fields: Optional[list[Optional["NotificationConfigurationsFilterField"]]] = None
+
+
+class NotificationConfigurationsFilterField(BaseModel):
+    field_name: Optional[NotificationConfigurationsField] = Field(
+        alias="fieldName", default=None
+    )
+    value: Optional[Any] = None
+    operation: Optional[FilterFieldOperation] = None
+
+
+class NotificationConfigurationsSort(BaseModel):
+    field: Optional[NotificationConfigurationsField] = None
+    order: Optional[SortOrder] = None
+
+
+class NotificationLogsFilter(BaseModel):
+    fields: Optional[list[Optional["NotificationLogsFilterField"]]] = None
+
+
+class NotificationLogsFilterField(BaseModel):
+    field_name: Optional[NotificationLogsField] = Field(alias="fieldName", default=None)
+    value: Optional[Any] = None
+    operation: Optional[FilterFieldOperation] = None
+
+
+class NotificationLogsSort(BaseModel):
+    field: Optional[NotificationLogsField] = None
+    order: Optional[SortOrder] = None
 
 
 class CreateNotificationConfigurationInput(BaseModel):
     """Payload for creating a notification configuration."""
 
-    configuration: "NotificationConfigurationInput"
+    configuration: "NotificationConfigurationCreateInput"
 
 
 class UpdateNotificationConfigurationInput(BaseModel):
-    """Payload for updating a notification configuration."""
+    """Payload for updating a notification configuration. Id is required; other fields are optional (only sent fields are updated)."""
 
-    configuration: "NotificationConfigurationInput"
+    configuration: "NotificationConfigurationUpdateInput"
 
 
 class DeleteNotificationConfigurationInput(BaseModel):
@@ -485,22 +543,47 @@ class DeleteNotificationConfigurationInput(BaseModel):
     id: str
 
 
-class NotificationConfigurationInput(BaseModel):
-    """Input shape matching NotificationConfiguration (excluding read-only fields)."""
+class NotificationConfigurationCreateInput(BaseModel):
+    """Input for creating a notification configuration. Id is not set by the client."""
 
-    id: Optional[str] = None
+    name: Optional[str] = None
     disabled: Optional[bool] = None
     silenced: Optional[bool] = None
     type: NotificationConfigurationType
     channel: NotificationConfigurationChannel
-    interval_seconds: Optional[float] = Field(alias="intervalSeconds", default=None)
+    interval_seconds: float = Field(alias="intervalSeconds")
     "Interval between deliveries in seconds (e.g. 3600). Not relevant for APPLICATION channel."
     inventory_scopes: Optional[list["NotificationInventoryScopeInput"]] = Field(
         alias="inventoryScopes", default=None
     )
-    event_scopes: list["NotificationEventScopeInput"] = Field(alias="eventScopes")
+    activity_scopes: list["NotificationActivityScopeInput"] = Field(
+        alias="activityScopes"
+    )
     channel_configuration: Optional["NotificationChannelConfigurationInput"] = Field(
         alias="channelConfiguration", default=None
+    )
+    "Channel-specific config; exactly one variant must be set (matches channel). Oneof: webhook | email | application."
+
+
+class NotificationConfigurationUpdateInput(BaseModel):
+    """Input for updating a notification configuration. Id is required; other fields are optional."""
+
+    id: str
+    name: str
+    disabled: bool
+    silenced: bool
+    type: NotificationConfigurationType
+    channel: NotificationConfigurationChannel
+    interval_seconds: float = Field(alias="intervalSeconds")
+    "Interval between deliveries in seconds (e.g. 3600). Not relevant for APPLICATION channel."
+    inventory_scopes: Optional[list["NotificationInventoryScopeInput"]] = Field(
+        alias="inventoryScopes", default=None
+    )
+    activity_scopes: list["NotificationActivityScopeInput"] = Field(
+        alias="activityScopes"
+    )
+    channel_configuration: "NotificationChannelConfigurationInput" = Field(
+        alias="channelConfiguration"
     )
     "Channel-specific config; exactly one variant must be set (matches channel). Oneof: webhook | email | application."
 
@@ -519,15 +602,18 @@ class NotificationInventoryScopeInput(BaseModel):
     asset_id: Optional[str] = Field(alias="assetId", default=None)
 
 
-class NotificationEventScopeInput(BaseModel):
-    event: NotificationEventKind
-    threshold: Optional["NotificationEventThresholdInput"] = None
+class NotificationActivityScopeInput(BaseModel):
+    activity_type: Optional[NotificationActivityKind] = Field(
+        alias="activityType", default=None
+    )
+    entity_type: Optional[ActivityEntityType] = Field(alias="entityType", default=None)
+    threshold: Optional["NotificationActivityThresholdInput"] = None
 
 
-class NotificationEventThresholdInput(BaseModel):
-    key: NotificationEventThresholdField
+class NotificationActivityThresholdInput(BaseModel):
+    key: NotificationActivityThresholdField
     value: str
-    operator: NotificationEventThresholdOperator
+    operator: NotificationActivityThresholdOperator
 
 
 class NotificationConfigurationWebhookInput(BaseModel):
@@ -641,6 +727,35 @@ class RemediatePublicKeysInput(BaseModel):
     public_keys: list["PublicKeyIdentifierInput"] = Field(alias="publicKeys")
     status: CryptoRemediationStatus
     details: Optional[str] = None
+
+
+class CreateAssetComparisonReportInput(BaseModel):
+    asset_a: str = Field(alias="assetA")
+    asset_b: str = Field(alias="assetB")
+
+
+class GetAssetComparisonReportInput(BaseModel):
+    report_id: str = Field(alias="reportId")
+
+
+class ListAssetComparisonReportsInput(BaseModel):
+    cursor: Optional["Cursor"] = None
+    filter: Optional["ListAssetComparisonReportsFilterInput"] = None
+    sort: Optional["ListAssetComparisonReportsSortInput"] = None
+
+
+class ListAssetComparisonReportsFilterInput(BaseModel):
+    search: Optional[str] = None
+    type: Optional[str] = None
+
+
+class ListAssetComparisonReportsSortInput(BaseModel):
+    field: Optional[str] = None
+    order: Optional[SortOrder] = None
+
+
+class DeleteAssetComparisonReportInput(BaseModel):
+    report_id: str = Field(alias="reportId")
 
 
 class RiseAIAnalysisDataInput(BaseModel):
@@ -1171,6 +1286,15 @@ class GroupedDependencyFieldFilter(BaseModel):
     operation: FilterFieldOperation
 
 
+class ListAiProvidersInput(BaseModel):
+    composed_asset_id: Optional[str] = Field(alias="composedAssetId", default=None)
+
+
+class GetAiModelDataInput(BaseModel):
+    composed_asset_id: str = Field(alias="composedAssetId")
+    component_id: str = Field(alias="componentId")
+
+
 class ValueFilter(BaseModel):
     any: Optional[list[str]] = None
     all: Optional[list[str]] = None
@@ -1392,6 +1516,7 @@ class VulnerabilityExternalFiltersInput(BaseModel):
     asset_id: str = Field(alias="assetId")
 
 
+ListAssetCorrelationsInput.model_rebuild()
 BinaryProtectionsInput.model_rebuild()
 BinaryProtectionsFilter.model_rebuild()
 CertificatesInput.model_rebuild()
@@ -1411,17 +1536,22 @@ NotificationSettingsInput.model_rebuild()
 NotificationPreferenceInput.model_rebuild()
 NotificationControlInput.model_rebuild()
 ListNotificationConfigurationsInput.model_rebuild()
+ListNotificationLogsInput.model_rebuild()
+NotificationConfigurationsFilter.model_rebuild()
+NotificationLogsFilter.model_rebuild()
 CreateNotificationConfigurationInput.model_rebuild()
 UpdateNotificationConfigurationInput.model_rebuild()
-NotificationConfigurationInput.model_rebuild()
+NotificationConfigurationCreateInput.model_rebuild()
+NotificationConfigurationUpdateInput.model_rebuild()
 NotificationChannelConfigurationInput.model_rebuild()
-NotificationEventScopeInput.model_rebuild()
+NotificationActivityScopeInput.model_rebuild()
 PrivateKeysInput.model_rebuild()
 ListPrivateKeysFilter.model_rebuild()
 RemediatePrivateKeysInput.model_rebuild()
 PublicKeysInput.model_rebuild()
 ListPublicKeysFilter.model_rebuild()
 RemediatePublicKeysInput.model_rebuild()
+ListAssetComparisonReportsInput.model_rebuild()
 SearchInput.model_rebuild()
 SecretsInput.model_rebuild()
 SecretCategoriesInput.model_rebuild()

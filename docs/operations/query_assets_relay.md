@@ -20,8 +20,10 @@ Retrieve a paginated, sortable list of assets with filtering options.
 | `assetsRelay.edges[].node` | `object` | yes |
 | `assetsRelay.edges[].node.id` | `string` | yes |
 | `assetsRelay.edges[].node.analytic` | `object` | yes |
+| `assetsRelay.edges[].node.analytic.aiComponents` | `integer` | no |
 | `assetsRelay.edges[].node.analytic.binaries` | `integer` | no |
 | `assetsRelay.edges[].node.analytic.components` | `object` | no |
+| `assetsRelay.edges[].node.analytic.components.aiModel` | `integer` | no |
 | `assetsRelay.edges[].node.analytic.components.application` | `integer` | no |
 | `assetsRelay.edges[].node.analytic.components.container` | `integer` | no |
 | `assetsRelay.edges[].node.analytic.components.device` | `integer` | no |

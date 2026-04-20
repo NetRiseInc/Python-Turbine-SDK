@@ -49,6 +49,7 @@ Check how the tenant organization is configured.
 | `orgLevelSettings.peMetaDataEnabled.componentCount` | `integer` | yes |
 | `orgLevelSettings.peMetaDataEnabled.confidence` | `Confidence` | yes |
 | `orgLevelSettings.peMetaDataEnabled.enabled` | `boolean` | yes |
+| `orgLevelSettings.riseAiConversationalGptEnabled` | `boolean` | yes |
 | `orgLevelSettings.riseAiInsightsReportEnabled` | `boolean` | yes |
 | `orgLevelSettings.signatureEnabled` | `object` | yes |
 | `orgLevelSettings.signatureEnabled.componentCount` | `integer` | yes |

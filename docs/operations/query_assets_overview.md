@@ -37,7 +37,7 @@ View high-level risk and threat exposure metrics for multiple assets.
 | `assetsOverview.edges[].node.risk.category` | `RiskCategory` | yes |
 | `assetsOverview.edges[].node.risk.rawScore` | `float` | yes |
 | `assetsOverview.edges[].node.risk.score` | `float` | yes |
-| `assetsOverview.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10ab17100>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `assetsOverview.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x106f4f060>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `assetsOverview.edges[].node.threatActors[]` | `string` | yes |
 | `assetsOverview.edges[].node.type` | `AssetType` | yes |
 | `assetsOverview.edges[].node.vendor` | `string` | yes |

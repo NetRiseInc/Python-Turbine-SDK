@@ -18,8 +18,10 @@ Modify metadata such as name, vendor, or version for assets.
 | `asset.update` | `object` | yes |
 | `asset.update.id` | `string` | yes |
 | `asset.update.analytic` | `object` | yes |
+| `asset.update.analytic.aiComponents` | `integer` | no |
 | `asset.update.analytic.binaries` | `integer` | no |
 | `asset.update.analytic.components` | `object` | no |
+| `asset.update.analytic.components.aiModel` | `integer` | no |
 | `asset.update.analytic.components.application` | `integer` | no |
 | `asset.update.analytic.components.container` | `integer` | no |
 | `asset.update.analytic.components.device` | `integer` | no |

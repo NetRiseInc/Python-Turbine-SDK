@@ -19,8 +19,10 @@ View dependencies aggregated by vendor, license, or specific component type.
 | `groupedDependencies.edges[].cursor` | `string` | yes |
 | `groupedDependencies.edges[].node` | `object` | yes |
 | `groupedDependencies.edges[].node.analytic` | `object` | yes |
+| `groupedDependencies.edges[].node.analytic.aiComponents` | `integer` | no |
 | `groupedDependencies.edges[].node.analytic.binaries` | `integer` | no |
 | `groupedDependencies.edges[].node.analytic.components` | `object` | no |
+| `groupedDependencies.edges[].node.analytic.components.aiModel` | `integer` | no |
 | `groupedDependencies.edges[].node.analytic.components.application` | `integer` | no |
 | `groupedDependencies.edges[].node.analytic.components.container` | `integer` | no |
 | `groupedDependencies.edges[].node.analytic.components.device` | `integer` | no |
