@@ -17,8 +17,10 @@ Retrieve detailed metadata and risk information for a single asset.
 | `asset` | `object` | yes |
 | `asset.id` | `string` | yes |
 | `asset.analytic` | `object` | yes |
+| `asset.analytic.aiComponents` | `integer` | no |
 | `asset.analytic.binaries` | `integer` | no |
 | `asset.analytic.components` | `object` | no |
+| `asset.analytic.components.aiModel` | `integer` | no |
 | `asset.analytic.components.application` | `integer` | no |
 | `asset.analytic.components.container` | `integer` | no |
 | `asset.analytic.components.device` | `integer` | no |

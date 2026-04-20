@@ -5,5 +5,6 @@ the generated GraphQL client code.
 """
 
 from .client import TurbineClient, TurbineClientConfig
+from .pagination import iter_all_pages
 
-__all__ = ["TurbineClient", "TurbineClientConfig"]
+__all__ = ["TurbineClient", "TurbineClientConfig", "iter_all_pages"]

@@ -19,9 +19,12 @@ List all software components and libraries identified in the asset.
 | `dependencies.edges[].cursor` | `string` | yes |
 | `dependencies.edges[].node` | `object` | yes |
 | `dependencies.edges[].node.id` | `string` | no |
+| `dependencies.edges[].node.aiProviders[]` | `string` | yes |
 | `dependencies.edges[].node.analytic` | `object` | no |
+| `dependencies.edges[].node.analytic.aiComponents` | `integer` | no |
 | `dependencies.edges[].node.analytic.binaries` | `integer` | no |
 | `dependencies.edges[].node.analytic.components` | `object` | no |
+| `dependencies.edges[].node.analytic.components.aiModel` | `integer` | no |
 | `dependencies.edges[].node.analytic.components.application` | `integer` | no |
 | `dependencies.edges[].node.analytic.components.container` | `integer` | no |
 | `dependencies.edges[].node.analytic.components.device` | `integer` | no |
@@ -69,6 +72,7 @@ List all software components and libraries identified in the asset.
 | `dependencies.edges[].node.associatedFiles[].component.cpes[]` | `string` | yes |
 | `dependencies.edges[].node.associatedFiles[].component.description` | `string` | yes |
 | `dependencies.edges[].node.associatedFiles[].component.identificationIds[]` | `string` | yes |
+| `dependencies.edges[].node.associatedFiles[].component.isPredicted` | `boolean` | yes |
 | `dependencies.edges[].node.associatedFiles[].component.language[]` | `Language` | yes |
 | `dependencies.edges[].node.associatedFiles[].component.license[]` | `string` | yes |
 | `dependencies.edges[].node.associatedFiles[].component.name` | `string` | no |
@@ -127,6 +131,7 @@ List all software components and libraries identified in the asset.
 | `dependencies.edges[].node.dependency.identifiers[]` | `object` | yes |
 | `dependencies.edges[].node.dependency.identifiers[].type` | `IdentifierFormat` | no |
 | `dependencies.edges[].node.dependency.identifiers[].uri` | `string` | no |
+| `dependencies.edges[].node.dependency.isPredicted` | `boolean` | yes |
 | `dependencies.edges[].node.dependency.language[]` | `Language` | yes |
 | `dependencies.edges[].node.dependency.license[]` | `string` | yes |
 | `dependencies.edges[].node.dependency.name` | `string` | no |
@@ -144,6 +149,10 @@ List all software components and libraries identified in the asset.
 | `dependencies.edges[].node.dependency.product` | `string` | yes |
 | `dependencies.edges[].node.dependency.purls[]` | `string` | yes |
 | `dependencies.edges[].node.dependency.sbomDependenciesCount` | `integer` | yes |
+| `dependencies.edges[].node.dependency.scope[]` | `object` | yes |
+| `dependencies.edges[].node.dependency.scope[].actualScope` | `string` | yes |
+| `dependencies.edges[].node.dependency.scope[].description` | `string` | yes |
+| `dependencies.edges[].node.dependency.scope[].value` | `ComponentScope` | yes |
 | `dependencies.edges[].node.dependency.subtype` | `ComponentSubType` | yes |
 | `dependencies.edges[].node.dependency.type` | `ComponentType` | no |
 | `dependencies.edges[].node.dependency.vendor` | `string` | yes |
@@ -152,6 +161,7 @@ List all software components and libraries identified in the asset.
 | `dependencies.edges[].node.dependency.version.alternatives[]` | `string` | yes |
 | `dependencies.edges[].node.dependency.version.isConcrete` | `boolean` | no |
 | `dependencies.edges[].node.identifiedVia[]` | `IdentifiedViaCategory` | yes |
+| `dependencies.edges[].node.isAi` | `boolean` | yes |
 | `dependencies.edges[].node.latestRemediation` | `object` | yes |
 | `dependencies.edges[].node.latestRemediation.author` | `string` | yes |
 | `dependencies.edges[].node.latestRemediation.createdAt` | `string` | yes |
@@ -160,7 +170,11 @@ List all software components and libraries identified in the asset.
 | `dependencies.edges[].node.latestRemediation.operationType` | `IdentificationRemediationOperationType` | yes |
 | `dependencies.edges[].node.latestRemediation.reason` | `string` | yes |
 | `dependencies.edges[].node.latestRemediation.remediationAction` | `IdentificationRemediationAction` | yes |
-| `dependencies.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10ab17100>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `dependencies.edges[].node.scope[]` | `object` | yes |
+| `dependencies.edges[].node.scope[].actualScope` | `string` | yes |
+| `dependencies.edges[].node.scope[].description` | `string` | yes |
+| `dependencies.edges[].node.scope[].value` | `ComponentScope` | yes |
+| `dependencies.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x106f4f060>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `dependencies.edges[].node.verification` | `object` | no |
 | `dependencies.edges[].node.verification.cryptographic` | `boolean` | no |
 | `dependencies.edges[].node.verification.functionHashing` | `boolean` | no |

@@ -2,7 +2,7 @@
 
 # query_org_level_information
 
-Retrieve organization-level metadata such as the last updated timestamp.
+Retrieve organization-level metadata such as last-updated time, optionally scoped by asset groups.
 
 ## Parameters
 
@@ -15,7 +15,7 @@ Retrieve organization-level metadata such as the last updated timestamp.
 | Field | Type | Nullable |
 | --- | --- | --- |
 | `orgLevelInformation` | `object` | no |
-| `orgLevelInformation.lastUpdatedAt` | `datetime` | no |
+| `orgLevelInformation.lastUpdatedAt` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x106f4f060>, json_schema_input_type=PydanticUndefined)]` | yes |
 
 ## Example
 
