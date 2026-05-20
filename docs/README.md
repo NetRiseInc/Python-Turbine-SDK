@@ -368,6 +368,50 @@ while True:
 
 ---
 
+## File Listing
+
+### list_files
+
+Return the complete recursive file listing for an asset in a single call:
+
+```python
+from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
+
+sdk = TurbineClient(TurbineClientConfig.from_env())
+files = sdk.list_files("your-asset-id")
+
+for f in files:
+    print(f["filesystemPath"], f.get("size"), f.get("mimeType"))
+
+print(f"Total files: {len(files)}")
+```
+
+Internally, the SDK fetches a signed download URL via the `query_download_file_list` GraphQL operation, then downloads and parses the NDJSON file listing from cloud storage. This two-step process is handled transparently -- callers see a single method that returns a plain list.
+
+**Parameters:**
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `asset_id` | `str` | The asset identifier (without revision suffix) |
+
+**Returns:** `list[dict]` -- one dict per file. Common keys include:
+
+| Key | Type | Description |
+| --- | --- | --- |
+| `path` | `str` | Full path including archive structure (e.g. `/tar/blobs/.../etc/passwd`) |
+| `filesystemPath` | `str` | Logical filesystem path (e.g. `/etc/passwd`) |
+| `size` | `int` | File size in bytes (absent for directories) |
+| `mimeType` | `str` | MIME type (e.g. `text/plain`, `inode/directory`) |
+| `permissions` | `str` | Unix permission string (e.g. `-rw-r--r--`) |
+| `hashMd5` | `str` | MD5 digest (files only) |
+| `hashSha1` | `str` | SHA-1 digest (files only) |
+| `hashSha256` | `str` | SHA-256 digest (files only) |
+| `hasChildren` | `bool` | Whether the entry is a directory with children |
+| `createdAt` | `str` | Creation timestamp |
+| `updatedAt` | `str` | Last modification timestamp |
+
+---
+
 ## File Uploads
 
 The SDK provides helper methods that handle the two-step upload flow (get a signed URL, then PUT the file) in a single call. Files are streamed directly from disk, so uploads work for files of any size without loading them entirely into memory.
@@ -505,7 +549,9 @@ cfg = TurbineClientConfig.from_env(load_env_file=False)
 - [mutation_asset_remove_dependencies](operations/mutation_asset_remove_dependencies.md): Remove specific dependencies from the component list of an asset.
 - [mutation_asset_submit](operations/mutation_asset_submit.md): Upload firmware or SBOMs with metadata, group assignments, and CPEs.
 - [mutation_asset_update](operations/mutation_asset_update.md): Modify metadata such as name, vendor, or version for assets.
+- [mutation_create_asset_comparison_report](operations/mutation_create_asset_comparison_report.md): Create a new comparison report to diff vulnerabilities and components between two assets.
 - [mutation_create_asset_group](operations/mutation_create_asset_group.md): Create a new named group to organize and track assets.
+- [mutation_delete_asset_comparison_report](operations/mutation_delete_asset_comparison_report.md): Permanently delete an asset comparison report by its ID.
 - [mutation_delete_asset_group](operations/mutation_delete_asset_group.md): Permanently remove an asset group while keeping contained assets intact.
 - [mutation_remediate_all_asset_vulnerabilities](operations/mutation_remediate_all_asset_vulnerabilities.md): Apply a remediation status to all vulnerabilities matching specific filters.
 - [mutation_remediate_asset_vulnerabilities](operations/mutation_remediate_asset_vulnerabilities.md): Bulk apply VEX remediation status to multiple vulnerabilities on assets.
@@ -544,6 +590,7 @@ cfg = TurbineClientConfig.from_env(load_env_file=False)
 - [query_assets_relay_summary](operations/query_assets_relay_summary.md): Retrieve minimal asset data — ID, name, and analytic counts only — for fast org-wide sweeps to decide which assets need deeper queries.
 - [query_binary_protections](operations/query_binary_protections.md): List security hardening details for binaries found within the asset.
 - [query_binary_protections_summary](operations/query_binary_protections_summary.md): Get aggregated counts of binary hardening features like NX or PIE.
+- [query_caas_availability](operations/query_caas_availability.md): Check for the availability of the RISE AI analysis report.
 - [query_certificate_external_filters](operations/query_certificate_external_filters.md): Retrieve available filter options for certificate queries.
 - [query_certificates](operations/query_certificates.md): List X.509 certificates and validity status found in the asset.
 - [query_credentials](operations/query_credentials.md): Identify user accounts and password hashes discovered within the filesystem.
@@ -557,6 +604,7 @@ cfg = TurbineClientConfig.from_env(load_env_file=False)
 - [query_download_file_list](operations/query_download_file_list.md): Generate a URL to download a list of all files.
 - [query_download_firmware](operations/query_download_firmware.md): Generate a link to download the original uploaded firmware image.
 - [query_get_ai_model_data](operations/query_get_ai_model_data.md): Retrieve configuration and metadata for a specific AI model integration.
+- [query_get_asset_comparison_report](operations/query_get_asset_comparison_report.md): Retrieve a completed asset comparison report including vulnerability, component, and summary diffs.
 - [query_get_vuln_reachability](operations/query_get_vuln_reachability.md): Determine if a vulnerability can be executed via system paths.
 - [query_grouped_dependencies](operations/query_grouped_dependencies.md): View dependencies aggregated by vendor, license, or specific component type.
 - [query_hashes](operations/query_hashes.md): List cryptographic hashes for files identified within the asset filesystem.
@@ -567,6 +615,7 @@ cfg = TurbineClientConfig.from_env(load_env_file=False)
 - [query_license_issues_external_filters](operations/query_license_issues_external_filters.md): Retrieve available filter options for license issue queries.
 - [query_licenses_spdx_ids](operations/query_licenses_spdx_ids.md): List available SPDX license identifiers for filtering and reference.
 - [query_list_ai_providers](operations/query_list_ai_providers.md): List available AI provider integrations and their current status.
+- [query_list_asset_comparison_reports](operations/query_list_asset_comparison_reports.md): List all asset comparison reports with pagination, filtering, and sorting.
 - [query_list_asset_correlations](operations/query_list_asset_correlations.md): Retrieve cross-asset correlation data linking shared components and vulnerabilities.
 - [query_list_asset_crypto_libraries](operations/query_list_asset_crypto_libraries.md): List cryptographic libraries and algorithms detected within an asset.
 - [query_match_vulnerabilities](operations/query_match_vulnerabilities.md): Find specific vulnerabilities matching a provided component identifier or package.

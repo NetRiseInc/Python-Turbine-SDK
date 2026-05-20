@@ -19,6 +19,7 @@ List all software components and libraries identified in the asset.
 | `dependencies.edges[].cursor` | `string` | yes |
 | `dependencies.edges[].node` | `object` | yes |
 | `dependencies.edges[].node.id` | `string` | no |
+| `dependencies.edges[].node.aiArchitecture` | `string` | yes |
 | `dependencies.edges[].node.aiProviders[]` | `string` | yes |
 | `dependencies.edges[].node.analytic` | `object` | no |
 | `dependencies.edges[].node.analytic.aiComponents` | `integer` | no |
@@ -174,7 +175,7 @@ List all software components and libraries identified in the asset.
 | `dependencies.edges[].node.scope[].actualScope` | `string` | yes |
 | `dependencies.edges[].node.scope[].description` | `string` | yes |
 | `dependencies.edges[].node.scope[].value` | `ComponentScope` | yes |
-| `dependencies.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x106f4f060>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `dependencies.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x106a33ba0>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `dependencies.edges[].node.verification` | `object` | no |
 | `dependencies.edges[].node.verification.cryptographic` | `boolean` | no |
 | `dependencies.edges[].node.verification.functionHashing` | `boolean` | no |

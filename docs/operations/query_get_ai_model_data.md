@@ -16,7 +16,7 @@ Retrieve configuration and metadata for a specific AI model integration.
 | --- | --- | --- |
 | `getAiModelData` | `object` | yes |
 | `getAiModelData.aiModelData` | `object` | yes |
-| `getAiModelData.aiModelData.aiModelArchitectureType` | `string` | yes |
+| `getAiModelData.aiModelData.aiArchitecture` | `string` | yes |
 | `getAiModelData.aiModelData.author` | `string` | yes |
 | `getAiModelData.aiModelData.description` | `string` | yes |
 | `getAiModelData.aiModelData.license` | `string` | yes |

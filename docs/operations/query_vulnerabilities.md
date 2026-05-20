@@ -40,6 +40,7 @@ List CVEs and associated risks for components in an asset.
 | `vulnerabilities.edges[].node.currentRemediation.identificationIds[]` | `string` | yes |
 | `vulnerabilities.edges[].node.currentRemediation.justification` | `VexJustification` | yes |
 | `vulnerabilities.edges[].node.currentRemediation.response` | `RemediationResponses` | yes |
+| `vulnerabilities.edges[].node.currentRemediation.responses[]` | `RemediationResponses` | yes |
 | `vulnerabilities.edges[].node.currentRemediation.status` | `VexStatus` | no |
 | `vulnerabilities.edges[].node.currentRemediation.vulnerabilityId` | `string` | no |
 | `vulnerabilities.edges[].node.cve` | `string` | yes |

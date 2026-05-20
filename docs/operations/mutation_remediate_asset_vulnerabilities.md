@@ -37,6 +37,7 @@ Bulk apply VEX remediation status to multiple vulnerabilities on assets.
 | `remediateAssetVulnerabilities[].currentRemediation.identificationIds[]` | `string` | yes |
 | `remediateAssetVulnerabilities[].currentRemediation.justification` | `VexJustification` | yes |
 | `remediateAssetVulnerabilities[].currentRemediation.response` | `RemediationResponses` | yes |
+| `remediateAssetVulnerabilities[].currentRemediation.responses[]` | `RemediationResponses` | yes |
 | `remediateAssetVulnerabilities[].currentRemediation.status` | `VexStatus` | no |
 | `remediateAssetVulnerabilities[].currentRemediation.vulnerabilityId` | `string` | no |
 | `remediateAssetVulnerabilities[].cve` | `string` | yes |

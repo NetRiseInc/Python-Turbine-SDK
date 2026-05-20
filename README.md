@@ -155,6 +155,22 @@ blocks, scenario A from the customer write-up (`100 assets × 60 vulns`)
 moves from ~601 full-weight calls to ~601 Lite calls at roughly 20–30%
 of the original wire bytes.
 
+## File Listing
+
+The SDK provides a high-level `list_files` method that returns the complete recursive file listing for an asset in a single call:
+
+```python
+from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
+
+sdk = TurbineClient(TurbineClientConfig.from_env())
+files = sdk.list_files("your-asset-id")
+
+for f in files:
+    print(f["filesystemPath"], f.get("size"), f.get("mimeType"))
+```
+
+Each entry is a dict with keys like `path`, `filesystemPath`, `size`, `mimeType`, `hashSha256`, `hashMd5`, `hashSha1`, `permissions`, and `hasChildren`. See the [docs README](https://github.com/NetRiseInc/Python-Turbine-SDK/blob/main/docs/README.md) for full details.
+
 ## License
 
 See [LICENSE](https://github.com/NetRiseInc/Python-Turbine-SDK/blob/main/LICENSE) for details.

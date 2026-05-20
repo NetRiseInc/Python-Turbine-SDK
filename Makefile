@@ -1,16 +1,9 @@
-.PHONY: install generate test build clean
+SDK_TYPE := poetry
+MAKEFILE_INCLUDE_DIR ?= ../../makefiles
 
-install:
-	poetry install
+include $(MAKEFILE_INCLUDE_DIR)/common.mk
 
-generate:
-	poetry run ariadne-codegen
+.PHONY: generate
 
-test:
-	poetry run pytest
-
-build:
-	poetry build
-
-clean:
-	rm -rf dist .pytest_cache src/netrise_turbine_sdk_graphql
+generate:: install
+	@poetry run ariadne-codegen
