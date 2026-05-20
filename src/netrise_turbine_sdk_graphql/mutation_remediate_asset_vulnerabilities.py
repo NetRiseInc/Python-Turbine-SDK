@@ -79,6 +79,7 @@ class MutationRemediateAssetVulnerabilitiesRemediateAssetVulnerabilitiesCurrentR
     identification_ids: Optional[list[Optional[str]]] = Field(alias="identificationIds")
     justification: Optional[VexJustification]
     response: Optional[RemediationResponses]
+    responses: Optional[list[Optional[RemediationResponses]]]
     status: VexStatus
     vulnerability_id: str = Field(alias="vulnerabilityId")
 

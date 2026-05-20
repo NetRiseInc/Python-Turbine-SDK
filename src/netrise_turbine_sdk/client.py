@@ -952,6 +952,47 @@ class TurbineClient:
 
         return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
 
+    # --- File downloads -------------------------------------------------------
+
+    def list_files(self, asset_id: str) -> list[dict]:
+        """Return the complete recursive file listing for an asset.
+
+        The Turbine API stores a pre-built NDJSON file for each asset.
+        This method fetches the signed URL via GraphQL, downloads the
+        file, and parses every line into a list of dicts.
+
+        Args:
+            asset_id: The asset identifier (without revision suffix).
+
+        Returns:
+            List of dicts, one per file, with keys like ``path``,
+            ``filesystemPath``, ``size``, ``mimeType``, ``hashSha256``, etc.
+
+        Example:
+            >>> sdk = TurbineClient(TurbineClientConfig.from_env())
+            >>> files = sdk.list_files("abc123")
+            >>> for f in files:
+            ...     print(f["filesystemPath"], f.get("size"))
+        """
+        import json
+
+        from netrise_turbine_sdk_graphql.input_types import FileListDownloadInput
+
+        resp = self.graphql().query_download_file_list(
+            download_file_list_args=FileListDownloadInput(asset_id=asset_id)
+        )
+
+        all_files: list[dict] = []
+        for url in resp.download.file_list.download_urls_list:
+            r = self._util_http.get(url, timeout=self._upload_timeout)
+            r.raise_for_status()
+            for line in r.text.splitlines():
+                line = line.strip()
+                if line:
+                    all_files.append(json.loads(line))
+
+        return all_files
+
     # --- File / asset uploads ------------------------------------------------
 
     def upload_asset(

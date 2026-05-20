@@ -25,6 +25,7 @@ Find specific vulnerabilities matching a provided component identifier or packag
 | `matchVulnerabilities[].currentRemediation.identificationIds[]` | `string` | yes |
 | `matchVulnerabilities[].currentRemediation.justification` | `VexJustification` | yes |
 | `matchVulnerabilities[].currentRemediation.response` | `RemediationResponses` | yes |
+| `matchVulnerabilities[].currentRemediation.responses[]` | `RemediationResponses` | yes |
 | `matchVulnerabilities[].currentRemediation.status` | `VexStatus` | no |
 | `matchVulnerabilities[].currentRemediation.vulnerabilityId` | `string` | no |
 | `matchVulnerabilities[].description` | `string` | yes |

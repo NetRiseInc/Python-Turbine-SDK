@@ -22,9 +22,12 @@ class QueryOrgLevelSettingsOrgLevelSettings(BaseModel):
     binary_fingerprint_enabled: Optional[
         "QueryOrgLevelSettingsOrgLevelSettingsBinaryFingerprintEnabled"
     ] = Field(alias="binaryFingerprintEnabled")
+    cryptographic_hash_enabled: Optional[bool] = Field(alias="cryptographicHashEnabled")
     curated_hash_enabled: Optional[
         "QueryOrgLevelSettingsOrgLevelSettingsCuratedHashEnabled"
     ] = Field(alias="curatedHashEnabled")
+    function_hashing_enabled: Optional[bool] = Field(alias="functionHashingEnabled")
+    heuristic_enabled: Optional[bool] = Field(alias="heuristicEnabled")
     idle_timeout_seconds: Optional[int] = Field(alias="idleTimeoutSeconds")
     idle_timout_enabled: Optional[bool] = Field(alias="idleTimoutEnabled")
     kernel_module_enabled: Optional[
@@ -39,6 +42,7 @@ class QueryOrgLevelSettingsOrgLevelSettings(BaseModel):
     library_version_enabled: Optional[
         "QueryOrgLevelSettingsOrgLevelSettingsLibraryVersionEnabled"
     ] = Field(alias="libraryVersionEnabled")
+    package_manager_enabled: Optional[bool] = Field(alias="packageManagerEnabled")
     package_manifest_enabled: Optional[
         "QueryOrgLevelSettingsOrgLevelSettingsPackageManifestEnabled"
     ] = Field(alias="packageManifestEnabled")

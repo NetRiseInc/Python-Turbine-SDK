@@ -19,7 +19,7 @@ List dependencies with trimmed fields — keeps identity, version, license, purl
 | `dependencies.edges[].cursor` | `string` | yes |
 | `dependencies.edges[].node` | `object` | yes |
 | `dependencies.edges[].node.id` | `string` | no |
-| `dependencies.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x106f4f060>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `dependencies.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x106a33ba0>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `dependencies.edges[].node.identifiedVia[]` | `IdentifiedViaCategory` | yes |
 | `dependencies.edges[].node.correlationsCount` | `integer` | yes |
 | `dependencies.edges[].node.dependency` | `object` | no |

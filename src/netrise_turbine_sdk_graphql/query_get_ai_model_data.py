@@ -21,7 +21,7 @@ class QueryGetAiModelDataGetAiModelData(BaseModel):
 
 
 class QueryGetAiModelDataGetAiModelDataAiModelData(BaseModel):
-    ai_model_architecture_type: Optional[str] = Field(alias="aiModelArchitectureType")
+    ai_architecture: Optional[str] = Field(alias="aiArchitecture")
     author: Optional[str]
     description: Optional[str]
     license: Optional[str]

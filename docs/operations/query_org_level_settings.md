@@ -19,10 +19,13 @@ Check how the tenant organization is configured.
 | `orgLevelSettings.binaryFingerprintEnabled.componentCount` | `integer` | yes |
 | `orgLevelSettings.binaryFingerprintEnabled.confidence` | `Confidence` | yes |
 | `orgLevelSettings.binaryFingerprintEnabled.enabled` | `boolean` | yes |
+| `orgLevelSettings.cryptographicHashEnabled` | `boolean` | yes |
 | `orgLevelSettings.curatedHashEnabled` | `object` | yes |
 | `orgLevelSettings.curatedHashEnabled.componentCount` | `integer` | yes |
 | `orgLevelSettings.curatedHashEnabled.confidence` | `Confidence` | yes |
 | `orgLevelSettings.curatedHashEnabled.enabled` | `boolean` | yes |
+| `orgLevelSettings.functionHashingEnabled` | `boolean` | yes |
+| `orgLevelSettings.heuristicEnabled` | `boolean` | yes |
 | `orgLevelSettings.idleTimeoutSeconds` | `integer` | yes |
 | `orgLevelSettings.idleTimoutEnabled` | `boolean` | yes |
 | `orgLevelSettings.kernelModuleEnabled` | `object` | yes |
@@ -41,6 +44,7 @@ Check how the tenant organization is configured.
 | `orgLevelSettings.libraryVersionEnabled.componentCount` | `integer` | yes |
 | `orgLevelSettings.libraryVersionEnabled.confidence` | `Confidence` | yes |
 | `orgLevelSettings.libraryVersionEnabled.enabled` | `boolean` | yes |
+| `orgLevelSettings.packageManagerEnabled` | `boolean` | yes |
 | `orgLevelSettings.packageManifestEnabled` | `object` | yes |
 | `orgLevelSettings.packageManifestEnabled.componentCount` | `integer` | yes |
 | `orgLevelSettings.packageManifestEnabled.confidence` | `Confidence` | yes |

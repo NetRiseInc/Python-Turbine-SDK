@@ -24,11 +24,13 @@ from .input_types import (
     CertificateExternalFiltersInput,
     CertificatesInput,
     CreateAllAssetVulnerabilitiesRemediationInput,
+    CreateAssetComparisonReportInput,
     CreateAssetGroupInput,
     CreateAssetVulnerabilityRemediationInput,
     CreateAssetVulnerabilityRemediationsInput,
     CreateSecretsRemediationInput,
     CredentialsInput,
+    DeleteAssetComparisonReportInput,
     DeleteAssetGroupInput,
     DependencyInput,
     DependencyKnownExploitsInput,
@@ -37,6 +39,7 @@ from .input_types import (
     FileListDownloadInput,
     FirmwareDownloadInput,
     GetAiModelDataInput,
+    GetAssetComparisonReportInput,
     GetVulnReachabilityInput,
     GroupedDependenciesInput,
     HashesInput,
@@ -48,6 +51,7 @@ from .input_types import (
     LicenseIssuesExternalFiltersInput,
     LicenseIssuesInput,
     ListAiProvidersInput,
+    ListAssetComparisonReportsInput,
     ListAssetCorrelationsInput,
     ListAssetCryptoLibrariesInput,
     MatchVulnerabilitiesInput,
@@ -97,7 +101,9 @@ from .mutation_asset_modify_dependency import MutationAssetModifyDependency
 from .mutation_asset_remove_dependencies import MutationAssetRemoveDependencies
 from .mutation_asset_submit import MutationAssetSubmit
 from .mutation_asset_update import MutationAssetUpdate
+from .mutation_create_asset_comparison_report import MutationCreateAssetComparisonReport
 from .mutation_create_asset_group import MutationCreateAssetGroup
+from .mutation_delete_asset_comparison_report import MutationDeleteAssetComparisonReport
 from .mutation_delete_asset_group import MutationDeleteAssetGroup
 from .mutation_remediate_all_asset_vulnerabilities import (
     MutationRemediateAllAssetVulnerabilities,
@@ -142,6 +148,7 @@ from .query_assets_relay_lite import QueryAssetsRelayLite
 from .query_assets_relay_summary import QueryAssetsRelaySummary
 from .query_binary_protections import QueryBinaryProtections
 from .query_binary_protections_summary import QueryBinaryProtectionsSummary
+from .query_caas_availability import QueryCaasAvailability
 from .query_certificate_external_filters import QueryCertificateExternalFilters
 from .query_certificates import QueryCertificates
 from .query_credentials import QueryCredentials
@@ -155,6 +162,7 @@ from .query_download_file import QueryDownloadFile
 from .query_download_file_list import QueryDownloadFileList
 from .query_download_firmware import QueryDownloadFirmware
 from .query_get_ai_model_data import QueryGetAiModelData
+from .query_get_asset_comparison_report import QueryGetAssetComparisonReport
 from .query_get_vuln_reachability import QueryGetVulnReachability
 from .query_grouped_dependencies import QueryGroupedDependencies
 from .query_hashes import QueryHashes
@@ -165,6 +173,7 @@ from .query_license_issues import QueryLicenseIssues
 from .query_license_issues_external_filters import QueryLicenseIssuesExternalFilters
 from .query_licenses_spdx_ids import QueryLicensesSpdxIds
 from .query_list_ai_providers import QueryListAiProviders
+from .query_list_asset_comparison_reports import QueryListAssetComparisonReports
 from .query_list_asset_correlations import QueryListAssetCorrelations
 from .query_list_asset_crypto_libraries import QueryListAssetCryptoLibraries
 from .query_match_vulnerabilities import QueryMatchVulnerabilities
@@ -1191,6 +1200,7 @@ class Client(BaseClient):
                 identificationIds
                 justification
                 response
+                responses
                 status
                 vulnerabilityId
               }
@@ -1469,6 +1479,26 @@ class Client(BaseClient):
         data = self.get_data(response)
         return QueryBinaryProtectionsSummary.model_validate(data)
 
+    def query_caas_availability(
+        self, caas_availability_args: RiseAIAnalysisDataInput, **kwargs: Any
+    ) -> QueryCaasAvailability:
+        query = gql(
+            """
+            query QueryCaasAvailability($caasAvailability_args: RiseAIAnalysisDataInput!) {
+              caasAvailability(args: $caasAvailability_args)
+            }
+            """
+        )
+        variables: dict[str, object] = {"caasAvailability_args": caas_availability_args}
+        response = self.execute(
+            query=query,
+            operation_name="QueryCaasAvailability",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryCaasAvailability.model_validate(data)
+
     def query_certificate_external_filters(
         self,
         certificate_external_filters_args: CertificateExternalFiltersInput,
@@ -1682,6 +1712,7 @@ class Client(BaseClient):
                   cursor
                   node {
                     id
+                    aiArchitecture
                     aiProviders
                     analytic {
                       aiComponents
@@ -2264,7 +2295,7 @@ class Client(BaseClient):
             query QueryGetAiModelData($getAiModelData_args: GetAiModelDataInput!) {
               getAiModelData(args: $getAiModelData_args) {
                 aiModelData {
-                  aiModelArchitectureType
+                  aiArchitecture
                   author
                   description
                   license
@@ -2285,6 +2316,312 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return QueryGetAiModelData.model_validate(data)
+
+    def query_get_asset_comparison_report(
+        self,
+        get_asset_comparison_report_args: GetAssetComparisonReportInput,
+        **kwargs: Any
+    ) -> QueryGetAssetComparisonReport:
+        query = gql(
+            """
+            query QueryGetAssetComparisonReport($getAssetComparisonReport_args: GetAssetComparisonReportInput!) {
+              getAssetComparisonReport(args: $getAssetComparisonReport_args) {
+                assetAInfo {
+                  analysisCreatedAt
+                  analysisId
+                  assetCreatedAt
+                  assetId
+                  assetType
+                  name
+                  orgId
+                  product
+                  uploadedBy
+                  vendor
+                  version
+                }
+                assetBInfo {
+                  analysisCreatedAt
+                  analysisId
+                  assetCreatedAt
+                  assetId
+                  assetType
+                  name
+                  orgId
+                  product
+                  uploadedBy
+                  vendor
+                  version
+                }
+                comparisonReportSummary {
+                  assetACredentialsSummary {
+                    totalCrackedAccounts
+                    totalCrackedHashes
+                    totalExposedSecrets
+                  }
+                  assetACryptographySummary {
+                    totalFailed
+                    totalNotApplicable
+                    totalPassed
+                  }
+                  assetALicenseIssueSummary {
+                    totalCopyleft
+                    totalLicenses
+                    totalRelationalConflict
+                  }
+                  assetAMisconfigurationsSummary {
+                    totalFailed
+                    totalPassed
+                  }
+                  assetAVulnerabilitySummary {
+                    totalCritical
+                    totalHigh
+                    totalKev
+                    totalLow
+                    totalMedium
+                    totalPoc
+                    totalReachable
+                    totalWeaponized
+                  }
+                  assetBCredentialsSummary {
+                    totalCrackedAccounts
+                    totalCrackedHashes
+                    totalExposedSecrets
+                  }
+                  assetBCryptographySummary {
+                    totalFailed
+                    totalNotApplicable
+                    totalPassed
+                  }
+                  assetBLicenseIssueSummary {
+                    totalCopyleft
+                    totalLicenses
+                    totalRelationalConflict
+                  }
+                  assetBMisconfigurationsSummary {
+                    totalFailed
+                    totalPassed
+                  }
+                  assetBVulnerabilitySummary {
+                    totalCritical
+                    totalHigh
+                    totalKev
+                    totalLow
+                    totalMedium
+                    totalPoc
+                    totalReachable
+                    totalWeaponized
+                  }
+                  inventoryComparisonSummary {
+                    binariesInANotInB
+                    binariesInBNotInA
+                    componentsInANotInB
+                    componentsInBNotInA
+                    filesInANotInB
+                    filesInBNotInA
+                    licensesInANotInB
+                    licensesInBNotInA
+                    totalOverlappingBinaries
+                    totalOverlappingComponents
+                    totalOverlappingFiles
+                    totalOverlappingLicenses
+                  }
+                }
+                completedAt
+                componentDiff {
+                  assetATypeCounts {
+                    aiModel
+                    application
+                    container
+                    device
+                    framework
+                    kernel
+                    kernelModule
+                    library
+                    os
+                    package
+                  }
+                  assetBTypeCounts {
+                    aiModel
+                    application
+                    container
+                    device
+                    framework
+                    kernel
+                    kernelModule
+                    library
+                    os
+                    package
+                  }
+                  inANotInB {
+                    criticalSevs
+                    highSevs
+                    licenses
+                    lowSevs
+                    mediumSevs
+                    name
+                    packageType
+                    reachable
+                    totalVulns
+                    type
+                    version
+                  }
+                  inANotInBReachableCount
+                  inBNotInA {
+                    criticalSevs
+                    highSevs
+                    licenses
+                    lowSevs
+                    mediumSevs
+                    name
+                    packageType
+                    reachable
+                    totalVulns
+                    type
+                    version
+                  }
+                  inBNotInAReachableCount
+                  overlap {
+                    criticalSevs
+                    highSevs
+                    licenses
+                    lowSevs
+                    mediumSevs
+                    name
+                    packageType
+                    reachable
+                    totalVulns
+                    type
+                    version
+                  }
+                  overlapReachableCount
+                }
+                createdAt
+                createdBy
+                reportId
+                riverJobId
+                vulnerabilityDiff {
+                  assetVulnerabilityRemediationDiff {
+                    totalResolvedA
+                    totalResolvedANotPresentInB
+                    totalResolvedB
+                    totalResolvedBNotPresentInA
+                    totalResolvedInAPresentInB
+                    totalResolvedInBPresentInA
+                    totalTrackedA
+                    totalTrackedB
+                    vulnerabilitiesMarkedResolvedInA {
+                      cisaKev
+                      componentName
+                      componentVersion
+                      cveId
+                      cvssScore
+                      exploitMaturity
+                      reachable
+                      severity
+                    }
+                    vulnerabilitiesMarkedResolvedInB {
+                      cisaKev
+                      componentName
+                      componentVersion
+                      cveId
+                      cvssScore
+                      exploitMaturity
+                      reachable
+                      severity
+                    }
+                    vulnerabilitiesResolvedInA {
+                      cisaKev
+                      componentName
+                      componentVersion
+                      cveId
+                      cvssScore
+                      exploitMaturity
+                      reachable
+                      severity
+                    }
+                    vulnerabilitiesResolvedInAPresentInB {
+                      cisaKev
+                      componentName
+                      componentVersion
+                      cveId
+                      cvssScore
+                      exploitMaturity
+                      reachable
+                      severity
+                    }
+                    vulnerabilitiesResolvedInB {
+                      cisaKev
+                      componentName
+                      componentVersion
+                      cveId
+                      cvssScore
+                      exploitMaturity
+                      reachable
+                      severity
+                    }
+                    vulnerabilitiesResolvedInBPresentInA {
+                      cisaKev
+                      componentName
+                      componentVersion
+                      cveId
+                      cvssScore
+                      exploitMaturity
+                      reachable
+                      severity
+                    }
+                  }
+                  inANotInB {
+                    cisaKev
+                    componentName
+                    componentVersion
+                    cveId
+                    cvssScore
+                    exploitMaturity
+                    reachable
+                    severity
+                  }
+                  inANotInBKevCount
+                  inANotInBReachableCount
+                  inBNotInA {
+                    cisaKev
+                    componentName
+                    componentVersion
+                    cveId
+                    cvssScore
+                    exploitMaturity
+                    reachable
+                    severity
+                  }
+                  inBNotInAKevCount
+                  inBNotInAReachableCount
+                  overlap {
+                    cisaKev
+                    componentName
+                    componentVersion
+                    cveId
+                    cvssScore
+                    exploitMaturity
+                    reachable
+                    severity
+                  }
+                  overlapKevCount
+                  overlapReachableCount
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "getAssetComparisonReport_args": get_asset_comparison_report_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryGetAssetComparisonReport",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryGetAssetComparisonReport.model_validate(data)
 
     def query_get_vuln_reachability(
         self, get_vuln_reachability_args: GetVulnReachabilityInput, **kwargs: Any
@@ -2754,6 +3091,265 @@ class Client(BaseClient):
         data = self.get_data(response)
         return QueryListAiProviders.model_validate(data)
 
+    def query_list_asset_comparison_reports(
+        self,
+        list_asset_comparison_reports_args: ListAssetComparisonReportsInput,
+        **kwargs: Any
+    ) -> QueryListAssetComparisonReports:
+        query = gql(
+            """
+            query QueryListAssetComparisonReports($listAssetComparisonReports_args: ListAssetComparisonReportsInput!) {
+              listAssetComparisonReports(args: $listAssetComparisonReports_args) {
+                edges {
+                  cursor
+                  node {
+                    assetAInfo {
+                      analysisCreatedAt
+                      analysisId
+                      assetCreatedAt
+                      assetId
+                      assetType
+                      name
+                      orgId
+                      product
+                      uploadedBy
+                      vendor
+                      version
+                    }
+                    assetBInfo {
+                      analysisCreatedAt
+                      analysisId
+                      assetCreatedAt
+                      assetId
+                      assetType
+                      name
+                      orgId
+                      product
+                      uploadedBy
+                      vendor
+                      version
+                    }
+                    comparisonReportSummary {
+                      assetACredentialsSummary {
+                        totalCrackedAccounts
+                        totalCrackedHashes
+                        totalExposedSecrets
+                      }
+                      assetACryptographySummary {
+                        totalFailed
+                        totalNotApplicable
+                        totalPassed
+                      }
+                      assetALicenseIssueSummary {
+                        totalCopyleft
+                        totalLicenses
+                        totalRelationalConflict
+                      }
+                      assetAMisconfigurationsSummary {
+                        totalFailed
+                        totalPassed
+                      }
+                      assetAVulnerabilitySummary {
+                        totalCritical
+                        totalHigh
+                        totalKev
+                        totalLow
+                        totalMedium
+                        totalPoc
+                        totalReachable
+                        totalWeaponized
+                      }
+                      assetBCredentialsSummary {
+                        totalCrackedAccounts
+                        totalCrackedHashes
+                        totalExposedSecrets
+                      }
+                      assetBCryptographySummary {
+                        totalFailed
+                        totalNotApplicable
+                        totalPassed
+                      }
+                      assetBLicenseIssueSummary {
+                        totalCopyleft
+                        totalLicenses
+                        totalRelationalConflict
+                      }
+                      assetBMisconfigurationsSummary {
+                        totalFailed
+                        totalPassed
+                      }
+                      assetBVulnerabilitySummary {
+                        totalCritical
+                        totalHigh
+                        totalKev
+                        totalLow
+                        totalMedium
+                        totalPoc
+                        totalReachable
+                        totalWeaponized
+                      }
+                      inventoryComparisonSummary {
+                        binariesInANotInB
+                        binariesInBNotInA
+                        componentsInANotInB
+                        componentsInBNotInA
+                        filesInANotInB
+                        filesInBNotInA
+                        licensesInANotInB
+                        licensesInBNotInA
+                        totalOverlappingBinaries
+                        totalOverlappingComponents
+                        totalOverlappingFiles
+                        totalOverlappingLicenses
+                      }
+                    }
+                    completedAt
+                    componentDiff {
+                      assetATypeCounts {
+                        aiModel
+                        application
+                        container
+                        device
+                        framework
+                        kernel
+                        kernelModule
+                        library
+                        os
+                        package
+                      }
+                      assetBTypeCounts {
+                        aiModel
+                        application
+                        container
+                        device
+                        framework
+                        kernel
+                        kernelModule
+                        library
+                        os
+                        package
+                      }
+                      inANotInB {
+                        criticalSevs
+                        highSevs
+                        licenses
+                        lowSevs
+                        mediumSevs
+                        name
+                        packageType
+                        reachable
+                        totalVulns
+                        type
+                        version
+                      }
+                      inANotInBReachableCount
+                      inBNotInA {
+                        criticalSevs
+                        highSevs
+                        licenses
+                        lowSevs
+                        mediumSevs
+                        name
+                        packageType
+                        reachable
+                        totalVulns
+                        type
+                        version
+                      }
+                      inBNotInAReachableCount
+                      overlap {
+                        criticalSevs
+                        highSevs
+                        licenses
+                        lowSevs
+                        mediumSevs
+                        name
+                        packageType
+                        reachable
+                        totalVulns
+                        type
+                        version
+                      }
+                      overlapReachableCount
+                    }
+                    createdAt
+                    createdBy
+                    reportId
+                    riverJobId
+                    vulnerabilityDiff {
+                      assetVulnerabilityRemediationDiff {
+                        totalResolvedA
+                        totalResolvedANotPresentInB
+                        totalResolvedB
+                        totalResolvedBNotPresentInA
+                        totalResolvedInAPresentInB
+                        totalResolvedInBPresentInA
+                        totalTrackedA
+                        totalTrackedB
+                      }
+                      inANotInB {
+                        cisaKev
+                        componentName
+                        componentVersion
+                        cveId
+                        cvssScore
+                        exploitMaturity
+                        reachable
+                        severity
+                      }
+                      inANotInBKevCount
+                      inANotInBReachableCount
+                      inBNotInA {
+                        cisaKev
+                        componentName
+                        componentVersion
+                        cveId
+                        cvssScore
+                        exploitMaturity
+                        reachable
+                        severity
+                      }
+                      inBNotInAKevCount
+                      inBNotInAReachableCount
+                      overlap {
+                        cisaKev
+                        componentName
+                        componentVersion
+                        cveId
+                        cvssScore
+                        exploitMaturity
+                        reachable
+                        severity
+                      }
+                      overlapKevCount
+                      overlapReachableCount
+                    }
+                  }
+                }
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                  startCursor
+                  totalCount
+                }
+                totalCount
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "listAssetComparisonReports_args": list_asset_comparison_reports_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryListAssetComparisonReports",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryListAssetComparisonReports.model_validate(data)
+
     def query_list_asset_correlations(
         self, list_asset_correlations_args: ListAssetCorrelationsInput, **kwargs: Any
     ) -> QueryListAssetCorrelations:
@@ -2859,6 +3455,7 @@ class Client(BaseClient):
                   identificationIds
                   justification
                   response
+                  responses
                   status
                   vulnerabilityId
                 }
@@ -3230,11 +3827,14 @@ class Client(BaseClient):
                   confidence
                   enabled
                 }
+                cryptographicHashEnabled
                 curatedHashEnabled {
                   componentCount
                   confidence
                   enabled
                 }
+                functionHashingEnabled
+                heuristicEnabled
                 idleTimeoutSeconds
                 idleTimoutEnabled
                 kernelModuleEnabled {
@@ -3257,6 +3857,7 @@ class Client(BaseClient):
                   confidence
                   enabled
                 }
+                packageManagerEnabled
                 packageManifestEnabled {
                   componentCount
                   confidence
@@ -4301,6 +4902,7 @@ class Client(BaseClient):
                       identificationIds
                       justification
                       response
+                      responses
                       status
                       vulnerabilityId
                     }
@@ -4415,6 +5017,7 @@ class Client(BaseClient):
                   identificationIds
                   justification
                   response
+                  responses
                   status
                   vulnerabilityId
                 }
@@ -5058,6 +5661,32 @@ class Client(BaseClient):
         data = self.get_data(response)
         return MutationAssetUpdate.model_validate(data)
 
+    def mutation_create_asset_comparison_report(
+        self,
+        create_asset_comparison_report_args: CreateAssetComparisonReportInput,
+        **kwargs: Any
+    ) -> MutationCreateAssetComparisonReport:
+        query = gql(
+            """
+            mutation MutationCreateAssetComparisonReport($createAssetComparisonReport_args: CreateAssetComparisonReportInput!) {
+              createAssetComparisonReport(args: $createAssetComparisonReport_args) {
+                jobId
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "createAssetComparisonReport_args": create_asset_comparison_report_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationCreateAssetComparisonReport",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationCreateAssetComparisonReport.model_validate(data)
+
     def mutation_create_asset_group(
         self, create_asset_group_args: CreateAssetGroupInput, **kwargs: Any
     ) -> MutationCreateAssetGroup:
@@ -5085,6 +5714,30 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return MutationCreateAssetGroup.model_validate(data)
+
+    def mutation_delete_asset_comparison_report(
+        self,
+        delete_asset_comparison_report_args: DeleteAssetComparisonReportInput,
+        **kwargs: Any
+    ) -> MutationDeleteAssetComparisonReport:
+        query = gql(
+            """
+            mutation MutationDeleteAssetComparisonReport($deleteAssetComparisonReport_args: DeleteAssetComparisonReportInput!) {
+              deleteAssetComparisonReport(args: $deleteAssetComparisonReport_args)
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "deleteAssetComparisonReport_args": delete_asset_comparison_report_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationDeleteAssetComparisonReport",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationDeleteAssetComparisonReport.model_validate(data)
 
     def mutation_delete_asset_group(
         self, delete_asset_group_args: DeleteAssetGroupInput, **kwargs: Any
@@ -5167,6 +5820,7 @@ class Client(BaseClient):
                   identificationIds
                   justification
                   response
+                  responses
                   status
                   vulnerabilityId
                 }
@@ -5233,6 +5887,7 @@ class Client(BaseClient):
                   identificationIds
                   justification
                   response
+                  responses
                   status
                   vulnerabilityId
                 }

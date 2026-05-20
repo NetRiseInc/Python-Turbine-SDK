@@ -59,6 +59,7 @@ from .enums import (
     NotificationSortField,
     NotificationTimeframe,
     NotificationType,
+    OrgUserStatus,
     PrivateKeysField,
     PublicKeysField,
     RemediationResponses,
@@ -357,6 +358,10 @@ class RemediateLicenseIssuesInput(BaseModel):
 
 
 class LicenseInput(BaseModel):
+    """**Breaking change (no prior deprecation):** `assetId` was added as a required field (`ID!`) on
+    2026-01-22. Clients that previously called `license(args: { spdxId: "..." })` must now also
+    supply `assetId`. Existing calls without `assetId` will fail validation."""
+
     spdx_id: str = Field(alias="spdxId")
     asset_id: str = Field(alias="assetId")
 
@@ -488,7 +493,7 @@ class ListNotificationLogsInput(BaseModel):
     """Input for listing notification logs."""
 
     cursor: Optional["Cursor"] = None
-    "Cursor for pagination. Uses `Cursor` / `PageRequest` under the hood."
+    "Cursor for pagination."
     filter: Optional["NotificationLogsFilter"] = None
     sort: Optional["NotificationLogsSort"] = None
 
@@ -551,8 +556,6 @@ class NotificationConfigurationCreateInput(BaseModel):
     silenced: Optional[bool] = None
     type: NotificationConfigurationType
     channel: NotificationConfigurationChannel
-    interval_seconds: float = Field(alias="intervalSeconds")
-    "Interval between deliveries in seconds (e.g. 3600). Not relevant for APPLICATION channel."
     inventory_scopes: Optional[list["NotificationInventoryScopeInput"]] = Field(
         alias="inventoryScopes", default=None
     )
@@ -562,7 +565,7 @@ class NotificationConfigurationCreateInput(BaseModel):
     channel_configuration: Optional["NotificationChannelConfigurationInput"] = Field(
         alias="channelConfiguration", default=None
     )
-    "Channel-specific config; exactly one variant must be set (matches channel). Oneof: webhook | email | application."
+    "Channel-specific settings. Exactly one of webhook, email, or application must be set, consistent with `channel`."
 
 
 class NotificationConfigurationUpdateInput(BaseModel):
@@ -574,8 +577,6 @@ class NotificationConfigurationUpdateInput(BaseModel):
     silenced: bool
     type: NotificationConfigurationType
     channel: NotificationConfigurationChannel
-    interval_seconds: float = Field(alias="intervalSeconds")
-    "Interval between deliveries in seconds (e.g. 3600). Not relevant for APPLICATION channel."
     inventory_scopes: Optional[list["NotificationInventoryScopeInput"]] = Field(
         alias="inventoryScopes", default=None
     )
@@ -585,11 +586,11 @@ class NotificationConfigurationUpdateInput(BaseModel):
     channel_configuration: "NotificationChannelConfigurationInput" = Field(
         alias="channelConfiguration"
     )
-    "Channel-specific config; exactly one variant must be set (matches channel). Oneof: webhook | email | application."
+    "Channel-specific settings. Exactly one of webhook, email, or application must be set, consistent with `channel`."
 
 
 class NotificationChannelConfigurationInput(BaseModel):
-    """Oneof: exactly one of webhook, email, or application must be set."""
+    """Exactly one of webhook, email, or application must be set."""
 
     webhook: Optional["NotificationConfigurationWebhookInput"] = None
     email: Optional["NotificationConfigurationEmailInput"] = None
@@ -1325,6 +1326,104 @@ class MisconfigurationsSort(BaseModel):
     order: Optional[SortOrder] = None
 
 
+class AddSecurityGroupMemberInput(BaseModel):
+    """Input payload for the `addSecurityGroupMember` mutation. Adds a user as a member
+    of the targeted security group via the RBAC service."""
+
+    security_group_id: str = Field(alias="securityGroupId")
+    "The id of the security group to add the user to."
+    user_id: str = Field(alias="userId")
+    "The id of the user to add as a member of the security group."
+
+
+class RemoveSecurityGroupMemberInput(BaseModel):
+    """Input payload for the `removeSecurityGroupMember` mutation. Removes a user from
+    the targeted security group via the RBAC service."""
+
+    security_group_id: str = Field(alias="securityGroupId")
+    "The id of the security group to remove the user from."
+    user_id: str = Field(alias="userId")
+    "The id of the user to remove from the security group."
+
+
+class CreateSecurityGroupInput(BaseModel):
+    """Input payload for the `createSecurityGroup` mutation. Creates a security group
+    in the current organization via the RBAC service."""
+
+    name: str
+    "Display name for the new security group."
+    description: Optional[str] = None
+    "Optional description shown in the Users & Access UI."
+    member_user_ids: Optional[list[str]] = Field(alias="memberUserIds", default=None)
+    "Org user IDs the client intends to add as manual members. Accepted for forward compatibility;\nthe server does not yet apply this field (members will be handled by the RBAC flow later)."
+    idp_mapping_id: Optional[str] = Field(alias="idpMappingId", default=None)
+    "IDP group mapping record id the client intends to attach. Accepted for forward compatibility;\nthe server does not yet apply this field."
+
+
+class UpdateSecurityGroupInput(BaseModel):
+    """Input payload for the `updateSecurityGroup` mutation. Updates name and/or description
+    for an existing security group via the RBAC service."""
+
+    security_group_id: str = Field(alias="securityGroupId")
+    "The id of the security group to update."
+    name: str
+    "New display name for the security group."
+    description: Optional[str] = None
+    "Optional description. Omit or pass empty string to clear."
+    member_user_ids: Optional[list[str]] = Field(alias="memberUserIds", default=None)
+    "Org user IDs the client intends as the manual member set for this group. Accepted for forward compatibility;\nthe server does not yet apply this field."
+    idp_mapping_id: Optional[str] = Field(alias="idpMappingId", default=None)
+    "IDP group mapping record id the client intends to attach. Accepted for forward compatibility;\nthe server does not yet apply this field."
+
+
+class DeleteSecurityGroupInput(BaseModel):
+    """Input payload for the `deleteSecurityGroup` mutation. Deletes a security group
+    via the RBAC service."""
+
+    security_group_id: str = Field(alias="securityGroupId")
+    "The id of the security group to delete."
+
+
+class InviteOrgUserInput(BaseModel):
+    """Input payload for the `inviteUser` mutation. Invites a user to the current organization
+    through the RBAC service."""
+
+    email: str
+    "The email address of the user to invite."
+    display_name: Optional[str] = Field(alias="displayName", default=None)
+    "Optional display name for the invited user."
+    security_group_ids: Optional[list[str]] = Field(
+        alias="securityGroupIds", default=None
+    )
+    "Optional list of security group IDs to add the invited user to upon creation."
+
+
+class SetOrgUserStatusInput(BaseModel):
+    """Input payload for the `setOrgUserStatus` mutation. Enables or disables a user
+    in the current organization through the RBAC service."""
+
+    user_id: str = Field(alias="userId")
+    "The id of the user whose status should be updated."
+    status: OrgUserStatus
+    "The new status to apply to the user."
+
+
+class RemoveOrgUserInput(BaseModel):
+    """Input payload for the `removeOrgUser` mutation. Permanently removes a user from
+    the current organization through the RBAC service."""
+
+    user_id: str = Field(alias="userId")
+    "The id of the user to remove from the current organization."
+
+
+class ResetOrgUserPasswordInput(BaseModel):
+    """Input payload for the `resetOrgUserPassword` mutation. Triggers a password
+    reset flow for the targeted user."""
+
+    user_id: str = Field(alias="userId")
+    "The id of the user whose password should be reset."
+
+
 class UsersInput(BaseModel):
     cursor: "Cursor"
 
@@ -1365,7 +1464,7 @@ class CreateAssetVulnerabilityRemediationInput(BaseModel):
     asset_id: str = Field(alias="assetId")
     remediation_id: "RemediationId" = Field(alias="remediationId")
     justification: Optional[VexJustification] = None
-    response: Optional[RemediationResponses] = None
+    responses: Optional[list[Optional[RemediationResponses]]] = None
     description: Optional[str] = None
     status: VexStatus
 
@@ -1374,7 +1473,7 @@ class CreateAssetVulnerabilityRemediationsInput(BaseModel):
     asset_id: str = Field(alias="assetId")
     remediation_ids: list["RemediationId"] = Field(alias="remediationIds")
     justification: Optional[VexJustification] = None
-    response: Optional[RemediationResponses] = None
+    responses: Optional[list[Optional[RemediationResponses]]] = None
     description: Optional[str] = None
     status: VexStatus
 
@@ -1396,7 +1495,7 @@ class CreateAllAssetVulnerabilitiesRemediationInput(BaseModel):
     asset_id: str = Field(alias="assetId")
     vulnerability_filter: "VulnerabilityFilter" = Field(alias="vulnerabilityFilter")
     justification: Optional[VexJustification] = None
-    response: Optional[RemediationResponses] = None
+    responses: Optional[list[Optional[RemediationResponses]]] = None
     description: Optional[str] = None
     status: VexStatus
 

@@ -40,6 +40,7 @@ class QueryDependenciesDependenciesEdges(BaseModel):
 
 class QueryDependenciesDependenciesEdgesNode(BaseModel):
     id: str
+    ai_architecture: Optional[str] = Field(alias="aiArchitecture")
     ai_providers: Optional[list[Optional[str]]] = Field(alias="aiProviders")
     analytic: "QueryDependenciesDependenciesEdgesNodeAnalytic"
     associated_files: Optional[
