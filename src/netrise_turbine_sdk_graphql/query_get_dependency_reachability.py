@@ -9,28 +9,28 @@ from .base_model import BaseModel
 from .enums import EvidenceEdgeType, EvidenceEntryType
 
 
-class QueryGetVulnReachability(BaseModel):
-    get_vuln_reachability: Optional[
-        list["QueryGetVulnReachabilityGetVulnReachability"]
-    ] = Field(alias="getVulnReachability")
+class QueryGetDependencyReachability(BaseModel):
+    get_dependency_reachability: Optional[
+        list["QueryGetDependencyReachabilityGetDependencyReachability"]
+    ] = Field(alias="getDependencyReachability")
 
 
-class QueryGetVulnReachabilityGetVulnReachability(BaseModel):
+class QueryGetDependencyReachabilityGetDependencyReachability(BaseModel):
     cve_id: Optional[str] = Field(alias="cveId")
     entry_point: Optional[str] = Field(alias="entryPoint")
     entry_type: Optional[EvidenceEntryType] = Field(alias="entryType")
     scripts: Optional[
-        list[Optional["QueryGetVulnReachabilityGetVulnReachabilityScripts"]]
+        list[Optional["QueryGetDependencyReachabilityGetDependencyReachabilityScripts"]]
     ]
     user: Optional[str]
 
 
-class QueryGetVulnReachabilityGetVulnReachabilityScripts(BaseModel):
+class QueryGetDependencyReachabilityGetDependencyReachabilityScripts(BaseModel):
     detail: Optional[str]
     edge_type: Optional[EvidenceEdgeType] = Field(alias="edgeType")
     invocation: Optional[str]
     path: Optional[str]
 
 
-QueryGetVulnReachability.model_rebuild()
-QueryGetVulnReachabilityGetVulnReachability.model_rebuild()
+QueryGetDependencyReachability.model_rebuild()
+QueryGetDependencyReachabilityGetDependencyReachability.model_rebuild()

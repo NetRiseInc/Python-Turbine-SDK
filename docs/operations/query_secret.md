@@ -37,6 +37,7 @@ Retrieve detailed information about a specific discovered secret.
 | `secret.currentRemediation.status` | `SecretRemediationStatus` | yes |
 | `secret.description` | `string` | yes |
 | `secret.filePath` | `string` | yes |
+| `secret.isReachable` | `boolean` | yes |
 | `secret.rawSecret` | `string` | yes |
 | `secret.remediationStatus` | `SecretRemediationStatus` | yes |
 | `secret.sanitizedSecret` | `string` | yes |

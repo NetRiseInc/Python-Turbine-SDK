@@ -15,7 +15,7 @@ class QueryPublicKeys(BaseModel):
 
 class QueryPublicKeysPublicKeys(BaseModel):
     edges: Optional[list[Optional["QueryPublicKeysPublicKeysEdges"]]]
-    page_info: Optional["QueryPublicKeysPublicKeysPageInfo"] = Field(alias="pageInfo")
+    page_info: "QueryPublicKeysPublicKeysPageInfo" = Field(alias="pageInfo")
 
 
 class QueryPublicKeysPublicKeysEdges(BaseModel):

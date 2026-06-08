@@ -18,9 +18,9 @@ class QueryListAssetCryptoLibrariesListAssetCryptoLibraries(BaseModel):
     edges: Optional[
         list[Optional["QueryListAssetCryptoLibrariesListAssetCryptoLibrariesEdges"]]
     ]
-    page_info: Optional[
-        "QueryListAssetCryptoLibrariesListAssetCryptoLibrariesPageInfo"
-    ] = Field(alias="pageInfo")
+    page_info: "QueryListAssetCryptoLibrariesListAssetCryptoLibrariesPageInfo" = Field(
+        alias="pageInfo"
+    )
 
 
 class QueryListAssetCryptoLibrariesListAssetCryptoLibrariesEdges(BaseModel):

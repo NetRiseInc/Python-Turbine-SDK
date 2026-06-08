@@ -23,6 +23,7 @@ class QuerySearchSearchFindings(BaseModel):
 
 
 class QuerySearchSearchFindingsEdges(BaseModel):
+    cursor: Optional[str]
     node: "QuerySearchSearchFindingsEdgesNode"
 
 

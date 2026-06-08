@@ -9,28 +9,28 @@ from .base_model import BaseModel
 from .enums import EvidenceEdgeType, EvidenceEntryType
 
 
-class QueryGetVulnReachability(BaseModel):
-    get_vuln_reachability: Optional[
-        list["QueryGetVulnReachabilityGetVulnReachability"]
-    ] = Field(alias="getVulnReachability")
+class QueryGetSecretReachability(BaseModel):
+    get_secret_reachability: Optional[
+        list["QueryGetSecretReachabilityGetSecretReachability"]
+    ] = Field(alias="getSecretReachability")
 
 
-class QueryGetVulnReachabilityGetVulnReachability(BaseModel):
+class QueryGetSecretReachabilityGetSecretReachability(BaseModel):
     cve_id: Optional[str] = Field(alias="cveId")
     entry_point: Optional[str] = Field(alias="entryPoint")
     entry_type: Optional[EvidenceEntryType] = Field(alias="entryType")
     scripts: Optional[
-        list[Optional["QueryGetVulnReachabilityGetVulnReachabilityScripts"]]
+        list[Optional["QueryGetSecretReachabilityGetSecretReachabilityScripts"]]
     ]
     user: Optional[str]
 
 
-class QueryGetVulnReachabilityGetVulnReachabilityScripts(BaseModel):
+class QueryGetSecretReachabilityGetSecretReachabilityScripts(BaseModel):
     detail: Optional[str]
     edge_type: Optional[EvidenceEdgeType] = Field(alias="edgeType")
     invocation: Optional[str]
     path: Optional[str]
 
 
-QueryGetVulnReachability.model_rebuild()
-QueryGetVulnReachabilityGetVulnReachability.model_rebuild()
+QueryGetSecretReachability.model_rebuild()
+QueryGetSecretReachabilityGetSecretReachability.model_rebuild()

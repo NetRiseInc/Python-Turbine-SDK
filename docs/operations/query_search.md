@@ -17,6 +17,7 @@ Execute keyword searches across all artifacts and files in organization.
 | `search` | `object` | yes |
 | `search.findings` | `object` | no |
 | `search.findings.edges[]` | `object` | no |
+| `search.findings.edges[].cursor` | `string` | yes |
 | `search.findings.edges[].node` | `object` | no |
 | `search.findings.edges[].node.assetGroupIds[]` | `string` | yes |
 | `search.findings.edges[].node.assetId` | `string` | no |

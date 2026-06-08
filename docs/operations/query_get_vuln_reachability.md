@@ -19,6 +19,8 @@ Determine if a vulnerability can be executed via system paths.
 | `getVulnReachability[].entryPoint` | `string` | yes |
 | `getVulnReachability[].entryType` | `EvidenceEntryType` | yes |
 | `getVulnReachability[].scripts[]` | `object` | yes |
+| `getVulnReachability[].scripts[].detail` | `string` | yes |
+| `getVulnReachability[].scripts[].edgeType` | `EvidenceEdgeType` | yes |
 | `getVulnReachability[].scripts[].invocation` | `string` | yes |
 | `getVulnReachability[].scripts[].path` | `string` | yes |
 | `getVulnReachability[].user` | `string` | yes |

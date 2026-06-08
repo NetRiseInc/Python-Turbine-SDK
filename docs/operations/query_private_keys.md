@@ -55,7 +55,7 @@ Detect private cryptographic keys stored insecurely on the asset filesystem.
 | `privateKeys.edges[].node.publicDsaKey` | `string` | yes |
 | `privateKeys.edges[].node.seed` | `string` | yes |
 | `privateKeys.edges[].node.uniqueHash` | `string` | yes |
-| `privateKeys.pageInfo` | `object` | yes |
+| `privateKeys.pageInfo` | `object` | no |
 | `privateKeys.pageInfo.endCursor` | `string` | yes |
 | `privateKeys.pageInfo.hasNextPage` | `boolean` | no |
 | `privateKeys.pageInfo.hasPreviousPage` | `boolean` | no |

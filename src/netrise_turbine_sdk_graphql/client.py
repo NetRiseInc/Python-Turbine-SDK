@@ -28,10 +28,12 @@ from .input_types import (
     CreateAssetGroupInput,
     CreateAssetVulnerabilityRemediationInput,
     CreateAssetVulnerabilityRemediationsInput,
+    CreateNotificationConfigurationInput,
     CreateSecretsRemediationInput,
     CredentialsInput,
     DeleteAssetComparisonReportInput,
     DeleteAssetGroupInput,
+    DeleteNotificationConfigurationInput,
     DependencyInput,
     DependencyKnownExploitsInput,
     ExtractedFirmwareDownloadInput,
@@ -40,6 +42,9 @@ from .input_types import (
     FirmwareDownloadInput,
     GetAiModelDataInput,
     GetAssetComparisonReportInput,
+    GetCertificateReachabilityInput,
+    GetDependencyReachabilityInput,
+    GetSecretReachabilityInput,
     GetVulnReachabilityInput,
     GroupedDependenciesInput,
     HashesInput,
@@ -54,9 +59,12 @@ from .input_types import (
     ListAssetComparisonReportsInput,
     ListAssetCorrelationsInput,
     ListAssetCryptoLibrariesInput,
+    ListNotificationConfigurationsInput,
+    ListNotificationLogsInput,
     MatchVulnerabilitiesInput,
     MisconfigurationsInput,
     ModifyDependencyInput,
+    NotifyNotificationConfigurationInput,
     OrgLevelInformationInput,
     OrgLevelSettingsInput,
     PaginatedDetailedVulnerabilitiesInput,
@@ -85,6 +93,7 @@ from .input_types import (
     SubmitAssetInput,
     UpdateAssetGroupInput,
     UpdateAssetInput,
+    UpdateNotificationConfigurationInput,
     UpdateUserInput,
     UserActionInput,
     UserInput,
@@ -103,8 +112,17 @@ from .mutation_asset_submit import MutationAssetSubmit
 from .mutation_asset_update import MutationAssetUpdate
 from .mutation_create_asset_comparison_report import MutationCreateAssetComparisonReport
 from .mutation_create_asset_group import MutationCreateAssetGroup
+from .mutation_create_notification_configuration import (
+    MutationCreateNotificationConfiguration,
+)
 from .mutation_delete_asset_comparison_report import MutationDeleteAssetComparisonReport
 from .mutation_delete_asset_group import MutationDeleteAssetGroup
+from .mutation_delete_notification_configuration import (
+    MutationDeleteNotificationConfiguration,
+)
+from .mutation_notify_notification_configuration import (
+    MutationNotifyNotificationConfiguration,
+)
 from .mutation_remediate_all_asset_vulnerabilities import (
     MutationRemediateAllAssetVulnerabilities,
 )
@@ -125,6 +143,9 @@ from .mutation_set_asset_groups_to_asset import MutationSetAssetGroupsToAsset
 from .mutation_set_assets_to_asset_group import MutationSetAssetsToAssetGroup
 from .mutation_submit_rise_ai_analysis import MutationSubmitRiseAIAnalysis
 from .mutation_update_asset_group import MutationUpdateAssetGroup
+from .mutation_update_notification_configuration import (
+    MutationUpdateNotificationConfiguration,
+)
 from .mutation_update_org_level_settings import MutationUpdateOrgLevelSettings
 from .mutation_user_action import MutationUserAction
 from .mutation_user_delete import MutationUserDelete
@@ -163,6 +184,9 @@ from .query_download_file_list import QueryDownloadFileList
 from .query_download_firmware import QueryDownloadFirmware
 from .query_get_ai_model_data import QueryGetAiModelData
 from .query_get_asset_comparison_report import QueryGetAssetComparisonReport
+from .query_get_certificate_reachability import QueryGetCertificateReachability
+from .query_get_dependency_reachability import QueryGetDependencyReachability
+from .query_get_secret_reachability import QueryGetSecretReachability
 from .query_get_vuln_reachability import QueryGetVulnReachability
 from .query_grouped_dependencies import QueryGroupedDependencies
 from .query_hashes import QueryHashes
@@ -176,6 +200,8 @@ from .query_list_ai_providers import QueryListAiProviders
 from .query_list_asset_comparison_reports import QueryListAssetComparisonReports
 from .query_list_asset_correlations import QueryListAssetCorrelations
 from .query_list_asset_crypto_libraries import QueryListAssetCryptoLibraries
+from .query_list_notification_configurations import QueryListNotificationConfigurations
+from .query_list_notification_logs import QueryListNotificationLogs
 from .query_match_vulnerabilities import QueryMatchVulnerabilities
 from .query_metrics import QueryMetrics
 from .query_misconfigurations import QueryMisconfigurations
@@ -1581,6 +1607,7 @@ class Client(BaseClient):
                     invalidities
                     invaliditiesCount
                     isCa
+                    isReachable
                     issuerCommonName
                     issuerCountry
                     issuerDN
@@ -1878,6 +1905,7 @@ class Client(BaseClient):
                     }
                     identifiedVia
                     isAi
+                    isReachable
                     latestRemediation {
                       author
                       createdAt
@@ -2623,6 +2651,109 @@ class Client(BaseClient):
         data = self.get_data(response)
         return QueryGetAssetComparisonReport.model_validate(data)
 
+    def query_get_certificate_reachability(
+        self,
+        get_certificate_reachability_args: GetCertificateReachabilityInput,
+        **kwargs: Any
+    ) -> QueryGetCertificateReachability:
+        query = gql(
+            """
+            query QueryGetCertificateReachability($getCertificateReachability_args: GetCertificateReachabilityInput!) {
+              getCertificateReachability(args: $getCertificateReachability_args) {
+                cveId
+                entryPoint
+                entryType
+                scripts {
+                  detail
+                  edgeType
+                  invocation
+                  path
+                }
+                user
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "getCertificateReachability_args": get_certificate_reachability_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryGetCertificateReachability",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryGetCertificateReachability.model_validate(data)
+
+    def query_get_dependency_reachability(
+        self,
+        get_dependency_reachability_args: GetDependencyReachabilityInput,
+        **kwargs: Any
+    ) -> QueryGetDependencyReachability:
+        query = gql(
+            """
+            query QueryGetDependencyReachability($getDependencyReachability_args: GetDependencyReachabilityInput!) {
+              getDependencyReachability(args: $getDependencyReachability_args) {
+                cveId
+                entryPoint
+                entryType
+                scripts {
+                  detail
+                  edgeType
+                  invocation
+                  path
+                }
+                user
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "getDependencyReachability_args": get_dependency_reachability_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryGetDependencyReachability",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryGetDependencyReachability.model_validate(data)
+
+    def query_get_secret_reachability(
+        self, get_secret_reachability_args: GetSecretReachabilityInput, **kwargs: Any
+    ) -> QueryGetSecretReachability:
+        query = gql(
+            """
+            query QueryGetSecretReachability($getSecretReachability_args: GetSecretReachabilityInput!) {
+              getSecretReachability(args: $getSecretReachability_args) {
+                cveId
+                entryPoint
+                entryType
+                scripts {
+                  detail
+                  edgeType
+                  invocation
+                  path
+                }
+                user
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "getSecretReachability_args": get_secret_reachability_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryGetSecretReachability",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryGetSecretReachability.model_validate(data)
+
     def query_get_vuln_reachability(
         self, get_vuln_reachability_args: GetVulnReachabilityInput, **kwargs: Any
     ) -> QueryGetVulnReachability:
@@ -2634,6 +2765,8 @@ class Client(BaseClient):
                 entryPoint
                 entryType
                 scripts {
+                  detail
+                  edgeType
                   invocation
                   path
                 }
@@ -3437,6 +3570,118 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return QueryListAssetCryptoLibraries.model_validate(data)
+
+    def query_list_notification_configurations(
+        self,
+        list_notification_configurations_args: ListNotificationConfigurationsInput,
+        **kwargs: Any
+    ) -> QueryListNotificationConfigurations:
+        query = gql(
+            """
+            query QueryListNotificationConfigurations($listNotificationConfigurations_args: ListNotificationConfigurationsInput!) {
+              listNotificationConfigurations(args: $listNotificationConfigurations_args) {
+                edges {
+                  cursor
+                  node {
+                    id
+                    activityScopes {
+                      activityType
+                      entityType
+                      threshold {
+                        key
+                        operator
+                        value
+                      }
+                    }
+                    channel
+                    channelConfiguration {
+                      __typename
+                      ... on NotificationConfigurationWebhook {
+                        url
+                      }
+                      ... on NotificationConfigurationEmail {
+                        address
+                      }
+                      ... on NotificationConfigurationApplication {
+                        _empty
+                      }
+                    }
+                    createdAt
+                    disabled
+                    inventoryScopes {
+                      assetId
+                      groupId
+                      organization
+                    }
+                    name
+                    silenced
+                    type
+                    updatedAt
+                    updatedBy
+                  }
+                }
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                  startCursor
+                  totalCount
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "listNotificationConfigurations_args": list_notification_configurations_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryListNotificationConfigurations",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryListNotificationConfigurations.model_validate(data)
+
+    def query_list_notification_logs(
+        self, list_notification_logs_args: ListNotificationLogsInput, **kwargs: Any
+    ) -> QueryListNotificationLogs:
+        query = gql(
+            """
+            query QueryListNotificationLogs($listNotificationLogs_args: ListNotificationLogsInput!) {
+              listNotificationLogs(args: $listNotificationLogs_args) {
+                edges {
+                  cursor
+                  node {
+                    eventCount
+                    messages
+                    notificationConfigurationId
+                    status
+                    timestamp
+                  }
+                }
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                  startCursor
+                  totalCount
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "listNotificationLogs_args": list_notification_logs_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryListNotificationLogs",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryListNotificationLogs.model_validate(data)
 
     def query_match_vulnerabilities(
         self, match_vulnerabilities_args: MatchVulnerabilitiesInput, **kwargs: Any
@@ -4530,6 +4775,7 @@ class Client(BaseClient):
               search(args: $search_args) {
                 findings {
                   edges {
+                    cursor
                     node {
                       assetGroupIds
                       assetId
@@ -4593,6 +4839,7 @@ class Client(BaseClient):
                 }
                 description
                 filePath
+                isReachable
                 rawSecret
                 remediationStatus
                 sanitizedSecret
@@ -4729,6 +4976,7 @@ class Client(BaseClient):
                     }
                     description
                     filePath
+                    isReachable
                     rawSecret
                     remediationStatus
                     sanitizedSecret
@@ -5715,6 +5963,66 @@ class Client(BaseClient):
         data = self.get_data(response)
         return MutationCreateAssetGroup.model_validate(data)
 
+    def mutation_create_notification_configuration(
+        self,
+        create_notification_configuration_args: CreateNotificationConfigurationInput,
+        **kwargs: Any
+    ) -> MutationCreateNotificationConfiguration:
+        query = gql(
+            """
+            mutation MutationCreateNotificationConfiguration($createNotificationConfiguration_args: CreateNotificationConfigurationInput!) {
+              createNotificationConfiguration(args: $createNotificationConfiguration_args) {
+                id
+                activityScopes {
+                  activityType
+                  entityType
+                  threshold {
+                    key
+                    operator
+                    value
+                  }
+                }
+                channel
+                channelConfiguration {
+                  __typename
+                  ... on NotificationConfigurationWebhook {
+                    url
+                  }
+                  ... on NotificationConfigurationEmail {
+                    address
+                  }
+                  ... on NotificationConfigurationApplication {
+                    _empty
+                  }
+                }
+                createdAt
+                disabled
+                inventoryScopes {
+                  assetId
+                  groupId
+                  organization
+                }
+                name
+                silenced
+                type
+                updatedAt
+                updatedBy
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "createNotificationConfiguration_args": create_notification_configuration_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationCreateNotificationConfiguration",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationCreateNotificationConfiguration.model_validate(data)
+
     def mutation_delete_asset_comparison_report(
         self,
         delete_asset_comparison_report_args: DeleteAssetComparisonReportInput,
@@ -5760,6 +6068,54 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return MutationDeleteAssetGroup.model_validate(data)
+
+    def mutation_delete_notification_configuration(
+        self,
+        delete_notification_configuration_args: DeleteNotificationConfigurationInput,
+        **kwargs: Any
+    ) -> MutationDeleteNotificationConfiguration:
+        query = gql(
+            """
+            mutation MutationDeleteNotificationConfiguration($deleteNotificationConfiguration_args: DeleteNotificationConfigurationInput!) {
+              deleteNotificationConfiguration(args: $deleteNotificationConfiguration_args)
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "deleteNotificationConfiguration_args": delete_notification_configuration_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationDeleteNotificationConfiguration",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationDeleteNotificationConfiguration.model_validate(data)
+
+    def mutation_notify_notification_configuration(
+        self,
+        notify_notification_configuration_args: NotifyNotificationConfigurationInput,
+        **kwargs: Any
+    ) -> MutationNotifyNotificationConfiguration:
+        query = gql(
+            """
+            mutation MutationNotifyNotificationConfiguration($notifyNotificationConfiguration_args: NotifyNotificationConfigurationInput!) {
+              notifyNotificationConfiguration(args: $notifyNotificationConfiguration_args)
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "notifyNotificationConfiguration_args": notify_notification_configuration_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationNotifyNotificationConfiguration",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationNotifyNotificationConfiguration.model_validate(data)
 
     def mutation_remediate_all_asset_vulnerabilities(
         self,
@@ -6211,6 +6567,66 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return MutationUpdateAssetGroup.model_validate(data)
+
+    def mutation_update_notification_configuration(
+        self,
+        update_notification_configuration_args: UpdateNotificationConfigurationInput,
+        **kwargs: Any
+    ) -> MutationUpdateNotificationConfiguration:
+        query = gql(
+            """
+            mutation MutationUpdateNotificationConfiguration($updateNotificationConfiguration_args: UpdateNotificationConfigurationInput!) {
+              updateNotificationConfiguration(args: $updateNotificationConfiguration_args) {
+                id
+                activityScopes {
+                  activityType
+                  entityType
+                  threshold {
+                    key
+                    operator
+                    value
+                  }
+                }
+                channel
+                channelConfiguration {
+                  __typename
+                  ... on NotificationConfigurationWebhook {
+                    url
+                  }
+                  ... on NotificationConfigurationEmail {
+                    address
+                  }
+                  ... on NotificationConfigurationApplication {
+                    _empty
+                  }
+                }
+                createdAt
+                disabled
+                inventoryScopes {
+                  assetId
+                  groupId
+                  organization
+                }
+                name
+                silenced
+                type
+                updatedAt
+                updatedBy
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "updateNotificationConfiguration_args": update_notification_configuration_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationUpdateNotificationConfiguration",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationUpdateNotificationConfiguration.model_validate(data)
 
     def mutation_update_org_level_settings(
         self, update_org_level_settings_args: OrgLevelSettingsInput, **kwargs: Any

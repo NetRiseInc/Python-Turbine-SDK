@@ -24,7 +24,7 @@ List cryptographic libraries and algorithms detected within an asset.
 | `listAssetCryptoLibraries.edges[].node.purl` | `string` | yes |
 | `listAssetCryptoLibraries.edges[].node.vendor` | `string` | yes |
 | `listAssetCryptoLibraries.edges[].node.version` | `string` | yes |
-| `listAssetCryptoLibraries.pageInfo` | `object` | yes |
+| `listAssetCryptoLibraries.pageInfo` | `object` | no |
 | `listAssetCryptoLibraries.pageInfo.endCursor` | `string` | yes |
 | `listAssetCryptoLibraries.pageInfo.hasNextPage` | `boolean` | no |
 | `listAssetCryptoLibraries.pageInfo.hasPreviousPage` | `boolean` | no |

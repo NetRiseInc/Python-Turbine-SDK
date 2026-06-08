@@ -24,7 +24,7 @@ List misconfigurations with trimmed fields — keeps check ID, name, severity, r
 | `misconfigurations.edges[].node.severity` | `MisconfigurationSeverityType` | yes |
 | `misconfigurations.edges[].node.result` | `MisconfigurationStatusType` | yes |
 | `misconfigurations.edges[].node.correlationsCount` | `integer` | yes |
-| `misconfigurations.pageInfo` | `object` | yes |
+| `misconfigurations.pageInfo` | `object` | no |
 | `misconfigurations.pageInfo.endCursor` | `string` | yes |
 | `misconfigurations.pageInfo.hasNextPage` | `boolean` | no |
 | `misconfigurations.pageInfo.hasPreviousPage` | `boolean` | no |

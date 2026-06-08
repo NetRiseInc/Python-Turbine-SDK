@@ -40,6 +40,7 @@ List all secrets and sensitive data discovered within an asset.
 | `secrets.edges[].node.currentRemediation.status` | `SecretRemediationStatus` | yes |
 | `secrets.edges[].node.description` | `string` | yes |
 | `secrets.edges[].node.filePath` | `string` | yes |
+| `secrets.edges[].node.isReachable` | `boolean` | yes |
 | `secrets.edges[].node.rawSecret` | `string` | yes |
 | `secrets.edges[].node.remediationStatus` | `SecretRemediationStatus` | yes |
 | `secrets.edges[].node.sanitizedSecret` | `string` | yes |

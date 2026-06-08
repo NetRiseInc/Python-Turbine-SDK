@@ -9,6 +9,8 @@ from pydantic import Field, PlainSerializer
 from .base_model import BaseModel
 from .custom_scalars import serialize_datetime
 from .enums import (
+    AcrEntityType,
+    AcrResourceType,
     ActivityEntityType,
     ArtifactName,
     AssetAnalysisEventSelection,
@@ -204,6 +206,8 @@ class ListCertificatesFilter(BaseModel):
     algorithm_type: Optional["StringFilter"] = Field(
         alias="algorithmType", default=None
     )
+    is_reachable: Optional[bool] = Field(alias="isReachable", default=None)
+    "When true, only certificates marked as reachable (reachability v2)."
 
 
 class ListCertificatesFilterField(BaseModel):
@@ -548,6 +552,12 @@ class DeleteNotificationConfigurationInput(BaseModel):
     id: str
 
 
+class NotifyNotificationConfigurationInput(BaseModel):
+    """Input for triggering notification delivery for a configuration."""
+
+    id: str
+
+
 class NotificationConfigurationCreateInput(BaseModel):
     """Input for creating a notification configuration. Id is not set by the client."""
 
@@ -779,6 +789,8 @@ class SecretsFilter(BaseModel):
     category: Optional[SecretCategory] = None
     search: Optional[str] = None
     status: Optional[list[Optional[SecretRemediationStatus]]] = None
+    is_reachable: Optional[bool] = Field(alias="isReachable", default=None)
+    "When true, only secrets marked as reachable (reachability v2).\nPushed to gRPC for list queries; categories-summary rebuilds from filtered list."
 
 
 class SecretInput(BaseModel):
@@ -1210,6 +1222,12 @@ class BinaryProtectionsSummaryInput(BaseModel):
     composed_asset_id: str = Field(alias="composedAssetId")
 
 
+class GetCertificateReachabilityInput(BaseModel):
+    composed_asset_id: str = Field(alias="composedAssetId")
+    file_path: str = Field(alias="filePath")
+    sha_256: str = Field(alias="sha256")
+
+
 class packageDependenciesByIdInput(BaseModel):
     composed_asset_id: str = Field(alias="composedAssetId")
     identification_ids: Optional[list[str]] = Field(
@@ -1249,6 +1267,8 @@ class DependencyFilter(BaseModel):
     "Filter by vulnerability fields"
     fields: Optional[list[Optional["DependencyFieldFilter"]]] = None
     package_match: Optional["ValueFilter"] = Field(alias="packageMatch", default=None)
+    is_reachable: Optional[bool] = Field(alias="isReachable", default=None)
+    "When true, only dependencies marked as reachable (reachability v2)."
 
 
 class DependencyAnalyticFilter(BaseModel):
@@ -1300,6 +1320,11 @@ class ValueFilter(BaseModel):
     any: Optional[list[str]] = None
     all: Optional[list[str]] = None
     has: Optional["BooleanFilter"] = None
+
+
+class GetDependencyReachabilityInput(BaseModel):
+    composed_asset_id: str = Field(alias="composedAssetId")
+    component_id: str = Field(alias="componentId")
 
 
 class MisconfigurationsInput(BaseModel):
@@ -1354,10 +1379,8 @@ class CreateSecurityGroupInput(BaseModel):
     "Display name for the new security group."
     description: Optional[str] = None
     "Optional description shown in the Users & Access UI."
-    member_user_ids: Optional[list[str]] = Field(alias="memberUserIds", default=None)
-    "Org user IDs the client intends to add as manual members. Accepted for forward compatibility;\nthe server does not yet apply this field (members will be handled by the RBAC flow later)."
-    idp_mapping_id: Optional[str] = Field(alias="idpMappingId", default=None)
-    "IDP group mapping record id the client intends to attach. Accepted for forward compatibility;\nthe server does not yet apply this field."
+    member_emails: Optional[list[str]] = Field(alias="memberEmails", default=None)
+    "Org user emails to add as direct members when the group is created.\nEach email must match an existing org user; unknown emails fail the request."
 
 
 class UpdateSecurityGroupInput(BaseModel):
@@ -1370,10 +1393,8 @@ class UpdateSecurityGroupInput(BaseModel):
     "New display name for the security group."
     description: Optional[str] = None
     "Optional description. Omit or pass empty string to clear."
-    member_user_ids: Optional[list[str]] = Field(alias="memberUserIds", default=None)
-    "Org user IDs the client intends as the manual member set for this group. Accepted for forward compatibility;\nthe server does not yet apply this field."
-    idp_mapping_id: Optional[str] = Field(alias="idpMappingId", default=None)
-    "IDP group mapping record id the client intends to attach. Accepted for forward compatibility;\nthe server does not yet apply this field."
+    member_emails: Optional[list[str]] = Field(alias="memberEmails", default=None)
+    "When provided, replaces the group's direct member set with these org user emails.\nAn empty list clears direct members. Omit to leave membership unchanged."
 
 
 class DeleteSecurityGroupInput(BaseModel):
@@ -1396,6 +1417,78 @@ class InviteOrgUserInput(BaseModel):
         alias="securityGroupIds", default=None
     )
     "Optional list of security group IDs to add the invited user to upon creation."
+
+
+class CreateCustomRoleInput(BaseModel):
+    """Input payload for the `createCustomRole` mutation. Creates an org-scoped
+    custom RBAC role via the RBAC service."""
+
+    name: str
+    "Display name for the new custom role."
+    description: Optional[str] = None
+    "Optional description shown in the Users & Access UI."
+    permissions: list[str]
+    "Permission identifiers that should be granted to this role."
+
+
+class UpdateCustomRoleInput(BaseModel):
+    """Input payload for the `updateCustomRole` mutation. Updates an existing custom
+    role via the RBAC service."""
+
+    role_id: str = Field(alias="roleId")
+    "The id of the custom role to update."
+    name: str
+    "New display name for the custom role."
+    description: Optional[str] = None
+    "Optional description. Omit or pass empty string to clear."
+    permissions: list[str]
+    "Permission identifiers that should be granted to this role."
+
+
+class DeleteCustomRoleInput(BaseModel):
+    """Input payload for the `deleteCustomRole` mutation. Deletes a custom role
+    via the RBAC service."""
+
+    role_id: str = Field(alias="roleId")
+    "The id of the custom role to delete."
+
+
+class AcrBindingInput(BaseModel):
+    """Shared binding fields for create and replace ACR mutations.
+    Exactly one of `roleId` or `directPermissionIds` must be provided."""
+
+    entity_type: AcrEntityType = Field(alias="entityType")
+    entity_id: str = Field(alias="entityId")
+    role_id: Optional[str] = Field(alias="roleId", default=None)
+    "Role to grant. Omit or pass empty string for direct-permission ACRs."
+    resource_type: AcrResourceType = Field(alias="resourceType")
+    resource_id: Optional[str] = Field(alias="resourceId", default=None)
+    "Resource identifier. Omit for organization-level grants when not applicable."
+    expires_at: Optional[str] = Field(alias="expiresAt", default=None)
+    "Optional ISO-8601 expiration time. Omit for non-expiring grants."
+    direct_permission_ids: Optional[list[str]] = Field(
+        alias="directPermissionIds", default=None
+    )
+    "Permission identifiers for role-less (direct-permission) ACRs."
+
+
+class CreateAcrInput(BaseModel):
+    """Input payload for the `createACR` mutation."""
+
+    binding: "AcrBindingInput"
+
+
+class DeleteAcrInput(BaseModel):
+    """Input payload for the `deleteACR` mutation."""
+
+    acr_id: str = Field(alias="acrId")
+
+
+class ReplaceAcrInput(BaseModel):
+    """Input payload for the `replaceACR` mutation."""
+
+    acr_id: str = Field(alias="acrId")
+    binding: "AcrBindingInput"
 
 
 class SetOrgUserStatusInput(BaseModel):
@@ -1422,6 +1515,11 @@ class ResetOrgUserPasswordInput(BaseModel):
 
     user_id: str = Field(alias="userId")
     "The id of the user whose password should be reset."
+
+
+class GetSecretReachabilityInput(BaseModel):
+    composed_asset_id: str = Field(alias="composedAssetId")
+    secret_id: str = Field(alias="secretId")
 
 
 class UsersInput(BaseModel):
@@ -1677,6 +1775,8 @@ GroupedDependencyFilter.model_rebuild()
 ValueFilter.model_rebuild()
 MisconfigurationsInput.model_rebuild()
 MisconfigurationsFilter.model_rebuild()
+CreateAcrInput.model_rebuild()
+ReplaceAcrInput.model_rebuild()
 UsersInput.model_rebuild()
 CreateAssetVulnerabilityRemediationInput.model_rebuild()
 CreateAssetVulnerabilityRemediationsInput.model_rebuild()

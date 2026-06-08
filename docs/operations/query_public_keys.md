@@ -50,7 +50,7 @@ List public cryptographic keys found within the asset's file system.
 | `publicKeys.edges[].node.foundPrivateKeyCount` | `integer` | yes |
 | `publicKeys.edges[].node.matchHash` | `string` | yes |
 | `publicKeys.edges[].node.uniqueHash` | `string` | yes |
-| `publicKeys.pageInfo` | `object` | yes |
+| `publicKeys.pageInfo` | `object` | no |
 | `publicKeys.pageInfo.endCursor` | `string` | yes |
 | `publicKeys.pageInfo.hasNextPage` | `boolean` | no |
 | `publicKeys.pageInfo.hasPreviousPage` | `boolean` | no |
