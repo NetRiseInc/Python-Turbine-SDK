@@ -20,7 +20,7 @@ class QueryMisconfigurationsLite(BaseModel):
 
 class QueryMisconfigurationsLiteMisconfigurations(BaseModel):
     edges: Optional[list[Optional["QueryMisconfigurationsLiteMisconfigurationsEdges"]]]
-    page_info: Optional["QueryMisconfigurationsLiteMisconfigurationsPageInfo"] = Field(
+    page_info: "QueryMisconfigurationsLiteMisconfigurationsPageInfo" = Field(
         alias="pageInfo"
     )
 

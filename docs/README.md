@@ -551,8 +551,11 @@ cfg = TurbineClientConfig.from_env(load_env_file=False)
 - [mutation_asset_update](operations/mutation_asset_update.md): Modify metadata such as name, vendor, or version for assets.
 - [mutation_create_asset_comparison_report](operations/mutation_create_asset_comparison_report.md): Create a new comparison report to diff vulnerabilities and components between two assets.
 - [mutation_create_asset_group](operations/mutation_create_asset_group.md): Create a new named group to organize and track assets.
+- [mutation_create_notification_configuration](operations/mutation_create_notification_configuration.md): Create a notification configuration defining channel, scopes, and triggers for alerts.
 - [mutation_delete_asset_comparison_report](operations/mutation_delete_asset_comparison_report.md): Permanently delete an asset comparison report by its ID.
 - [mutation_delete_asset_group](operations/mutation_delete_asset_group.md): Permanently remove an asset group while keeping contained assets intact.
+- [mutation_delete_notification_configuration](operations/mutation_delete_notification_configuration.md): Permanently delete a notification configuration by its ID.
+- [mutation_notify_notification_configuration](operations/mutation_notify_notification_configuration.md): Send a test notification using an existing notification configuration.
 - [mutation_remediate_all_asset_vulnerabilities](operations/mutation_remediate_all_asset_vulnerabilities.md): Apply a remediation status to all vulnerabilities matching specific filters.
 - [mutation_remediate_asset_vulnerabilities](operations/mutation_remediate_asset_vulnerabilities.md): Bulk apply VEX remediation status to multiple vulnerabilities on assets.
 - [mutation_remediate_asset_vulnerability](operations/mutation_remediate_asset_vulnerability.md): Update remediation status and justification for a single asset vulnerability.
@@ -567,6 +570,7 @@ cfg = TurbineClientConfig.from_env(load_env_file=False)
 - [mutation_set_assets_to_asset_group](operations/mutation_set_assets_to_asset_group.md): Overwrite the member list of an asset group with new assets.
 - [mutation_submit_rise_ai_analysis](operations/mutation_submit_rise_ai_analysis.md): Request a RISE AI analysis for an eligible asset to generate insights.
 - [mutation_update_asset_group](operations/mutation_update_asset_group.md): Rename or update the description of an existing asset group.
+- [mutation_update_notification_configuration](operations/mutation_update_notification_configuration.md): Update channel, scopes, triggers, or status for an existing notification configuration.
 - [mutation_update_org_level_settings](operations/mutation_update_org_level_settings.md): Configure global organization settings such as idle session timeout duration.
 - [mutation_user_action](operations/mutation_user_action.md): Perform administrative actions like enabling or disabling specific user accounts.
 - [mutation_user_delete](operations/mutation_user_delete.md): Permanently delete a user account and remove their access rights.
@@ -605,6 +609,9 @@ cfg = TurbineClientConfig.from_env(load_env_file=False)
 - [query_download_firmware](operations/query_download_firmware.md): Generate a link to download the original uploaded firmware image.
 - [query_get_ai_model_data](operations/query_get_ai_model_data.md): Retrieve configuration and metadata for a specific AI model integration.
 - [query_get_asset_comparison_report](operations/query_get_asset_comparison_report.md): Retrieve a completed asset comparison report including vulnerability, component, and summary diffs.
+- [query_get_certificate_reachability](operations/query_get_certificate_reachability.md): Determine whether discovered certificates are reachable via executable scripts or system paths.
+- [query_get_dependency_reachability](operations/query_get_dependency_reachability.md): Determine whether a dependency is reachable via executable scripts or system paths.
+- [query_get_secret_reachability](operations/query_get_secret_reachability.md): Determine whether discovered secrets are reachable via executable scripts or system paths.
 - [query_get_vuln_reachability](operations/query_get_vuln_reachability.md): Determine if a vulnerability can be executed via system paths.
 - [query_grouped_dependencies](operations/query_grouped_dependencies.md): View dependencies aggregated by vendor, license, or specific component type.
 - [query_hashes](operations/query_hashes.md): List cryptographic hashes for files identified within the asset filesystem.
@@ -618,6 +625,8 @@ cfg = TurbineClientConfig.from_env(load_env_file=False)
 - [query_list_asset_comparison_reports](operations/query_list_asset_comparison_reports.md): List all asset comparison reports with pagination, filtering, and sorting.
 - [query_list_asset_correlations](operations/query_list_asset_correlations.md): Retrieve cross-asset correlation data linking shared components and vulnerabilities.
 - [query_list_asset_crypto_libraries](operations/query_list_asset_crypto_libraries.md): List cryptographic libraries and algorithms detected within an asset.
+- [query_list_notification_configurations](operations/query_list_notification_configurations.md): List all notification configurations with their channels, scopes, and triggers.
+- [query_list_notification_logs](operations/query_list_notification_logs.md): Retrieve a paginated log of notification delivery events and their statuses.
 - [query_match_vulnerabilities](operations/query_match_vulnerabilities.md): Find specific vulnerabilities matching a provided component identifier or package.
 - [query_metrics](operations/query_metrics.md): View organization-wide statistics on asset counts, processing, and risk.
 - [query_misconfigurations](operations/query_misconfigurations.md): List failed security checks and configuration risks found in assets.

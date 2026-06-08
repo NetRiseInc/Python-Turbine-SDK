@@ -59,6 +59,7 @@ List X.509 certificates and validity status found in the asset.
 | `certificates.edges[].node.invalidities[]` | `string` | yes |
 | `certificates.edges[].node.invaliditiesCount` | `integer` | no |
 | `certificates.edges[].node.isCa` | `boolean` | yes |
+| `certificates.edges[].node.isReachable` | `boolean` | yes |
 | `certificates.edges[].node.issuerCommonName` | `string` | yes |
 | `certificates.edges[].node.issuerCountry` | `string` | yes |
 | `certificates.edges[].node.issuerDN` | `string` | yes |
@@ -102,7 +103,7 @@ List X.509 certificates and validity status found in the asset.
 | `certificates.edges[].node.subjectStreetAddress` | `string` | yes |
 | `certificates.edges[].node.uniqueHash` | `string` | yes |
 | `certificates.edges[].node.version` | `integer` | yes |
-| `certificates.pageInfo` | `object` | yes |
+| `certificates.pageInfo` | `object` | no |
 | `certificates.pageInfo.endCursor` | `string` | yes |
 | `certificates.pageInfo.hasNextPage` | `boolean` | no |
 | `certificates.pageInfo.hasPreviousPage` | `boolean` | no |

@@ -37,7 +37,7 @@ List failed security checks and configuration risks found in assets.
 | `misconfigurations.edges[].node.displayName` | `string` | yes |
 | `misconfigurations.edges[].node.result` | `MisconfigurationStatusType` | yes |
 | `misconfigurations.edges[].node.severity` | `MisconfigurationSeverityType` | yes |
-| `misconfigurations.pageInfo` | `object` | yes |
+| `misconfigurations.pageInfo` | `object` | no |
 | `misconfigurations.pageInfo.endCursor` | `string` | yes |
 | `misconfigurations.pageInfo.hasNextPage` | `boolean` | no |
 | `misconfigurations.pageInfo.hasPreviousPage` | `boolean` | no |

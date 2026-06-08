@@ -2264,6 +2264,17 @@ class SecurityGroupMemberSource(str, Enum):
     IDP = "IDP"
 
 
+class AcrEntityType(str, Enum):
+    USER = "USER"
+    SECURITY_GROUP = "SECURITY_GROUP"
+
+
+class AcrResourceType(str, Enum):
+    ORGANIZATION = "ORGANIZATION"
+    ASSET_GROUP = "ASSET_GROUP"
+    ASSET = "ASSET"
+
+
 class OrgUserStatus(str, Enum):
     ENABLED = "ENABLED"
     DISABLED = "DISABLED"
@@ -2278,6 +2289,15 @@ class AdvisorySource(str, Enum):
     OSV = "OSV"
     GHSA = "GHSA"
     NSWG = "NSWG"
+
+
+class EvidenceEdgeType(str, Enum):
+    EXECUTES = "EXECUTES"
+    BINARY_IMPORT = "BINARY_IMPORT"
+    SOURCE_IMPORT = "SOURCE_IMPORT"
+    PYTHON_IMPORT = "PYTHON_IMPORT"
+    CERT_REFERENCE = "CERT_REFERENCE"
+    SECRET_REFERENCE = "SECRET_REFERENCE"
 
 
 class EvidenceEntryType(str, Enum):

@@ -15,9 +15,7 @@ class QueryCertificates(BaseModel):
 
 class QueryCertificatesCertificates(BaseModel):
     edges: Optional[list[Optional["QueryCertificatesCertificatesEdges"]]]
-    page_info: Optional["QueryCertificatesCertificatesPageInfo"] = Field(
-        alias="pageInfo"
-    )
+    page_info: "QueryCertificatesCertificatesPageInfo" = Field(alias="pageInfo")
 
 
 class QueryCertificatesCertificatesEdges(BaseModel):
@@ -52,6 +50,7 @@ class QueryCertificatesCertificatesEdgesNode(BaseModel):
     invalidities: list[Optional[str]]
     invalidities_count: int = Field(alias="invaliditiesCount")
     is_ca: Optional[bool] = Field(alias="isCa")
+    is_reachable: Optional[bool] = Field(alias="isReachable")
     issuer_common_name: Optional[str] = Field(alias="issuerCommonName")
     issuer_country: Optional[str] = Field(alias="issuerCountry")
     issuer_dn: Optional[str] = Field(alias="issuerDN")

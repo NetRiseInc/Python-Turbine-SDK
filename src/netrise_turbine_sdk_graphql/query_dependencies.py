@@ -56,6 +56,7 @@ class QueryDependenciesDependenciesEdgesNode(BaseModel):
         alias="identifiedVia"
     )
     is_ai: Optional[bool] = Field(alias="isAi")
+    is_reachable: Optional[bool] = Field(alias="isReachable")
     latest_remediation: Optional[
         "QueryDependenciesDependenciesEdgesNodeLatestRemediation"
     ] = Field(alias="latestRemediation")

@@ -17,7 +17,7 @@ class QueryBinaryProtections(BaseModel):
 
 class QueryBinaryProtectionsBinaryProtections(BaseModel):
     edges: Optional[list[Optional["QueryBinaryProtectionsBinaryProtectionsEdges"]]]
-    page_info: Optional["QueryBinaryProtectionsBinaryProtectionsPageInfo"] = Field(
+    page_info: "QueryBinaryProtectionsBinaryProtectionsPageInfo" = Field(
         alias="pageInfo"
     )
 

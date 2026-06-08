@@ -30,6 +30,7 @@ class QuerySecretSecret(BaseModel):
     )
     description: Optional[str]
     file_path: Optional[str] = Field(alias="filePath")
+    is_reachable: Optional[bool] = Field(alias="isReachable")
     raw_secret: Optional[str] = Field(alias="rawSecret")
     remediation_status: Optional[SecretRemediationStatus] = Field(
         alias="remediationStatus"

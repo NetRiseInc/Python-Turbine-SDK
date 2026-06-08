@@ -163,6 +163,7 @@ List all software components and libraries identified in the asset.
 | `dependencies.edges[].node.dependency.version.isConcrete` | `boolean` | no |
 | `dependencies.edges[].node.identifiedVia[]` | `IdentifiedViaCategory` | yes |
 | `dependencies.edges[].node.isAi` | `boolean` | yes |
+| `dependencies.edges[].node.isReachable` | `boolean` | yes |
 | `dependencies.edges[].node.latestRemediation` | `object` | yes |
 | `dependencies.edges[].node.latestRemediation.author` | `string` | yes |
 | `dependencies.edges[].node.latestRemediation.createdAt` | `string` | yes |
@@ -175,7 +176,7 @@ List all software components and libraries identified in the asset.
 | `dependencies.edges[].node.scope[].actualScope` | `string` | yes |
 | `dependencies.edges[].node.scope[].description` | `string` | yes |
 | `dependencies.edges[].node.scope[].value` | `ComponentScope` | yes |
-| `dependencies.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x106a33ba0>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `dependencies.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10a907d80>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `dependencies.edges[].node.verification` | `object` | no |
 | `dependencies.edges[].node.verification.cryptographic` | `boolean` | no |
 | `dependencies.edges[].node.verification.functionHashing` | `boolean` | no |

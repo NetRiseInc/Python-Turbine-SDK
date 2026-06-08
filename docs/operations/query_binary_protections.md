@@ -39,7 +39,7 @@ List security hardening details for binaries found within the asset.
 | `binaryProtections.edges[].node.sha256` | `string` | yes |
 | `binaryProtections.edges[].node.stackCanary` | `boolean` | yes |
 | `binaryProtections.edges[].node.vfsId` | `string` | yes |
-| `binaryProtections.pageInfo` | `object` | yes |
+| `binaryProtections.pageInfo` | `object` | no |
 | `binaryProtections.pageInfo.endCursor` | `string` | yes |
 | `binaryProtections.pageInfo.hasNextPage` | `boolean` | no |
 | `binaryProtections.pageInfo.hasPreviousPage` | `boolean` | no |
