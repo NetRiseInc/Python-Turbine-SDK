@@ -20,6 +20,11 @@ All notable changes to `netrise-turbine-sdk` are documented here.
   instead of a path), bundles a self-contained agent skill in the wheel, and
   gains `turbine skill install/uninstall/status` targeting Cursor, Claude
   Code, and Codex skill directories.
+- Upload lifecycle helpers: `resolve_upload(upload_id)` maps an upload to its
+  asset, and `wait_for_asset(asset_id=…|upload_id=…)` blocks until analysis
+  completes. CLI: `asset status` accepts `--upload-id` and `--wait`
+  (`--interval` / `--timeout`), and `asset upload` gains `--wait` plus
+  enriched output (`assetId`, `uploadId`) instead of the raw submit response.
 
 ### Changed
 

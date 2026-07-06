@@ -15,7 +15,7 @@ Retrieve organization-level metadata such as last-updated time, optionally scope
 | Field | Type | Nullable |
 | --- | --- | --- |
 | `orgLevelInformation` | `object` | no |
-| `orgLevelInformation.lastUpdatedAt` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1094e04a0>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `orgLevelInformation.lastUpdatedAt` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10b1704a0>, json_schema_input_type=PydanticUndefined)]` | yes |
 
 ## Example
 
