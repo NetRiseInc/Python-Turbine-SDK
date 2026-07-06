@@ -1341,13 +1341,19 @@ class TurbineClient:
                 Ignored if submit_args.name is already set.
 
         Returns:
-            MutationAssetSubmit response containing asset info and upload details.
+            MutationAssetSubmit response containing upload details. Note that
+            ``resp.asset.submit.asset`` is typically ``None`` at submit time —
+            the asset is registered asynchronously. Use
+            ``resp.asset.submit.upload_id`` with :meth:`wait_for_asset` (or
+            :meth:`resolve_upload`) to obtain the asset ID.
 
         Example:
             >>> from netrise_turbine_sdk_graphql.input_types import SubmitAssetInput
             >>> sdk = TurbineClient(TurbineClientConfig.from_env())
             >>> resp = sdk.upload_asset("firmware.bin", name="My Firmware v1.0")
-            >>> print(resp.asset.submit.asset.id)
+            >>> upload_id = resp.asset.submit.upload_id
+            >>> status = sdk.wait_for_asset(upload_id=upload_id)
+            >>> print(status.asset_id, status.has_running_job)
         """
         from netrise_turbine_sdk_graphql.input_types import SubmitAssetInput
 
@@ -1444,6 +1450,120 @@ class TurbineClient:
                 print(f"[FAILED] {file_path.name}: {e}", file=sys.stderr)
 
         return results
+
+    # --- Upload status helpers -------------------------------------------------
+
+    def resolve_upload(self, upload_id: str) -> Any:
+        """Look up the asset registered for an upload.
+
+        Args:
+            upload_id: The ``uploadId`` returned by :meth:`upload_asset`
+                (``resp.asset.submit.upload_id``).
+
+        Returns:
+            QueryAssetUploadAssetUpload with ``asset_id``, ``upload_id``, and
+            ``uploaded``. ``asset_id`` is ``None`` until the platform has
+            registered the asset (usually seconds after the upload completes).
+
+        Example:
+            >>> sdk = TurbineClient(TurbineClientConfig.from_env())
+            >>> info = sdk.resolve_upload("19ca9f4a-...")
+            >>> print(info.asset_id, info.uploaded)
+        """
+        resp = self.graphql().query_asset_upload(
+            asset_upload_args=inputs.AssetUploadInput(upload_id=upload_id)
+        )
+        return resp.asset_upload
+
+    def wait_for_asset(
+        self,
+        *,
+        asset_id: Optional[str] = None,
+        upload_id: Optional[str] = None,
+        timeout: float = 1800.0,
+        interval: float = 10.0,
+        on_poll: Optional[Callable[[Dict[str, Any]], None]] = None,
+    ) -> Any:
+        """Block until an asset finishes analysis.
+
+        Give either ``asset_id`` or ``upload_id``. With ``upload_id``, first
+        polls :meth:`resolve_upload` until the asset ID appears, then polls
+        the asset status until ``has_running_job`` is false.
+
+        Args:
+            asset_id: Asset to wait on.
+            upload_id: Upload to resolve and then wait on.
+            timeout: Max seconds to wait overall (default 30 minutes).
+            interval: Seconds between polls (default 10).
+            on_poll: Optional callback invoked after each poll with a dict:
+                ``{"phase": "resolve"|"status", "asset_id", "upload_id",
+                "has_running_job", "elapsed"}``. Useful for progress output.
+
+        Returns:
+            QueryAssetStatusAssetStatus with ``asset_id``,
+            ``has_running_job`` (false), and ``last_updated_time``. Analysis
+            outcome (success/failure) is on the asset itself — fetch it with
+            :meth:`get_asset` afterwards.
+
+        Raises:
+            ValueError: If neither or both of ``asset_id`` / ``upload_id``
+                are given.
+            TimeoutError: If the asset is still processing (or the upload is
+                still unresolved) after ``timeout`` seconds.
+
+        Example:
+            >>> sdk = TurbineClient(TurbineClientConfig.from_env())
+            >>> resp = sdk.upload_asset("firmware.bin")
+            >>> status = sdk.wait_for_asset(upload_id=resp.asset.submit.upload_id)
+            >>> asset = sdk.get_asset(status.asset_id)
+        """
+        if (asset_id is None) == (upload_id is None):
+            raise ValueError("Provide exactly one of asset_id or upload_id.")
+
+        start = time.monotonic()
+        deadline = start + timeout
+
+        def _notify(phase: str, has_running_job: Optional[bool]) -> None:
+            if on_poll is not None:
+                on_poll(
+                    {
+                        "phase": phase,
+                        "asset_id": asset_id,
+                        "upload_id": upload_id,
+                        "has_running_job": has_running_job,
+                        "elapsed": time.monotonic() - start,
+                    }
+                )
+
+        while asset_id is None:
+            info = self.resolve_upload(upload_id)  # type: ignore[arg-type]
+            if info is not None and info.asset_id:
+                # Resolved IDs carry a "|<revision>" suffix; the status
+                # query expects the bare asset ID.
+                asset_id = info.asset_id.split("|", 1)[0]
+                break
+            _notify("resolve", None)
+            if time.monotonic() + interval > deadline:
+                raise TimeoutError(
+                    f"Upload {upload_id} not registered as an asset "
+                    f"after {timeout:.0f}s."
+                )
+            time.sleep(interval)
+
+        while True:
+            resp = self.graphql().query_asset_status(
+                asset_status_args=inputs.AssetStatusInput(asset_id=asset_id)
+            )
+            status = resp.asset_status
+            if not status.has_running_job:
+                _notify("status", False)
+                return status
+            _notify("status", True)
+            if time.monotonic() + interval > deadline:
+                raise TimeoutError(
+                    f"Asset {asset_id} still processing after {timeout:.0f}s."
+                )
+            time.sleep(interval)
 
 
 def _normalize_match_values(*values: Any) -> Optional[set[str]]:
