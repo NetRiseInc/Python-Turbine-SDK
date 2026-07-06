@@ -35,7 +35,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_private_key_external_filters(private_key_external_filters_args=PrivateKeyExternalFiltersInput(asset_id='asset_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.private_key_external_filters.total_classical, resp.private_key_external_filters.total_pqc)
 
 
 if __name__ == "__main__":

@@ -239,7 +239,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_list_asset_comparison_reports(list_asset_comparison_reports_args=ListAssetComparisonReportsInput())
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.list_asset_comparison_reports.edges or []:
+            node = edge.node
+            print(node.completed_at, node.created_at, node.created_by)
 
 
 if __name__ == "__main__":

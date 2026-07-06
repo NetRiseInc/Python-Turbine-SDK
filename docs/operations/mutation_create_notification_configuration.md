@@ -58,8 +58,9 @@ def main() -> None:
     sdk = TurbineClient(cfg)
 
     with sdk.graphql() as client:
-        resp = client.mutation_create_notification_configuration(create_notification_configuration_args=CreateNotificationConfigurationInput(configuration=NotificationConfigurationCreateInput(type=NotificationConfigurationType.NOTIFICATION_TYPE_UNSPECIFIED, channel=NotificationConfigurationChannel.NOTIFICATION_CHANNEL_UNSPECIFIED, activity_scopes=[None  # TODO: fill])))
-        print(resp.model_dump())
+        resp = client.mutation_create_notification_configuration(create_notification_configuration_args=CreateNotificationConfigurationInput(configuration=NotificationConfigurationCreateInput(type=NotificationConfigurationType.NOTIFICATION_TYPE_UNSPECIFIED, channel=NotificationConfigurationChannel.NOTIFICATION_CHANNEL_UNSPECIFIED, activity_scopes=[None])))
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.create_notification_configuration.id, resp.create_notification_configuration.name)
 
 
 if __name__ == "__main__":

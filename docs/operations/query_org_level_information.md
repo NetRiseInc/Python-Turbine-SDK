@@ -15,7 +15,7 @@ Retrieve organization-level metadata such as last-updated time, optionally scope
 | Field | Type | Nullable |
 | --- | --- | --- |
 | `orgLevelInformation` | `object` | no |
-| `orgLevelInformation.lastUpdatedAt` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10a907d80>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `orgLevelInformation.lastUpdatedAt` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1094e04a0>, json_schema_input_type=PydanticUndefined)]` | yes |
 
 ## Example
 
@@ -34,7 +34,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_org_level_information(org_level_information_args=OrgLevelInformationInput())
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.org_level_information.last_updated_at)
 
 
 if __name__ == "__main__":

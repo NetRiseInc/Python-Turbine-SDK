@@ -65,7 +65,9 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_analytics()
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for item in resp.analytics.assets_by_risk_category.fields or []:
+            print(item.name, item.value)
 
 
 if __name__ == "__main__":

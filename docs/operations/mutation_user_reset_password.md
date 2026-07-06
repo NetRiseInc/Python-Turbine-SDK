@@ -52,7 +52,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.mutation_user_reset_password(user_reset_password_args=UserInput(id='id_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.user.reset_password.id, resp.user.reset_password.name)
 
 
 if __name__ == "__main__":

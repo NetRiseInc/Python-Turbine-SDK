@@ -33,7 +33,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.mutation_delete_asset_group(delete_asset_group_args=DeleteAssetGroupInput(id='id_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.delete_asset_group)
 
 
 if __name__ == "__main__":

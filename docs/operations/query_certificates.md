@@ -4,6 +4,8 @@
 
 List X.509 certificates and validity status found in the asset.
 
+> **Prefer `sdk.iter_certificates(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+
 ## Parameters
 
 | name | type | required |
@@ -128,7 +130,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_certificates(certificates_args=CertificatesInput(asset_id='asset_123', cursor=Cursor()))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.certificates.edges or []:
+            node = edge.node
+            print(node.version, node.algorithm_type, node.basic_constraints_valid)
 
 
 if __name__ == "__main__":

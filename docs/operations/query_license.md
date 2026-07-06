@@ -43,7 +43,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_license(license_args=LicenseInput(spdx_id='MIT', asset_id='asset_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.license.license_name, resp.license.license_notes)
 
 
 if __name__ == "__main__":

@@ -36,7 +36,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_asset_status(asset_status_args=AssetStatusInput(asset_id='asset_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.asset_status.asset_id, resp.asset_status.has_running_job)
 
 
 if __name__ == "__main__":

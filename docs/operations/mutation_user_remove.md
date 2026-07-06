@@ -35,7 +35,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.mutation_user_remove(user_remove_args=UserInput(id='id_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.user.remove.err)
 
 
 if __name__ == "__main__":

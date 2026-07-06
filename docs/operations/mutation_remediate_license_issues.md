@@ -37,7 +37,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.mutation_remediate_license_issues(remediate_license_issues_args=RemediateLicenseIssuesInput(asset_id='asset_123', issue_ids=['value'], status=LicenseIssueStatus.RESOLVED))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.remediate_license_issues.err)
 
 
 if __name__ == "__main__":

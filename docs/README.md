@@ -2,6 +2,11 @@
 
 Minimal, sync-first Python client for the Turbine GraphQL API.
 
+The stable user-facing package is `netrise_turbine_sdk`. The generated
+`netrise_turbine_sdk_graphql` package tracks the upstream GraphQL schema for
+power users. See the packaged `README.md` and `CHANGELOG.md` for the full
+versioning policy and release notes.
+
 ---
 
 ## Quick Start
@@ -36,8 +41,9 @@ from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
 
 sdk = TurbineClient(TurbineClientConfig.from_env())
 
-for asset in sdk.iter_assets_relay_lite(page_size=10, max_pages=1):
-    print(f"{asset.name}  risk={asset.risk.score}  vulns={asset.analytic.vulnerability.critical}")
+for asset in sdk.iter_assets(page_size=10, max_pages=1):
+    critical = asset.analytic.vulnerability.critical if asset.analytic else 0
+    print(f"{asset.name}  risk={asset.risk.score}  critical_vulns={critical}")
 ```
 
 That's it -- authentication, pagination, and connection pooling are handled for you.
@@ -48,7 +54,7 @@ That's it -- authentication, pagination, and connection pooling are handled for 
 
 ### Three levels of API access
 
-The SDK is built on the Turbine GraphQL API. Rather than forcing you into a single rigid response shape, it provides three levels of access so you can choose the right trade-off between convenience and control:
+The SDK offers three levels of access, trading convenience for control:
 
 | Level | What you get | When to use |
 | --- | --- | --- |
@@ -60,7 +66,7 @@ Start at Level 1. Move to Level 2 or 3 only when you need data that the Lite res
 
 ### Authentication
 
-The SDK authenticates via OAuth client credentials. Set `domain`, `client_id`, `client_secret`, `audience`, and `organization_id` in your `.env` file (or as environment variables). The SDK fetches and caches tokens automatically -- you never need to manage tokens yourself.
+OAuth client credentials: set `domain`, `client_id`, `client_secret`, `audience`, and `organization_id` in `.env` or the environment. Tokens are fetched and cached automatically.
 
 ### Client lifecycle
 
@@ -69,13 +75,13 @@ The SDK authenticates via OAuth client credentials. Set `domain`, `client_id`, `
 ```python
 # Context manager (recommended)
 with TurbineClient(TurbineClientConfig.from_env()) as sdk:
-    for asset in sdk.iter_assets_relay_lite():
+    for asset in sdk.iter_assets():
         print(asset.name)
 
 # Manual close
 sdk = TurbineClient(TurbineClientConfig.from_env())
 try:
-    for asset in sdk.iter_assets_relay_lite():
+    for asset in sdk.iter_assets():
         print(asset.name)
 finally:
     sdk.close()
@@ -85,14 +91,14 @@ finally:
 
 ## Level 1: Lite Iterators (Start Here)
 
-The Lite iterators are the recommended way to use the SDK. They return fast, compact responses with the fields you need for most workflows -- identifiers, scores, severity, counts -- while skipping large nested objects that inflate payloads.
-
-Every `iter_*_lite` method handles Relay-style cursor pagination for you. You get back a plain Python iterator of typed objects -- no manual cursor tracking, no `while` loops, no `page_info` checks.
+Lite iterators are the recommended way to use the SDK: compact typed responses with the fields most workflows need (identifiers, scores, severity, counts), and cursor pagination handled for you -- no manual cursors, no `while` loops, no `page_info` checks.
 
 ```python
 for vuln in sdk.iter_vulnerabilities_lite(asset_id="abc123"):
     print(vuln.cve, vuln.severity, vuln.cvss_score)
 ```
+
+For asset lists, use `iter_assets()` (alias of `iter_assets_relay_lite()`); `iter_assets_full()` adds the full nested payload, `iter_assets_summary()` is the smallest count-only sweep.
 
 All iterators accept these common keyword arguments:
 
@@ -100,19 +106,101 @@ All iterators accept these common keyword arguments:
 | --- | --- | --- | --- |
 | `page_size` | `int` | `100` | Number of items per server round-trip |
 | `max_pages` | `int \| None` | `None` | Hard cap on pages fetched. `None` = fetch all |
+| `max_items` | `int \| None` | `None` | Hard cap on items yielded. Use this for "first N items" |
+| `start_after` | `str \| None` | `None` | Resume after a previously returned cursor |
+
+Results are `Paginator` objects: loop over them directly, or inspect pagination metadata as you go:
+
+```python
+page = sdk.iter_assets(page_size=100, max_items=250)
+assets = page.to_list()
+
+print(page.total_count)     # Server-reported total, once a page has been fetched
+print(page.pages_fetched)   # Round-trips made
+print(page.last_cursor)     # Save this for start_after=...
+
+next_page = sdk.iter_assets(start_after=page.last_cursor, max_items=250)
+```
+
+`max_items` caps returned objects; `max_pages` caps server round-trips; `first()` fetches a single item.
 
 ### Available Lite iterators
 
 | Method | Scope | Key parameters | Fields included |
 | --- | --- | --- | --- |
-| `iter_assets_relay_lite` | Org-wide | `filter`, `sort` | id, name, vendor, product, version, type, status, timestamps, risk score, analytic rollups |
-| `iter_assets_relay_summary` | Org-wide | `filter`, `sort` | id, name, analytic counts only (smallest payload) |
+| `iter_assets` (`iter_assets_relay_lite`) | Org-wide | `filter`, `sort`, `name_contains`, `vendor` | id, name, vendor, product, version, type, status, timestamps, risk score, analytic rollups |
+| `iter_assets_summary` (`iter_assets_relay_summary`) | Org-wide | `filter`, `sort`, `name_contains`, `vendor` | id, name, analytic counts only (smallest payload) |
 | `iter_vulnerabilities_lite` | Per asset | `asset_id`, `filter`, `sort` | id, cve, name, severity, CVSS/EPSS scores, fix versions, KEV, reachability, correlation count |
 | `iter_dependencies_lite` | Per asset | `composed_asset_id`, `filter`, `sort` | id, name, version, license, purls, analytic rollups |
 | `iter_misconfigurations_lite` | Per asset | `asset_id`, `filter`, `sort` | check_id, name, severity, result, correlation count |
 | `iter_detailed_vulnerabilities_lite` | Per asset | `asset_id`, `filter` | CVE, severity, description, preferred CVSS v3.1 vector |
 
-There is also a single-item `query_vulnerability_lite` available via `sdk.graphql().query_vulnerability_lite(...)`.
+For single records, use `get_asset(asset_id)` and `get_vulnerability(vulnerability_id)`. The raw `query_*` methods remain available via `sdk.graphql()` when you need exact GraphQL control.
+
+### Filtering cookbook
+
+**Convenience kwargs** — the fastest path. Use them when they exist:
+
+```python
+from netrise_turbine_sdk import Severity
+
+for asset in sdk.iter_assets(name_contains="router", vendor="Acme"):
+    print(asset.id, asset.name)
+
+for vuln in sdk.iter_vulnerabilities_lite(
+    asset_id="abc123",
+    severity=Severity.CRITICAL,
+    cve_contains="2024",
+):
+    print(vuln.cve, vuln.severity)
+```
+
+**`where()`** — a reusable typed filter. Lookups: `field=` (exact), `field__contains=`, `field__in=`, `field__gt=` / `__gte=` / `__lt=` / `__lte=`. Each operation page lists its supported fields under "Filter fields".
+
+```python
+from netrise_turbine_sdk import inputs, where
+
+recent_cves = where(
+    inputs.VulnerabilityFilter,
+    cve__contains="2024",
+)
+
+for vuln in sdk.iter_vulnerabilities_lite(asset_id="abc123", filter=recent_cves):
+    print(vuln.cve)
+```
+
+**Plain dicts** — shaped like the generated input model; Pydantic coerces before the request:
+
+```python
+for asset in sdk.iter_assets(filter={"hideFailed": True}):
+    print(asset.name)
+```
+
+**Combine `filter=` with kwargs** — they merge, so a base filter can be narrowed per call:
+
+```python
+for vuln in sdk.iter_vulnerabilities_lite(
+    asset_id="abc123",
+    filter=recent_cves,
+    severity=Severity.CRITICAL,
+):
+    print(vuln.cve)
+```
+
+**Sorting** — pass the generated sort model:
+
+```python
+from netrise_turbine_sdk import SortOrder, enums, inputs
+
+sort = inputs.AssetsSort(field=enums.AssetsSortField.CREATEDAT, order=SortOrder.DESC)
+for asset in sdk.iter_assets(sort=sort, max_items=10):
+    print(asset.name, asset.created_at)
+```
+
+Notes:
+
+- `severity=` / `severity_in=` on vulnerability and misconfiguration iterators filter client-side (the server does not accept severity in `fields`), so pages are fetched then matched. Prefer server-side fields when volume matters.
+- Common enums are importable from `netrise_turbine_sdk`: `Severity` (`LOW`–`CRITICAL`), `SortOrder`, `VexStatus`. Asset risk categories use a different scale (`NEGLIGIBLE`–`SEVERE`) in `enums.RiskCategoryFilter`.
 
 ### What Lite leaves out
 
@@ -138,6 +226,8 @@ sdk = TurbineClient(TurbineClientConfig.from_env())
 # Pass 1: fast sweep using Summary (only id, name, and counts)
 for asset in sdk.iter_assets_relay_summary(page_size=100):
     counts = asset.analytic
+    if counts is None:
+        continue
 
     # Pass 2: drill into high-risk assets with Lite queries
     if counts.vulnerability.critical + counts.vulnerability.high > 0:
@@ -161,8 +251,9 @@ with open("vulns.csv", "w", newline="") as f:
     writer = csv.writer(f)
     writer.writerow(["asset", "cve", "severity", "cvss", "epss", "kev", "reachable"])
 
-    for asset in sdk.iter_assets_relay_summary(page_size=100):
-        if asset.analytic.vulnerability.critical + asset.analytic.vulnerability.high == 0:
+    for asset in sdk.iter_assets_summary(page_size=100):
+        counts = asset.analytic
+        if counts is None or counts.vulnerability.critical + counts.vulnerability.high == 0:
             continue
         for v in sdk.iter_vulnerabilities_lite(asset_id=asset.id):
             writer.writerow([
@@ -180,7 +271,7 @@ with open("vulns.csv", "w", newline="") as f:
 
 ## Level 2: Full Iterators
 
-When you need data that Lite doesn't include -- correlations, remediation details, exploit metadata, file paths -- use the full iterators. These request every field the server exposes (expanded to depth 5), so responses are significantly larger.
+When you need data Lite doesn't include -- correlations, remediation details, exploit metadata, file paths -- use the full iterators. They request every field the server exposes (depth 5), so responses are significantly larger.
 
 ```python
 # Full iterator: includes correlations, remediation, attack vector, file paths
@@ -196,7 +287,7 @@ for vuln in sdk.iter_vulnerabilities(asset_id="abc123"):
 
 | Full iterator | Lite equivalent | Additional fields in Full |
 | --- | --- | --- |
-| `iter_assets_relay` | `iter_assets_relay_lite` | filesystems, SHA-256, CPE, file name, size, org ID, uploaded_by, group IDs/count, quantum_capable, remediation flag, full exploit/credential/cryptography rollups |
+| `iter_assets_full` (`iter_assets_relay`) | `iter_assets` (`iter_assets_relay_lite`) | filesystems, SHA-256, CPE, file name, size, org ID, uploaded_by, group IDs/count, quantum_capable, remediation flag, full exploit/credential/cryptography rollups |
 | `iter_vulnerabilities` | `iter_vulnerabilities_lite` | correlations (nested), current_remediation (nested), attack_complexity, attack_vector, maturity, file_path, vendor, version |
 | `iter_dependencies` | `iter_dependencies_lite` | file metadata, digests, nested correlation details |
 | `iter_misconfigurations` | `iter_misconfigurations_lite` | full correlation objects (not just count) |
@@ -206,7 +297,7 @@ for vuln in sdk.iter_vulnerabilities(asset_id="abc123"):
 
 | Method | Scope | Key parameters |
 | --- | --- | --- |
-| `iter_assets_relay` | Org-wide | `filter`, `sort` |
+| `iter_assets_full` (`iter_assets_relay`) | Org-wide | `filter`, `sort`, `name_contains`, `vendor` |
 | `iter_assets_overview` | Org-wide | `asset_group_ids`, `filter`, `sort` |
 | `iter_vulnerabilities_overview` | Org-wide | `asset_group_ids`, `filter`, `sort` |
 | `iter_asset_groups` | Org-wide | `filter`, `sort` |
@@ -228,12 +319,22 @@ for vuln in sdk.iter_vulnerabilities(asset_id="abc123"):
 | `iter_activity` | Per asset | `asset_id` |
 | `iter_asset_group_members` | Per group | `group_id`, `sort` |
 
-The generated client also provides typed methods for mutations and single-page queries:
+For common single-record lookups, use the wrapper helpers:
 
 ```python
-from netrise_turbine_sdk_graphql import input_types as inputs
+asset = sdk.get_asset("abc123")
+print(asset.name, asset.status)
 
-# Single asset lookup (full detail)
+vuln = sdk.get_vulnerability("CVE-2024-12345")
+print(vuln.id, vuln.severity)
+```
+
+The generated client also provides typed methods for mutations and lower-level single-page queries:
+
+```python
+from netrise_turbine_sdk import inputs
+
+# Raw generated query
 with sdk.graphql() as client:
     resp = client.query_asset(asset_args=inputs.AssetInput(asset_id="abc123"))
     print(resp.asset.name, resp.asset.status)
@@ -254,9 +355,7 @@ The `with sdk.graphql() as client:` pattern is safe to use repeatedly -- it does
 
 ## Level 3: Custom GraphQL Queries
 
-The Turbine API is a standard GraphQL endpoint. If you need a specific combination of fields that neither the Lite nor Full pre-built queries provide, you can write your own GraphQL and execute it directly. This gives you the full flexibility of GraphQL -- request exactly the fields you need, nothing more.
-
-Use `sdk.graphql()` to get a client with managed auth and connection pooling, then call `execute()` with any valid query string:
+The Turbine API is a standard GraphQL endpoint. When no pre-built query has the field combination you need, write your own: `sdk.graphql()` returns a client with managed auth and connection pooling, and `execute()` accepts any valid query string.
 
 ```python
 from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
@@ -368,6 +467,35 @@ while True:
 
 ---
 
+## Handling errors
+
+Every SDK failure derives from `GraphQLClientError`; all exception types are importable from `netrise_turbine_sdk`. Transient HTTP failures (429, 502, 503, 504) are retried automatically before raising.
+
+| Exception | Raised when | Useful attributes |
+| --- | --- | --- |
+| `GraphQLClientHttpError` | Non-2xx HTTP response — bad credentials, rate limit after retries | `.status_code`, `.response` |
+| `GraphQLClientGraphQLMultiError` | Server rejected the operation — unknown IDs, invalid arguments | `.errors` (list of GraphQL errors) |
+| `pydantic.ValidationError` | An input model was built with missing or mistyped fields | `.errors()` |
+
+```python
+from netrise_turbine_sdk import (
+    GraphQLClientError,
+    GraphQLClientGraphQLMultiError,
+    GraphQLClientHttpError,
+)
+
+try:
+    asset = sdk.get_asset("no-such-asset")
+except GraphQLClientHttpError as exc:
+    print(f"HTTP {exc.status_code}")             # auth / rate limit / transport
+except GraphQLClientGraphQLMultiError as exc:
+    print(f"server rejected: {exc.errors}")      # bad IDs, invalid arguments
+except GraphQLClientError as exc:
+    print(f"client failure: {exc}")              # catch-all base class
+```
+
+---
+
 ## File Listing
 
 ### list_files
@@ -386,13 +514,7 @@ for f in files:
 print(f"Total files: {len(files)}")
 ```
 
-Internally, the SDK fetches a signed download URL via the `query_download_file_list` GraphQL operation, then downloads and parses the NDJSON file listing from cloud storage. This two-step process is handled transparently -- callers see a single method that returns a plain list.
-
-**Parameters:**
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `asset_id` | `str` | The asset identifier (without revision suffix) |
+Internally the SDK fetches a signed URL via `query_download_file_list`, then downloads and parses the NDJSON listing -- one call, one plain list. Pass the asset identifier without its revision suffix.
 
 **Returns:** `list[dict]` -- one dict per file. Common keys include:
 
@@ -414,7 +536,7 @@ Internally, the SDK fetches a signed download URL via the `query_download_file_l
 
 ## File Uploads
 
-The SDK provides helper methods that handle the two-step upload flow (get a signed URL, then PUT the file) in a single call. Files are streamed directly from disk, so uploads work for files of any size without loading them entirely into memory.
+Upload helpers wrap the two-step flow (signed URL, then PUT) in one call and stream from disk, so file size is not a constraint.
 
 ### upload_asset
 

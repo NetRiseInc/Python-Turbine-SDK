@@ -52,7 +52,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.mutation_user_invite(user_invite_args=InviteUserInput(email='user@example.com', role='VIEWER'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.user.invite.id, resp.user.invite.name)
 
 
 if __name__ == "__main__":

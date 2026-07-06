@@ -42,7 +42,9 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_get_certificate_reachability(get_certificate_reachability_args=GetCertificateReachabilityInput(composed_asset_id='composed_asset_123', file_path='./path/to/file', sha_256='value'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for item in resp.get_certificate_reachability or []:
+            print(item.cve_id, item.entry_point, item.entry_type)
 
 
 if __name__ == "__main__":

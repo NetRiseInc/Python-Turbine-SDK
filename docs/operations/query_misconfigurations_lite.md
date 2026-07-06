@@ -4,11 +4,33 @@
 
 List misconfigurations with trimmed fields — keeps check ID, name, severity, result, and correlation count; drops nested correlation objects.
 
+> **Prefer `sdk.iter_misconfigurations_lite(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+
 ## Parameters
 
 | name | type | required |
 | --- | --- | --- |
 | `misconfigurations_args` | `MisconfigurationsInput` | `true` |
+
+## Filter fields
+
+Build the `filter` argument with `where()` instead of hand-assembling `MisconfigurationsFilter.fields`:
+
+```python
+from netrise_turbine_sdk import where
+from netrise_turbine_sdk_graphql.input_types import MisconfigurationsFilter
+
+flt = where(MisconfigurationsFilter, status="...", name__contains="...")
+```
+
+| `where()` kwarg | GraphQL field | exact match uses |
+| --- | --- | --- |
+| `name` | `MisconfigurationsField.NAME` | `EQUAL` |
+| `category` | `MisconfigurationsField.CATEGORY` | `EQUAL` |
+| `status` | `MisconfigurationsField.STATUS` | `ENUM` |
+| `severity` | `MisconfigurationsField.SEVERITY` | `ENUM` |
+
+Lookups: `field=` (exact), `field__contains=`, `field__in=`, `field__gt=`, `field__gte=`, `field__lt=`, `field__lte=`.
 
 ## Response Schema
 
@@ -49,7 +71,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_misconfigurations_lite(misconfigurations_args=MisconfigurationsInput(asset_id='asset_123', cursor=Cursor()))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.misconfigurations.edges or []:
+            node = edge.node
+            print(node.severity, node.check_id, node.display_name)
 
 
 if __name__ == "__main__":

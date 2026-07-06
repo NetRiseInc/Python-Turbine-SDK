@@ -57,7 +57,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_search(search_args=SearchInput(query='search_term', artifacts=[ArtifactName.PUBLICKEY]))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.search.findings.edges or []:
+            node = edge.node
+            print(node.asset_id, node.asset_name, node.asset_revision)
 
 
 if __name__ == "__main__":

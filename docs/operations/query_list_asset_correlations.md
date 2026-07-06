@@ -54,7 +54,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_list_asset_correlations(list_asset_correlations_args=ListAssetCorrelationsInput(identifier='cpe:2.3:a:vendor:product:1.0', correlation_type=AssetCorrelationType.UNSPECIFIED))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.list_asset_correlations.edges or []:
+            node = edge.node
+            print(node.artifact, node.asset_id, node.asset_name)
 
 
 if __name__ == "__main__":

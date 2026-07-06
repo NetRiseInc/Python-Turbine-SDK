@@ -4,6 +4,8 @@
 
 Retrieve a detailed paginated list of all asset groups available.
 
+> **Prefer `sdk.iter_asset_groups(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+
 ## Parameters
 
 | name | type | required |
@@ -49,7 +51,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_asset_groups(asset_groups_args=AssetGroupsInput(cursor=Cursor()))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.asset_groups.edges or []:
+            node = edge.node
+            print(node.id, node.name, node.assets_count)
 
 
 if __name__ == "__main__":

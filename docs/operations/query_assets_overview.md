@@ -4,6 +4,8 @@
 
 View high-level risk and threat exposure metrics for multiple assets.
 
+> **Prefer `sdk.iter_assets_overview(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+
 ## Parameters
 
 | name | type | required |
@@ -37,7 +39,7 @@ View high-level risk and threat exposure metrics for multiple assets.
 | `assetsOverview.edges[].node.risk.category` | `RiskCategory` | yes |
 | `assetsOverview.edges[].node.risk.rawScore` | `float` | yes |
 | `assetsOverview.edges[].node.risk.score` | `float` | yes |
-| `assetsOverview.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10a907d80>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `assetsOverview.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1094e04a0>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `assetsOverview.edges[].node.threatActors[]` | `string` | yes |
 | `assetsOverview.edges[].node.type` | `AssetType` | yes |
 | `assetsOverview.edges[].node.vendor` | `string` | yes |
@@ -67,7 +69,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_assets_overview(assets_overview_args=AssetOverviewInput(cursor=Cursor()))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.assets_overview.edges or []:
+            node = edge.node
+            print(node.name, node.version, node.composed_asset_id)
 
 
 if __name__ == "__main__":

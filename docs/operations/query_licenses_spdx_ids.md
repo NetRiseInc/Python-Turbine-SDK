@@ -29,7 +29,9 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_licenses_spdx_ids()
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for value in resp.licenses_spdx_ids or []:
+            print(value)
 
 
 if __name__ == "__main__":

@@ -4,6 +4,8 @@
 
 List cryptographic libraries and algorithms detected within an asset.
 
+> **Prefer `sdk.iter_list_asset_crypto_libraries(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+
 ## Parameters
 
 | name | type | required |
@@ -49,7 +51,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_list_asset_crypto_libraries(list_asset_crypto_libraries_args=ListAssetCryptoLibrariesInput(asset_id='asset_123', cursor=Cursor()))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.list_asset_crypto_libraries.edges or []:
+            node = edge.node
+            print(node.name, node.version, node.fips)
 
 
 if __name__ == "__main__":

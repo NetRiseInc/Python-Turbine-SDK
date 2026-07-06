@@ -52,7 +52,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.mutation_user_set_user_role(user_set_user_role_args=SetUserRoleInput(next_role='VIEWER', user_id='user_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.user.set_user_role.id, resp.user.set_user_role.name)
 
 
 if __name__ == "__main__":

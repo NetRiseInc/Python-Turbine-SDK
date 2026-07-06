@@ -31,7 +31,9 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_user_orgs()
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for item in resp.user_orgs or []:
+            print(item.id, item.display_name)
 
 
 if __name__ == "__main__":

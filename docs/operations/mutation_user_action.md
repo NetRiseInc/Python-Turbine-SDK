@@ -55,7 +55,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.mutation_user_action(user_action_args=UserActionInput(type=UserActionEnum.DISABLE, user_id='user_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.user.action.id, resp.user.action.name)
 
 
 if __name__ == "__main__":

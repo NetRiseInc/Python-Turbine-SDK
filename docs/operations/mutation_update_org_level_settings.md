@@ -34,7 +34,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.mutation_update_org_level_settings(update_org_level_settings_args=OrgLevelSettingsInput(idle_timout_enabled=True))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.update_org_level_settings.err)
 
 
 if __name__ == "__main__":

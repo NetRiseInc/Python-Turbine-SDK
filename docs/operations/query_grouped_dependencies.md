@@ -4,6 +4,8 @@
 
 View dependencies aggregated by vendor, license, or specific component type.
 
+> **Prefer `sdk.iter_grouped_dependencies(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+
 ## Parameters
 
 | name | type | required |
@@ -92,7 +94,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_grouped_dependencies(grouped_dependencies_args=GroupedDependenciesInput(composed_asset_id='composed_asset_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.grouped_dependencies.edges or []:
+            node = edge.node
+            print(node.components, node.license, node.licenses)
 
 
 if __name__ == "__main__":

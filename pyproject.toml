@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "netrise-turbine-sdk"
-version = "0.1.17"
+version = "0.1.19"
 description = "Turbine GraphQL Python SDK (generated via ariadne-codegen)"
 authors = ["NetRise <anthony.feddersen@netrise.io>"]
 readme = "README.md"
@@ -32,7 +32,7 @@ queries_path = "../sdk-artifacts/queries/"
 target_package_name = "netrise_turbine_sdk_graphql"
 target_package_path = "src"
 async_client = false
-files_to_include = ["custom_scalars.py"]
+files_to_include = ["custom_scalars.py", "py.typed"]
 
 [tool.ariadne-codegen.scalars.BigInt]
 type = "int"

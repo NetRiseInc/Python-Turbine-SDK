@@ -30,7 +30,7 @@ Get details about a specific license compliance issue.
 | `licenseIssue.issueDescription` | `string` | yes |
 | `licenseIssue.issueId` | `string` | no |
 | `licenseIssue.issueName` | `string` | no |
-| `licenseIssue.lastModified` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10a907d80>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `licenseIssue.lastModified` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1094e04a0>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `licenseIssue.license` | `object` | yes |
 | `licenseIssue.license.additionalCounts` | `object` | yes |
 | `licenseIssue.license.additionalCounts.associatedComponents` | `integer` | yes |
@@ -44,7 +44,7 @@ Get details about a specific license compliance issue.
 | `licenseIssue.license.url` | `string` | yes |
 | `licenseIssue.potentialSolution` | `string` | yes |
 | `licenseIssue.remediation` | `object` | yes |
-| `licenseIssue.remediation.createdTime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10a907d80>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `licenseIssue.remediation.createdTime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1094e04a0>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `licenseIssue.remediation.detail` | `string` | yes |
 | `licenseIssue.remediation.user` | `string` | yes |
 | `licenseIssue.severity` | `LicenseIssueSeverity` | yes |
@@ -67,7 +67,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_license_issue(license_issue_args=LicenseIssueInput(asset_id='asset_123', issue_id='issue_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.license_issue.severity, resp.license_issue.status)
 
 
 if __name__ == "__main__":

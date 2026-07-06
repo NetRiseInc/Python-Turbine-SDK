@@ -244,7 +244,9 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_match_vulnerabilities(match_vulnerabilities_args=MatchVulnerabilitiesInput(identifier='cpe:2.3:a:vendor:product:1.0'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for item in resp.match_vulnerabilities or []:
+            print(item.id, item.severity, item.created_datetime)
 
 
 if __name__ == "__main__":

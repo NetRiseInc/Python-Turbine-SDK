@@ -36,7 +36,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_asset_upload(asset_upload_args=AssetUploadInput())
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.asset_upload.asset_id, resp.asset_upload.upload_id)
 
 
 if __name__ == "__main__":

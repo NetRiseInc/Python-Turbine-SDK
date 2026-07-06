@@ -33,7 +33,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.mutation_delete_notification_configuration(delete_notification_configuration_args=DeleteNotificationConfigurationInput(id='id_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.delete_notification_configuration)
 
 
 if __name__ == "__main__":

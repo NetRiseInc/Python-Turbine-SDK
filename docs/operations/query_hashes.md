@@ -4,6 +4,8 @@
 
 List cryptographic hashes for files identified within the asset filesystem.
 
+> **Prefer `sdk.iter_hashes(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+
 ## Parameters
 
 | name | type | required |
@@ -61,7 +63,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_hashes(hashes_args=HashesInput(asset_id='asset_123', cursor=Cursor()))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.hashes.edges or []:
+            node = edge.node
+            print(node.correlations_count, node.cracked, node.file_path)
 
 
 if __name__ == "__main__":

@@ -34,7 +34,9 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_list_ai_providers(list_ai_providers_args=ListAiProvidersInput())
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for value in resp.list_ai_providers.ai_providers or []:
+            print(value)
 
 
 if __name__ == "__main__":

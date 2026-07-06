@@ -4,6 +4,8 @@
 
 Retrieve detailed metadata and risk information for a single asset.
 
+> **Prefer `sdk.get_asset(asset_id)`** — returns the asset node directly, no input model required.
+
 ## Parameters
 
 | name | type | required |
@@ -117,7 +119,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_asset(asset_args=AssetInput())
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.asset.id, resp.asset.name)
 
 
 if __name__ == "__main__":

@@ -35,7 +35,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.mutation_asset_remove_dependencies(asset_remove_dependencies_args=IdentificationInput(composed_asset_id='composed_asset_123', identification_ids=['value']))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.asset.remove_dependencies.err)
 
 
 if __name__ == "__main__":

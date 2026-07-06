@@ -41,7 +41,9 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_secret_categories_summary(secret_categories_summary_args=SecretCategoriesInput(asset_id='asset_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for item in resp.secret_categories_summary or []:
+            print(item.category, item.category_label)
 
 
 if __name__ == "__main__":

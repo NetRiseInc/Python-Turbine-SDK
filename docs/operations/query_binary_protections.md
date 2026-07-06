@@ -4,6 +4,8 @@
 
 List security hardening details for binaries found within the asset.
 
+> **Prefer `sdk.iter_binary_protections(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+
 ## Parameters
 
 | name | type | required |
@@ -64,7 +66,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_binary_protections(binary_protections_args=BinaryProtectionsInput(asset_id='asset_123', cursor=Cursor()))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.binary_protections.edges or []:
+            node = edge.node
+            print(node.name, node.bind_now, node.correlations_count)
 
 
 if __name__ == "__main__":

@@ -4,6 +4,8 @@
 
 List all secrets and sensitive data discovered within an asset.
 
+> **Prefer `sdk.iter_secrets(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+
 ## Parameters
 
 | name | type | required |
@@ -72,7 +74,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_secrets(secrets_args=SecretsInput(asset_id='asset_123', cursor=Cursor()))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.secrets.edges or []:
+            node = edge.node
+            print(node.id, node.severity, node.category)
 
 
 if __name__ == "__main__":

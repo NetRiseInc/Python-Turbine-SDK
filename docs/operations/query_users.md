@@ -4,6 +4,8 @@
 
 Retrieve a detailed list of all users and their assigned roles.
 
+> **Prefer `sdk.iter_users(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+
 ## Parameters
 
 | name | type | required |
@@ -61,7 +63,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_users(users_args=UsersInput(cursor=Cursor()))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.users.edges or []:
+            node = edge.node
+            print(node.id, node.name, node.created_at)
 
 
 if __name__ == "__main__":

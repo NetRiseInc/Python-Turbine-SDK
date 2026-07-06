@@ -38,7 +38,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_asset_group_analytics(asset_group_analytics_args=AssetGroupAnalyticsInput(group_id='group_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.asset_group_analytics.cracked_credentials, resp.asset_group_analytics.exploits)
 
 
 if __name__ == "__main__":

@@ -4,11 +4,38 @@
 
 List all software components and libraries identified in the asset.
 
+> **Prefer `sdk.iter_dependencies(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+
 ## Parameters
 
 | name | type | required |
 | --- | --- | --- |
 | `dependencies_args` | `DependencyInput` | `true` |
+
+## Filter fields
+
+Build the `filter` argument with `where()` instead of hand-assembling `DependencyFilter.fields`:
+
+```python
+from netrise_turbine_sdk import where
+from netrise_turbine_sdk_graphql.input_types import DependencyFilter
+
+flt = where(DependencyFilter, type="...", name__contains="...")
+```
+
+| `where()` kwarg | GraphQL field | exact match uses |
+| --- | --- | --- |
+| `name` | `DependencyField.NAME` | `EQUAL` |
+| `vendor` | `DependencyField.VENDOR` | `EQUAL` |
+| `type` | `DependencyField.TYPE` | `ENUM` |
+| `subtype` | `DependencyField.SUBTYPE` | `ENUM` |
+| `license` | `DependencyField.LICENSE` | `EQUAL` |
+| `version` | `DependencyField.VERSION` | `EQUAL` |
+| `verification` | `DependencyField.VERIFICATION` | `ENUM` |
+| `scope` | `DependencyField.SCOPE` | `ENUM` |
+| `confidence` | `DependencyField.CONFIDENCE` | `EQUAL` |
+
+Lookups: `field=` (exact), `field__contains=`, `field__in=`, `field__gt=`, `field__gte=`, `field__lt=`, `field__lte=`.
 
 ## Response Schema
 
@@ -176,7 +203,7 @@ List all software components and libraries identified in the asset.
 | `dependencies.edges[].node.scope[].actualScope` | `string` | yes |
 | `dependencies.edges[].node.scope[].description` | `string` | yes |
 | `dependencies.edges[].node.scope[].value` | `ComponentScope` | yes |
-| `dependencies.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10a907d80>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `dependencies.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1094e04a0>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `dependencies.edges[].node.verification` | `object` | no |
 | `dependencies.edges[].node.verification.cryptographic` | `boolean` | no |
 | `dependencies.edges[].node.verification.functionHashing` | `boolean` | no |
@@ -208,7 +235,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_dependencies(dependencies_args=DependencyInput(composed_asset_id='composed_asset_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.dependencies.edges or []:
+            node = edge.node
+            print(node.id, node.ai_architecture, node.correlations_count)
 
 
 if __name__ == "__main__":

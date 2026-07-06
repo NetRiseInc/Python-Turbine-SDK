@@ -52,7 +52,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.mutation_user_update_user(user_update_user_args=UpdateUserInput(user_id='user_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.user.update_user.id, resp.user.update_user.name)
 
 
 if __name__ == "__main__":

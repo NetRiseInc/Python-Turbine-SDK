@@ -33,7 +33,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.mutation_set_asset_groups_to_asset(set_asset_groups_to_asset_args=SetAssetGroupsToAssetInput(asset_id='asset_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.set_asset_groups_to_asset)
 
 
 if __name__ == "__main__":

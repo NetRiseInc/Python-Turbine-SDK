@@ -1417,6 +1417,8 @@ class InviteOrgUserInput(BaseModel):
         alias="securityGroupIds", default=None
     )
     "Optional list of security group IDs to add the invited user to upon creation."
+    role_id: Optional[str] = Field(alias="roleId", default=None)
+    "Optional role to grant the invited user directly at the organization level.\nWhen set, the RBAC service creates an organization-scoped ACR granting this\nrole to the new user, independent of any security group membership."
 
 
 class CreateCustomRoleInput(BaseModel):

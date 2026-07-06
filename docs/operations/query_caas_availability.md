@@ -33,7 +33,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_caas_availability(caas_availability_args=RiseAIAnalysisDataInput(asset_id='asset_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.caas_availability)
 
 
 if __name__ == "__main__":
