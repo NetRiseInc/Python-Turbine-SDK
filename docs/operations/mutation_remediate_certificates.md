@@ -44,7 +44,9 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.mutation_remediate_certificates(remediate_certificates_args=RemediateCertificatesInput(asset_id='asset_123', certificates=[None], status=CryptoRemediationStatus.UNSPECIFIED))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for item in resp.remediate_certificates or []:
+            print(item.status, item.author, item.created_at)
 
 
 if __name__ == "__main__":

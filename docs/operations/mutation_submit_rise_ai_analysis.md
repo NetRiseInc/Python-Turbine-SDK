@@ -34,7 +34,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.mutation_submit_rise_ai_analysis(submit_rise_ai_analysis_args=RiseAIAnalysisDataInput(asset_id='asset_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.submit_rise_ai_analysis.status)
 
 
 if __name__ == "__main__":

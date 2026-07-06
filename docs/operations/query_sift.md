@@ -35,7 +35,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_sift()
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.sift.count.asset_count, resp.sift.count.file_count)
 
 
 if __name__ == "__main__":

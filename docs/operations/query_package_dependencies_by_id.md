@@ -306,7 +306,9 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_package_dependencies_by_id(package_dependencies_by_id_args=packageDependenciesByIdInput(composed_asset_id='composed_asset_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for item in resp.package_dependencies_by_id.associated_files or []:
+            print(item.is_concrete)
 
 
 if __name__ == "__main__":

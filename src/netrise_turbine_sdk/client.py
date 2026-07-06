@@ -2,17 +2,19 @@ from __future__ import annotations
 
 import os
 import time
-from collections.abc import Iterable, Iterator
+from collections.abc import Callable, Iterable, Iterator
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 import httpx
 from dotenv import find_dotenv, load_dotenv
 
 from netrise_turbine_sdk_graphql import Client as GeneratedClient
 from netrise_turbine_sdk_graphql import input_types as inputs
+from netrise_turbine_sdk_graphql import enums
 
+from .filters import merge_where
 from .pagination import iter_all_pages
 from .transport import _build_http_client
 
@@ -403,6 +405,8 @@ class TurbineClient:
         asset_id: str,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryActivityActivityEdgesNode]":
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_activity(
@@ -412,7 +416,13 @@ class TurbineClient:
                 )
             ).activity
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
 
     def iter_asset_group_members(
         self,
@@ -421,6 +431,8 @@ class TurbineClient:
         sort: Optional["inputs.AssetsSort"] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryAssetGroupMembersAssetGroupMembersEdgesNode]":
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_asset_group_members(
@@ -431,7 +443,13 @@ class TurbineClient:
                 )
             ).asset_group_members
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
 
     def iter_asset_groups(
         self,
@@ -440,6 +458,8 @@ class TurbineClient:
         sort: Optional["inputs.AssetGroupsSort"] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryAssetGroupsAssetGroupsEdgesNode]":
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_asset_groups(
@@ -450,16 +470,24 @@ class TurbineClient:
                 )
             ).asset_groups
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
 
     def iter_assets_overview(
         self,
         *,
         asset_group_ids: Optional[list[str]] = None,
-        filter: Optional["inputs.AssetOverviewFilter"] = None,
+        filter: Optional[Union["inputs.AssetOverviewFilter", Dict[str, Any]]] = None,
         sort: Optional["inputs.AssetOverviewSort"] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryAssetsOverviewAssetsOverviewEdgesNode]":
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_assets_overview(
@@ -471,16 +499,33 @@ class TurbineClient:
                 )
             ).assets_overview
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
 
     def iter_assets_relay(
         self,
         *,
-        filter: Optional["inputs.AssetsFilter"] = None,
+        filter: Optional[Union["inputs.AssetsFilter", Dict[str, Any]]] = None,
         sort: Optional["inputs.AssetsSort"] = None,
+        name_contains: Optional[str] = None,
+        vendor: Optional[str] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryAssetsRelayAssetsRelayEdgesNode]":
+        filter = merge_where(
+            filter,
+            inputs.AssetsFilter,
+            name__contains=name_contains,
+            vendor=vendor,
+        )
+
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_assets_relay(
                 assets_relay_args=inputs.AssetsRelayInput(
@@ -490,16 +535,24 @@ class TurbineClient:
                 )
             ).assets_relay
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
 
     def iter_binary_protections(
         self,
         *,
         asset_id: str,
-        filter: Optional["inputs.BinaryProtectionsFilter"] = None,
+        filter: Optional[Union["inputs.BinaryProtectionsFilter", Dict[str, Any]]] = None,
         sort: Optional["inputs.BinaryProtectionsSort"] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryBinaryProtectionsBinaryProtectionsEdgesNode]":
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_binary_protections(
@@ -511,16 +564,24 @@ class TurbineClient:
                 )
             ).binary_protections
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
 
     def iter_certificates(
         self,
         *,
         asset_id: str,
-        filter: Optional["inputs.ListCertificatesFilter"] = None,
+        filter: Optional[Union["inputs.ListCertificatesFilter", Dict[str, Any]]] = None,
         sort: Optional["inputs.ListCertificatesSort"] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryCertificatesCertificatesEdgesNode]":
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_certificates(
@@ -532,16 +593,24 @@ class TurbineClient:
                 )
             ).certificates
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
 
     def iter_credentials(
         self,
         *,
         asset_id: str,
-        filter: Optional["inputs.CredentialsFilter"] = None,
+        filter: Optional[Union["inputs.CredentialsFilter", Dict[str, Any]]] = None,
         sort: Optional["inputs.CredentialsSort"] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryCredentialsCredentialsEdgesNode]":
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_credentials(
@@ -553,17 +622,32 @@ class TurbineClient:
                 )
             ).credentials
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
 
     def iter_dependencies(
         self,
         *,
         composed_asset_id: str,
-        filter: Optional["inputs.DependencyFilter"] = None,
+        filter: Optional[Union["inputs.DependencyFilter", Dict[str, Any]]] = None,
         sort: Optional["inputs.DependencySort"] = None,
+        name_contains: Optional[str] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryDependenciesDependenciesEdgesNode]":
+        filter = merge_where(
+            filter,
+            inputs.DependencyFilter,
+            name__contains=name_contains,
+        )
+
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_dependencies(
                 dependencies_args=inputs.DependencyInput(
@@ -574,15 +658,23 @@ class TurbineClient:
                 )
             ).dependencies
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
 
     def iter_detailed_vulnerabilities(
         self,
         *,
         asset_id: str,
-        filter: Optional["inputs.DetailedVulnerabilityFilter"] = None,
+        filter: Optional[Union["inputs.DetailedVulnerabilityFilter", Dict[str, Any]]] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNode]":
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_detailed_vulnerabilities(
@@ -593,17 +685,25 @@ class TurbineClient:
                 )
             ).detailed_vulnerabilities
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
 
     def iter_grouped_dependencies(
         self,
         *,
         composed_asset_id: str,
-        filter: Optional["inputs.GroupedDependencyFilter"] = None,
+        filter: Optional[Union["inputs.GroupedDependencyFilter", Dict[str, Any]]] = None,
         sort: Optional["inputs.GroupedDependencySort"] = None,
         grouped_by: Optional[Any] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryGroupedDependenciesGroupedDependenciesEdgesNode]":
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_grouped_dependencies(
@@ -616,16 +716,24 @@ class TurbineClient:
                 )
             ).grouped_dependencies
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
 
     def iter_hashes(
         self,
         *,
         asset_id: str,
-        filter: Optional["inputs.HashesFilter"] = None,
+        filter: Optional[Union["inputs.HashesFilter", Dict[str, Any]]] = None,
         sort: Optional["inputs.HashesSort"] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryHashesHashesEdgesNode]":
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_hashes(
@@ -637,16 +745,24 @@ class TurbineClient:
                 )
             ).hashes
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
 
     def iter_license_issues(
         self,
         *,
         asset_id: str,
-        filter: Optional["inputs.LicenseIssuesFilter"] = None,
+        filter: Optional[Union["inputs.LicenseIssuesFilter", Dict[str, Any]]] = None,
         sort: Optional["inputs.LicenseIssuesSort"] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryLicenseIssuesLicenseIssuesEdgesNode]":
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_license_issues(
@@ -658,7 +774,13 @@ class TurbineClient:
                 )
             ).license_issues
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
 
     def iter_list_asset_crypto_libraries(
         self,
@@ -668,6 +790,8 @@ class TurbineClient:
         sort: Optional["inputs.ListCryptoLibrariesSort"] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> (
         "Iterator[QueryListAssetCryptoLibrariesListAssetCryptoLibrariesEdgesNode]"
     ):
@@ -681,17 +805,32 @@ class TurbineClient:
                 )
             ).list_asset_crypto_libraries
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
 
     def iter_misconfigurations(
         self,
         *,
         asset_id: str,
-        filter: Optional["inputs.MisconfigurationsFilter"] = None,
+        filter: Optional[Union["inputs.MisconfigurationsFilter", Dict[str, Any]]] = None,
         sort: Optional["inputs.MisconfigurationsSort"] = None,
+        severity: Optional[Union["enums.Severity", str]] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryMisconfigurationsMisconfigurationsEdgesNode]":
+        filter = merge_where(
+            filter,
+            inputs.MisconfigurationsFilter,
+        )
+        severity_values = _normalize_match_values(severity)
+
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_misconfigurations(
                 misconfigurations_args=inputs.MisconfigurationsInput(
@@ -702,16 +841,25 @@ class TurbineClient:
                 )
             ).misconfigurations
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+            node_filter=_attr_matcher("severity", severity_values),
+        )
 
     def iter_private_keys(
         self,
         *,
         asset_id: str,
-        filter: Optional["inputs.ListPrivateKeysFilter"] = None,
+        filter: Optional[Union["inputs.ListPrivateKeysFilter", Dict[str, Any]]] = None,
         sort: Optional["inputs.ListPrivateKeysSort"] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryPrivateKeysPrivateKeysEdgesNode]":
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_private_keys(
@@ -723,16 +871,24 @@ class TurbineClient:
                 )
             ).private_keys
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
 
     def iter_public_keys(
         self,
         *,
         asset_id: str,
-        filter: Optional["inputs.ListPublicKeysFilter"] = None,
+        filter: Optional[Union["inputs.ListPublicKeysFilter", Dict[str, Any]]] = None,
         sort: Optional["inputs.ListPublicKeysSort"] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryPublicKeysPublicKeysEdgesNode]":
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_public_keys(
@@ -744,16 +900,24 @@ class TurbineClient:
                 )
             ).public_keys
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
 
     def iter_secrets(
         self,
         *,
         asset_id: str,
-        filter: Optional["inputs.SecretsFilter"] = None,
+        filter: Optional[Union["inputs.SecretsFilter", Dict[str, Any]]] = None,
         sort: Optional["inputs.SecretsSort"] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QuerySecretsSecretsEdgesNode]":
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_secrets(
@@ -765,30 +929,56 @@ class TurbineClient:
                 )
             ).secrets
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
 
     def iter_users(
         self,
         *,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryUsersUsersEdgesNode]":
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_users(
                 users_args=inputs.UsersInput(cursor=cursor)
             ).users
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
 
     def iter_vulnerabilities(
         self,
         *,
         asset_id: str,
-        filter: Optional["inputs.VulnerabilityFilter"] = None,
+        filter: Optional[Union["inputs.VulnerabilityFilter", Dict[str, Any]]] = None,
         sort: Optional["inputs.VulnerabilitySort"] = None,
+        severity: Optional[Union["enums.Severity", str]] = None,
+        severity_in: Optional[list[Union["enums.Severity", str]]] = None,
+        cve_contains: Optional[str] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryVulnerabilitiesVulnerabilitiesEdgesNode]":
+        filter = merge_where(
+            filter,
+            inputs.VulnerabilityFilter,
+            cve__contains=cve_contains,
+        )
+        severity_values = _normalize_match_values(severity, severity_in)
+
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_vulnerabilities(
                 vulnerabilities_args=inputs.PaginatedVulnerabilitiesInput(
@@ -799,16 +989,25 @@ class TurbineClient:
                 )
             ).vulnerabilities
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+            node_filter=_attr_matcher("severity", severity_values),
+        )
 
     def iter_vulnerabilities_overview(
         self,
         *,
         asset_group_ids: Optional[list[str]] = None,
-        filter: Optional["inputs.VulnerabilityOverviewFilter"] = None,
+        filter: Optional[Union["inputs.VulnerabilityOverviewFilter", Dict[str, Any]]] = None,
         sort: Optional["inputs.VulnerabilityOverviewSort"] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> (
         "Iterator[QueryVulnerabilitiesOverviewVulnerabilitiesOverviewEdgesNode]"
     ):
@@ -822,7 +1021,13 @@ class TurbineClient:
                 )
             ).vulnerabilities_overview
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
 
     # --- Lite / Summary paginators -----------------------------------------
     # These mirror the full-weight `iter_*` methods above but trim the
@@ -835,11 +1040,22 @@ class TurbineClient:
     def iter_assets_relay_lite(
         self,
         *,
-        filter: Optional["inputs.AssetsFilter"] = None,
+        filter: Optional[Union["inputs.AssetsFilter", Dict[str, Any]]] = None,
         sort: Optional["inputs.AssetsSort"] = None,
+        name_contains: Optional[str] = None,
+        vendor: Optional[str] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryAssetsRelayLiteAssetsRelayEdgesNode]":
+        filter = merge_where(
+            filter,
+            inputs.AssetsFilter,
+            name__contains=name_contains,
+            vendor=vendor,
+        )
+
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_assets_relay_lite(
                 assets_relay_args=inputs.AssetsRelayInput(
@@ -849,16 +1065,33 @@ class TurbineClient:
                 )
             ).assets_relay
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
 
     def iter_assets_relay_summary(
         self,
         *,
-        filter: Optional["inputs.AssetsFilter"] = None,
+        filter: Optional[Union["inputs.AssetsFilter", Dict[str, Any]]] = None,
         sort: Optional["inputs.AssetsSort"] = None,
+        name_contains: Optional[str] = None,
+        vendor: Optional[str] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryAssetsRelaySummaryAssetsRelayEdgesNode]":
+        filter = merge_where(
+            filter,
+            inputs.AssetsFilter,
+            name__contains=name_contains,
+            vendor=vendor,
+        )
+
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_assets_relay_summary(
                 assets_relay_args=inputs.AssetsRelayInput(
@@ -868,17 +1101,35 @@ class TurbineClient:
                 )
             ).assets_relay
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
 
     def iter_vulnerabilities_lite(
         self,
         *,
         asset_id: str,
-        filter: Optional["inputs.VulnerabilityFilter"] = None,
+        filter: Optional[Union["inputs.VulnerabilityFilter", Dict[str, Any]]] = None,
         sort: Optional["inputs.VulnerabilitySort"] = None,
+        severity: Optional[Union["enums.Severity", str]] = None,
+        severity_in: Optional[list[Union["enums.Severity", str]]] = None,
+        cve_contains: Optional[str] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryVulnerabilitiesLiteVulnerabilitiesEdgesNode]":
+        filter = merge_where(
+            filter,
+            inputs.VulnerabilityFilter,
+            cve__contains=cve_contains,
+        )
+        severity_values = _normalize_match_values(severity, severity_in)
+
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_vulnerabilities_lite(
                 vulnerabilities_args=inputs.PaginatedVulnerabilitiesInput(
@@ -889,17 +1140,33 @@ class TurbineClient:
                 )
             ).vulnerabilities
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+            node_filter=_attr_matcher("severity", severity_values),
+        )
 
     def iter_dependencies_lite(
         self,
         *,
         composed_asset_id: str,
-        filter: Optional["inputs.DependencyFilter"] = None,
+        filter: Optional[Union["inputs.DependencyFilter", Dict[str, Any]]] = None,
         sort: Optional["inputs.DependencySort"] = None,
+        name_contains: Optional[str] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryDependenciesLiteDependenciesEdgesNode]":
+        filter = merge_where(
+            filter,
+            inputs.DependencyFilter,
+            name__contains=name_contains,
+        )
+
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_dependencies_lite(
                 dependencies_args=inputs.DependencyInput(
@@ -910,17 +1177,32 @@ class TurbineClient:
                 )
             ).dependencies
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
 
     def iter_misconfigurations_lite(
         self,
         *,
         asset_id: str,
-        filter: Optional["inputs.MisconfigurationsFilter"] = None,
+        filter: Optional[Union["inputs.MisconfigurationsFilter", Dict[str, Any]]] = None,
         sort: Optional["inputs.MisconfigurationsSort"] = None,
+        severity: Optional[Union["enums.Severity", str]] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryMisconfigurationsLiteMisconfigurationsEdgesNode]":
+        filter = merge_where(
+            filter,
+            inputs.MisconfigurationsFilter,
+        )
+        severity_values = _normalize_match_values(severity)
+
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_misconfigurations_lite(
                 misconfigurations_args=inputs.MisconfigurationsInput(
@@ -931,15 +1213,24 @@ class TurbineClient:
                 )
             ).misconfigurations
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+            node_filter=_attr_matcher("severity", severity_values),
+        )
 
     def iter_detailed_vulnerabilities_lite(
         self,
         *,
         asset_id: str,
-        filter: Optional["inputs.DetailedVulnerabilityFilter"] = None,
+        filter: Optional[Union["inputs.DetailedVulnerabilityFilter", Dict[str, Any]]] = None,
         page_size: int = 100,
         max_pages: Optional[int] = None,
+        start_after: Optional[str] = None,
+        max_items: Optional[int] = None,
     ) -> "Iterator[QueryDetailedVulnerabilitiesLiteDetailedVulnerabilitiesEdgesNode]":
         def fetch(cursor: inputs.Cursor) -> Any:
             return self.graphql().query_detailed_vulnerabilities_lite(
@@ -950,7 +1241,45 @@ class TurbineClient:
                 )
             ).detailed_vulnerabilities
 
-        return iter_all_pages(fetch, page_size=page_size, max_pages=max_pages)
+        return iter_all_pages(
+            fetch,
+            page_size=page_size,
+            max_pages=max_pages,
+            start_after=start_after,
+            max_items=max_items,
+        )
+
+    # REST-friendly aliases for the most common asset listing shapes. The
+    # original GraphQL-derived method names remain the canonical implementation.
+    iter_assets = iter_assets_relay_lite
+    iter_assets_full = iter_assets_relay
+    iter_assets_summary = iter_assets_relay_summary
+
+    # --- Single-resource helpers --------------------------------------------
+
+    def get_asset(self, asset_id: str) -> Any:
+        """Return a single asset by ID using the full asset query."""
+        resp = self.graphql().query_asset(
+            asset_args=inputs.AssetInput(asset_id=asset_id)
+        )
+        return resp.asset
+
+    def get_vulnerability(self, vulnerability_id: str, *, lite: bool = True) -> Any:
+        """Return a single vulnerability by ID.
+
+        Args:
+            vulnerability_id: Vulnerability identifier, such as a CVE ID.
+            lite: When true, use the smaller Lite query. Set false for the
+                full generated vulnerability response.
+        """
+        args = inputs.VulnerabilityInput(id=vulnerability_id)
+        if lite:
+            return self.graphql().query_vulnerability_lite(
+                vulnerability_args=args
+            ).vulnerability
+        return self.graphql().query_vulnerability(
+            vulnerability_args=args
+        ).vulnerability
 
     # --- File downloads -------------------------------------------------------
 
@@ -1115,6 +1444,32 @@ class TurbineClient:
                 print(f"[FAILED] {file_path.name}: {e}", file=sys.stderr)
 
         return results
+
+
+def _normalize_match_values(*values: Any) -> Optional[set[str]]:
+    flattened: set[str] = set()
+    for value in values:
+        if value is None:
+            continue
+        if isinstance(value, (list, tuple, set)):
+            items = value
+        else:
+            items = (value,)
+        for item in items:
+            if item is None:
+                continue
+            if hasattr(item, "value"):
+                item = item.value
+            flattened.add(str(item).upper())
+    return flattened or None
+
+
+def _attr_matcher(
+    attr: str, allowed: Optional[set[str]]
+) -> Optional[Callable[[Any], bool]]:
+    if not allowed:
+        return None
+    return lambda row: str(getattr(row, attr, "")).upper() in allowed
 
 
 def _strip_or_none(v: Optional[str]) -> Optional[str]:

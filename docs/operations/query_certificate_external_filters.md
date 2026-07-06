@@ -35,7 +35,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_certificate_external_filters(certificate_external_filters_args=CertificateExternalFiltersInput(asset_id='asset_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.certificate_external_filters.total_classical, resp.certificate_external_filters.total_pqc)
 
 
 if __name__ == "__main__":

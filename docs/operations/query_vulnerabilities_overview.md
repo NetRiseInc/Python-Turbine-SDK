@@ -4,6 +4,8 @@
 
 Get a summary of vulnerability counts and severity across assets.
 
+> **Prefer `sdk.iter_vulnerabilities_overview(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+
 ## Parameters
 
 | name | type | required |
@@ -19,11 +21,11 @@ Get a summary of vulnerability counts and severity across assets.
 | `vulnerabilitiesOverview.edges[].cursor` | `string` | yes |
 | `vulnerabilitiesOverview.edges[].node` | `object` | yes |
 | `vulnerabilitiesOverview.edges[].node.botnetsList[]` | `string` | yes |
-| `vulnerabilitiesOverview.edges[].node.cisaDueDate` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10a907d80>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `vulnerabilitiesOverview.edges[].node.cisaDueDate` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1094e04a0>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `vulnerabilitiesOverview.edges[].node.component` | `string` | yes |
 | `vulnerabilitiesOverview.edges[].node.cve` | `string` | yes |
 | `vulnerabilitiesOverview.edges[].node.cvssScore` | `float` | yes |
-| `vulnerabilitiesOverview.edges[].node.dateAdded` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10a907d80>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `vulnerabilitiesOverview.edges[].node.dateAdded` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1094e04a0>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `vulnerabilitiesOverview.edges[].node.epssPercentile` | `float` | yes |
 | `vulnerabilitiesOverview.edges[].node.epssScore` | `float` | yes |
 | `vulnerabilitiesOverview.edges[].node.exploitFound` | `boolean` | yes |
@@ -65,7 +67,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_vulnerabilities_overview(vulnerabilities_overview_args=VulnerabilityOverviewInput(cursor=Cursor()))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.vulnerabilities_overview.edges or []:
+            node = edge.node
+            print(node.cve, node.severity, node.cisa_due_date)
 
 
 if __name__ == "__main__":

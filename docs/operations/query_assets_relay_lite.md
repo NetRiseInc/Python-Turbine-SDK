@@ -4,11 +4,40 @@
 
 Retrieve assets with trimmed fields — keeps identity, status, risk score, and analytic rollups; drops filesystems, SHA-256, exploit trees, and credential counts.
 
+> **Prefer `sdk.iter_assets_relay_lite(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+
 ## Parameters
 
 | name | type | required |
 | --- | --- | --- |
 | `assets_relay_args` | `AssetsRelayInput` | `true` |
+
+## Filter fields
+
+Build the `filter` argument with `where()` instead of hand-assembling `AssetsFilter.fields`:
+
+```python
+from netrise_turbine_sdk import where
+from netrise_turbine_sdk_graphql.input_types import AssetsFilter
+
+flt = where(AssetsFilter, status="...", name__contains="...")
+```
+
+| `where()` kwarg | GraphQL field | exact match uses |
+| --- | --- | --- |
+| `id` | `AssetsFilterField.ID` | `EQUAL` |
+| `name` | `AssetsFilterField.NAME` | `EQUAL` |
+| `vendor` | `AssetsFilterField.VENDOR` | `EQUAL` |
+| `product` | `AssetsFilterField.PRODUCT` | `EQUAL` |
+| `version` | `AssetsFilterField.VERSION` | `EQUAL` |
+| `type` | `AssetsFilterField.TYPE` | `EQUAL` |
+| `sha256` | `AssetsFilterField.SHA256` | `EQUAL` |
+| `status` | `AssetsFilterField.PROCESSINGSTATUS` | `ENUM` |
+| `risk_category` | `AssetsFilterField.RISKCATEGORY` | `ENUM` |
+| `risk_score` | `AssetsFilterField.RISKSCORE` | `EQUAL` |
+| `uploaded_by` | `AssetsFilterField.UPLOADEDBY` | `EQUAL` |
+
+Lookups: `field=` (exact), `field__contains=`, `field__in=`, `field__gt=`, `field__gte=`, `field__lt=`, `field__lte=`.
 
 ## Response Schema
 
@@ -75,7 +104,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_assets_relay_lite(assets_relay_args=AssetsRelayInput(cursor=Cursor()))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.assets_relay.edges or []:
+            node = edge.node
+            print(node.id, node.name, node.status)
 
 
 if __name__ == "__main__":

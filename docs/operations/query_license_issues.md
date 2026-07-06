@@ -4,6 +4,8 @@
 
 List license compliance issues identified across asset components.
 
+> **Prefer `sdk.iter_license_issues(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+
 ## Parameters
 
 | name | type | required |
@@ -33,7 +35,7 @@ List license compliance issues identified across asset components.
 | `licenseIssues.edges[].node.issueDescription` | `string` | yes |
 | `licenseIssues.edges[].node.issueId` | `string` | no |
 | `licenseIssues.edges[].node.issueName` | `string` | no |
-| `licenseIssues.edges[].node.lastModified` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10a907d80>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `licenseIssues.edges[].node.lastModified` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1094e04a0>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `licenseIssues.edges[].node.license` | `object` | yes |
 | `licenseIssues.edges[].node.license.additionalCounts` | `object` | yes |
 | `licenseIssues.edges[].node.license.additionalCounts.associatedComponents` | `integer` | yes |
@@ -47,7 +49,7 @@ List license compliance issues identified across asset components.
 | `licenseIssues.edges[].node.license.url` | `string` | yes |
 | `licenseIssues.edges[].node.potentialSolution` | `string` | yes |
 | `licenseIssues.edges[].node.remediation` | `object` | yes |
-| `licenseIssues.edges[].node.remediation.createdTime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10a907d80>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `licenseIssues.edges[].node.remediation.createdTime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1094e04a0>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `licenseIssues.edges[].node.remediation.detail` | `string` | yes |
 | `licenseIssues.edges[].node.remediation.user` | `string` | yes |
 | `licenseIssues.edges[].node.severity` | `LicenseIssueSeverity` | yes |
@@ -76,7 +78,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_license_issues(license_issues_args=LicenseIssuesInput(asset_id='asset_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.license_issues.edges or []:
+            node = edge.node
+            print(node.severity, node.status, node.component_id)
 
 
 if __name__ == "__main__":

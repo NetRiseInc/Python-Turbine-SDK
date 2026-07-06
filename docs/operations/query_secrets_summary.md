@@ -38,7 +38,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_secrets_summary(secrets_summary_args=SecretsSummaryInput(asset_id='asset_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.secrets_summary.high, resp.secrets_summary.invalid)
 
 
 if __name__ == "__main__":

@@ -37,7 +37,9 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_secret_types_and_count(secret_types_and_count_args=SecretTypesAndCountInput(asset_id='asset_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for item in resp.secret_types_and_count.type_counts or []:
+            print(item.count, item.type)
 
 
 if __name__ == "__main__":

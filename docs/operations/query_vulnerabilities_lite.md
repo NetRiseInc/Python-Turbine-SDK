@@ -4,11 +4,41 @@
 
 List vulnerabilities with trimmed fields — keeps CVE, severity, CVSS/EPSS scores, fix versions, and correlation count; drops nested correlations and remediation details.
 
+> **Prefer `sdk.iter_vulnerabilities_lite(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+
 ## Parameters
 
 | name | type | required |
 | --- | --- | --- |
 | `vulnerabilities_args` | `PaginatedVulnerabilitiesInput` | `true` |
+
+## Filter fields
+
+Build the `filter` argument with `where()` instead of hand-assembling `VulnerabilityFilter.fields`:
+
+```python
+from netrise_turbine_sdk import where
+from netrise_turbine_sdk_graphql.input_types import VulnerabilityFilter
+
+flt = where(VulnerabilityFilter, severity="...", name__contains="...")
+```
+
+| `where()` kwarg | GraphQL field | exact match uses |
+| --- | --- | --- |
+| `cve` | `VulnerabilityField.CVE` | `EQUAL` |
+| `severity` | `VulnerabilityField.SEVERITY` | `ENUM` |
+| `name` | `VulnerabilityField.NAME` | `EQUAL` |
+| `version` | `VulnerabilityField.VERSION` | `EQUAL` |
+| `vendor` | `VulnerabilityField.VENDOR` | `EQUAL` |
+| `maturity` | `VulnerabilityField.MATURITY` | `ENUM` |
+| `filepath` | `VulnerabilityField.FILEPATH` | `EQUAL` |
+| `attack_vector` | `VulnerabilityField.ATTACKVECTOR` | `ENUM` |
+| `attack_complexity` | `VulnerabilityField.ATTACKCOMPLEXITY` | `ENUM` |
+| `remediation_status` | `VulnerabilityField.VULNERABILITYREMEDIATIONSTATUS` | `ENUM` |
+| `epss_score` | `VulnerabilityField.EPSSSCORE` | `EQUAL` |
+| `epss_percentile` | `VulnerabilityField.EPSSPERCENTILE` | `EQUAL` |
+
+Lookups: `field=` (exact), `field__contains=`, `field__in=`, `field__gt=`, `field__gte=`, `field__lt=`, `field__lte=`.
 
 ## Response Schema
 
@@ -54,7 +84,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_vulnerabilities_lite(vulnerabilities_args=PaginatedVulnerabilitiesInput(asset_id='asset_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.vulnerabilities.edges or []:
+            node = edge.node
+            print(node.id, node.cve, node.name)
 
 
 if __name__ == "__main__":

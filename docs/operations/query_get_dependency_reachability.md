@@ -42,7 +42,9 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_get_dependency_reachability(get_dependency_reachability_args=GetDependencyReachabilityInput(composed_asset_id='composed_asset_123', component_id='id_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for item in resp.get_dependency_reachability or []:
+            print(item.cve_id, item.entry_point, item.entry_type)
 
 
 if __name__ == "__main__":

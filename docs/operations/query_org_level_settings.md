@@ -82,7 +82,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_org_level_settings()
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.org_level_settings.advanced_settings_jobs_processing, resp.org_level_settings.cryptographic_hash_enabled)
 
 
 if __name__ == "__main__":

@@ -60,7 +60,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_identified_components_preview(identified_components_preview_args=IdentifiedComponentsPreviewInput())
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.identified_components_preview.application.after_count, resp.identified_components_preview.application.before_count)
 
 
 if __name__ == "__main__":

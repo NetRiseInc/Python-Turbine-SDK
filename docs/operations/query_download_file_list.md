@@ -36,7 +36,9 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_download_file_list(download_file_list_args=FileListDownloadInput(asset_id='asset_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for value in resp.download.file_list.download_urls_list or []:
+            print(value)
 
 
 if __name__ == "__main__":

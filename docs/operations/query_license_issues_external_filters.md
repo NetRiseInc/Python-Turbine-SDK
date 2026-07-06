@@ -42,7 +42,9 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_license_issues_external_filters(license_issues_external_filters_args=LicenseIssuesExternalFiltersInput(asset_id='asset_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for item in resp.license_issues_external_filters.types or []:
+            print(item.count, item.type)
 
 
 if __name__ == "__main__":

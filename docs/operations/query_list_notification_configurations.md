@@ -63,7 +63,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_list_notification_configurations(list_notification_configurations_args=ListNotificationConfigurationsInput())
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.list_notification_configurations.edges or []:
+            node = edge.node
+            print(node.id, node.name, node.channel)
 
 
 if __name__ == "__main__":

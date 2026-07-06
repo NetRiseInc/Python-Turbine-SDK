@@ -39,8 +39,9 @@ def main() -> None:
     sdk = TurbineClient(cfg)
 
     with sdk.graphql() as client:
-        resp = client.mutation_asset_modify_dependency(asset_modify_dependency_args=ModifyDependencyInput(identification=IdentificationInput(composed_asset_id='composed_asset_123', identification_ids=[None  # TODO: fill]), dependency_fields=DependencyDetailsInput(name='my-example', type=ComponentType.UNSPECIFIED)))
-        print(resp.model_dump())
+        resp = client.mutation_asset_modify_dependency(asset_modify_dependency_args=ModifyDependencyInput(identification=IdentificationInput(composed_asset_id='composed_asset_123', identification_ids=['value']), dependency_fields=DependencyDetailsInput(name='my-example', type=ComponentType.UNSPECIFIED)))
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.asset.modify_dependency.err)
 
 
 if __name__ == "__main__":

@@ -4,6 +4,8 @@
 
 Detect private cryptographic keys stored insecurely on the asset filesystem.
 
+> **Prefer `sdk.iter_private_keys(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+
 ## Parameters
 
 | name | type | required |
@@ -80,7 +82,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_private_keys(private_keys_args=PrivateKeysInput(asset_id='asset_123', cursor=Cursor()))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.private_keys.edges or []:
+            node = edge.node
+            print(node.id, node.algorithm, node.algorithm_type)
 
 
 if __name__ == "__main__":

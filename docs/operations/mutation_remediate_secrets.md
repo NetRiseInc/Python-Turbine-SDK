@@ -41,7 +41,9 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.mutation_remediate_secrets(remediate_secrets_args=CreateSecretsRemediationInput(asset_id='asset_123', secret_ids=['value'], status=SecretRemediationStatus.UNSPECIFIED))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for item in resp.remediate_secrets or []:
+            print(item.status, item.author, item.created_at)
 
 
 if __name__ == "__main__":

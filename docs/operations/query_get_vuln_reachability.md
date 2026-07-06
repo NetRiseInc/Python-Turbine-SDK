@@ -42,7 +42,9 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_get_vuln_reachability(get_vuln_reachability_args=GetVulnReachabilityInput(asset_id='asset_123', advisory_id='CVE-2024-1234', identification_ids=['value']))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for item in resp.get_vuln_reachability or []:
+            print(item.cve_id, item.entry_point, item.entry_type)
 
 
 if __name__ == "__main__":

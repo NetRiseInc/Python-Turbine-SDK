@@ -45,8 +45,10 @@ def main() -> None:
     sdk = TurbineClient(cfg)
 
     with sdk.graphql() as client:
-        resp = client.mutation_remediate_public_keys(remediate_public_keys_args=RemediatePublicKeysInput(asset_id='asset_123', public_keys=[PublicKeyIdentifierInput(file_path=None  # TODO: fill, match_hash=None  # TODO: fill)], status=CryptoRemediationStatus.UNSPECIFIED))
-        print(resp.model_dump())
+        resp = client.mutation_remediate_public_keys(remediate_public_keys_args=RemediatePublicKeysInput(asset_id='asset_123', public_keys=[PublicKeyIdentifierInput(file_path='./path/to/file', match_hash='value')], status=CryptoRemediationStatus.UNSPECIFIED))
+        # Responses are typed Pydantic models: read fields as attributes.
+        for item in resp.remediate_public_keys or []:
+            print(item.status, item.asset_id, item.author)
 
 
 if __name__ == "__main__":

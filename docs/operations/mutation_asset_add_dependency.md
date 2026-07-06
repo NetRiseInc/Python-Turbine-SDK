@@ -39,7 +39,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.mutation_asset_add_dependency(asset_add_dependency_args=AddDependencyInput(composed_asset_id='composed_asset_123', dependency_fields=DependencyDetailsInput(name='my-example', type=ComponentType.UNSPECIFIED)))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.asset.add_dependency.err)
 
 
 if __name__ == "__main__":

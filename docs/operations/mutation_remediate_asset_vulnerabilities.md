@@ -75,8 +75,10 @@ def main() -> None:
     sdk = TurbineClient(cfg)
 
     with sdk.graphql() as client:
-        resp = client.mutation_remediate_asset_vulnerabilities(remediate_asset_vulnerabilities_args=CreateAssetVulnerabilityRemediationsInput(asset_id='asset_123', remediation_ids=[RemediationId(vulnerability_id=None  # TODO: fill)], status=VexStatus.UNSPECIFIED))
-        print(resp.model_dump())
+        resp = client.mutation_remediate_asset_vulnerabilities(remediate_asset_vulnerabilities_args=CreateAssetVulnerabilityRemediationsInput(asset_id='asset_123', remediation_ids=[RemediationId(vulnerability_id='vuln_123')], status=VexStatus.UNSPECIFIED))
+        # Responses are typed Pydantic models: read fields as attributes.
+        for item in resp.remediate_asset_vulnerabilities or []:
+            print(item.id, item.cve, item.name)
 
 
 if __name__ == "__main__":

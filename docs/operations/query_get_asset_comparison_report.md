@@ -283,7 +283,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_get_asset_comparison_report(get_asset_comparison_report_args=GetAssetComparisonReportInput(report_id='id_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.get_asset_comparison_report.asset_a_info.name, resp.get_asset_comparison_report.asset_b_info.name)
 
 
 if __name__ == "__main__":

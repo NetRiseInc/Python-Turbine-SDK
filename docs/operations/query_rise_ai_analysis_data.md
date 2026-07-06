@@ -62,7 +62,9 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_rise_ai_analysis_data(rise_ai_analysis_data_args=RiseAIAnalysisDataInput(asset_id='asset_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for item in resp.rise_ai_analysis_data.components or []:
+            print(item.name)
 
 
 if __name__ == "__main__":

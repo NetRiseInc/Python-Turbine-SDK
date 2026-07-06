@@ -44,7 +44,9 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_metrics()
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for item in resp.metrics.assets_by_risk_category or []:
+            print(item.status, item.count)
 
 
 if __name__ == "__main__":

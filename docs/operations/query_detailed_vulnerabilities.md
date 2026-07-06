@@ -4,6 +4,8 @@
 
 Retrieve in-depth vulnerability data including descriptions and CVSS vector strings.
 
+> **Prefer `sdk.iter_detailed_vulnerabilities(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+
 ## Parameters
 
 | name | type | required |
@@ -186,7 +188,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_detailed_vulnerabilities(detailed_vulnerabilities_args=PaginatedDetailedVulnerabilitiesInput(asset_id='asset_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.detailed_vulnerabilities.edges or []:
+            node = edge.node
+            print(node.id, node.severity, node.created_datetime)
 
 
 if __name__ == "__main__":

@@ -41,7 +41,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_binary_protections_summary(binary_protections_summary_args=BinaryProtectionsSummaryInput(composed_asset_id='composed_asset_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.binary_protections_summary.canary_disabled, resp.binary_protections_summary.canary_enabled)
 
 
 if __name__ == "__main__":

@@ -4,6 +4,8 @@
 
 List public cryptographic keys found within the asset's file system.
 
+> **Prefer `sdk.iter_public_keys(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+
 ## Parameters
 
 | name | type | required |
@@ -75,7 +77,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_public_keys(public_keys_args=PublicKeysInput(asset_id='asset_123', cursor=Cursor()))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.public_keys.edges or []:
+            node = edge.node
+            print(node.algorithm, node.algorithm_type, node.bit_size)
 
 
 if __name__ == "__main__":

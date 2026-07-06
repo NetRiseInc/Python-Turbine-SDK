@@ -4,6 +4,8 @@
 
 Retrieve vulnerability descriptions with preferred CVSS v3.1 scores only — drops full v2/v4 impact blocks, exploit timelines, references, and problem type details.
 
+> **Prefer `sdk.iter_detailed_vulnerabilities_lite(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+
 ## Parameters
 
 | name | type | required |
@@ -51,7 +53,10 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.query_detailed_vulnerabilities_lite(detailed_vulnerabilities_args=PaginatedDetailedVulnerabilitiesInput(asset_id='asset_123'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        for edge in resp.detailed_vulnerabilities.edges or []:
+            node = edge.node
+            print(node.id, node.severity, node.created_datetime)
 
 
 if __name__ == "__main__":

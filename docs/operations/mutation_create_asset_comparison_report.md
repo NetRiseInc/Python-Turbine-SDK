@@ -34,7 +34,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.mutation_create_asset_comparison_report(create_asset_comparison_report_args=CreateAssetComparisonReportInput(asset_a='value', asset_b='value'))
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.create_asset_comparison_report.job_id)
 
 
 if __name__ == "__main__":

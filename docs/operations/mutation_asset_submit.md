@@ -110,7 +110,8 @@ def main() -> None:
 
     with sdk.graphql() as client:
         resp = client.mutation_asset_submit(asset_submit_file_name='firmware.bin', asset_submit_args=SubmitAssetInput())
-        print(resp.model_dump())
+        # Responses are typed Pydantic models: read fields as attributes.
+        print(resp.asset.submit.asset.id, resp.asset.submit.asset.name)
 
 
 if __name__ == "__main__":

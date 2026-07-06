@@ -2224,6 +2224,37 @@ class ComponentBadge(str, Enum):
     EMBEDDED = "EMBEDDED"
 
 
+class JiraIntegrationStatus(str, Enum):
+    NOT_CONNECTED = "NOT_CONNECTED"
+    CONNECTED = "CONNECTED"
+    PENDING = "PENDING"
+    INSTALL_FAILED = "INSTALL_FAILED"
+    AUTH_EXPIRED = "AUTH_EXPIRED"
+
+
+class JiraSystemCheckStatus(str, Enum):
+    ACTIVE = "ACTIVE"
+    WARNING = "WARNING"
+
+
+class JiraSyncDirection(str, Enum):
+    JIRA_TO_NETRISE = "JIRA_TO_NETRISE"
+    NETRISE_TO_JIRA = "NETRISE_TO_JIRA"
+
+
+class JiraConnectionEventLogType(str, Enum):
+    SYNC = "SYNC"
+    WARNING = "WARNING"
+    AUTH = "AUTH"
+    ERROR = "ERROR"
+
+
+class JiraConnectionAlertType(str, Enum):
+    INFO = "INFO"
+    ERROR = "ERROR"
+    WARNING = "WARNING"
+
+
 class MisconfigurationCategoryType(str, Enum):
     UNSPECIFIED = "UNSPECIFIED"
     AUTHENTICATION = "AUTHENTICATION"
