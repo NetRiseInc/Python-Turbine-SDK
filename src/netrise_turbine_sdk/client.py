@@ -19,6 +19,19 @@ from .pagination import iter_all_pages
 from .transport import _build_http_client
 
 
+def _strip_revision(value: Any) -> Any:
+    """Strip the ``|<revision>`` suffix from a composed asset ID.
+
+    Some API responses return asset IDs in a composed ``<id>|<revision>``
+    shape. That suffix is an internal implementation detail; every SDK/CLI
+    surface accepts the bare ID, so we normalize before handing it to
+    callers. Non-strings and bare IDs pass through unchanged.
+    """
+    if isinstance(value, str):
+        return value.split("|", 1)[0]
+    return value
+
+
 class _NonClosingClient(GeneratedClient):
     """Thin proxy that prevents ``with sdk.graphql() as client:`` from
     closing the shared ``httpx.Client`` owned by ``TurbineClient``.
@@ -1464,6 +1477,8 @@ class TurbineClient:
             QueryAssetUploadAssetUpload with ``asset_id``, ``upload_id``, and
             ``uploaded``. ``asset_id`` is ``None`` until the platform has
             registered the asset (usually seconds after the upload completes).
+            The ``asset_id`` is returned bare — any internal ``|<revision>``
+            suffix from the API is stripped.
 
         Example:
             >>> sdk = TurbineClient(TurbineClientConfig.from_env())
@@ -1473,7 +1488,10 @@ class TurbineClient:
         resp = self.graphql().query_asset_upload(
             asset_upload_args=inputs.AssetUploadInput(upload_id=upload_id)
         )
-        return resp.asset_upload
+        upload = resp.asset_upload
+        if upload is not None and upload.asset_id:
+            upload.asset_id = _strip_revision(upload.asset_id)
+        return upload
 
     def wait_for_asset(
         self,
@@ -1538,9 +1556,9 @@ class TurbineClient:
         while asset_id is None:
             info = self.resolve_upload(upload_id)  # type: ignore[arg-type]
             if info is not None and info.asset_id:
-                # Resolved IDs carry a "|<revision>" suffix; the status
-                # query expects the bare asset ID.
-                asset_id = info.asset_id.split("|", 1)[0]
+                # resolve_upload already strips the "|<revision>" suffix;
+                # strip again defensively for the status query.
+                asset_id = _strip_revision(info.asset_id)
                 break
             _notify("resolve", None)
             if time.monotonic() + interval > deadline:
