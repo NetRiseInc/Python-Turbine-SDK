@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "netrise-turbine-sdk"
-version = "0.1.20"
+version = "0.1.22"
 description = "Turbine GraphQL Python SDK (generated via ariadne-codegen)"
 authors = ["NetRise <anthony.feddersen@netrise.io>"]
 readme = "README.md"
@@ -45,8 +45,12 @@ type = "datetime.datetime"
 parse = ".custom_scalars.parse_datetime"
 serialize = ".custom_scalars.serialize_datetime"
 
+# Per-test wall-clock cap. Must exceed the SDK's own resilience budget
+# (30s request timeout x up to 5 retries with backoff), otherwise pytest
+# kills a test while the transport is legitimately waiting/retrying on a
+# slow live API. 120s catches real hangs without racing the retry stack.
 [tool.pytest.ini_options]
-timeout = 10
+timeout = 120
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

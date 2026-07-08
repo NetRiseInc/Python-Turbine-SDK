@@ -25,9 +25,24 @@ All notable changes to `netrise-turbine-sdk` are documented here.
   completes. CLI: `asset status` accepts `--upload-id` and `--wait`
   (`--interval` / `--timeout`), and `asset upload` gains `--wait` plus
   enriched output (`assetId`, `uploadId`) instead of the raw submit response.
+- Docs-driven CLI contract tests: every `turbine …` example advertised in
+  README, SKILL.md, reference.md, docs/human.md, and docs/agent.md is
+  extracted and executed — offline dry-run always (`make turbine-cli-test`),
+  and live read-only against the org via `make turbine-cli-docs-test`
+  (mutations always stay `--dry-run`). Includes a reference.md flag-existence
+  check and a coverage guard that fails if a registered command is
+  undocumented.
+- CLI: `turbine api schema` now works from any install — the GraphQL schema
+  snapshot is bundled into the wheel (`_generated/schema.graphql`).
 
 ### Changed
 
+- Composed asset IDs (`<id>|<revision>`) are no longer exposed: the SDK's
+  `resolve_upload` strips the internal `|<revision>` suffix from `asset_id`,
+  and the CLI strips it from every output value under `composedAssetId` /
+  `assetId` keys (all commands and output modes). Inputs named
+  `composedAssetId` are interchangeable with the plain asset ID — SKILL.md
+  and docs/agent.md now say to always pass the bare `ASSET_ID`.
 - `--limit` in curated CLI list commands now flows through SDK `max_items`
   while preserving existing client-side truncation behavior as a backstop.
 - Per-operation docs now show typed-attribute examples, "prefer the wrapper"
@@ -42,6 +57,24 @@ All notable changes to `netrise-turbine-sdk` are documented here.
   defaults to all artifact types with an optional `--artifacts` override.
 - CLI: `api graphql` failures emit structured errors and exit codes instead
   of raw tracebacks.
+- CLI: generated `api` commands whose input requires a pagination cursor
+  (e.g. `api assets-overview`) now default it to `{"first": 100}`, so bare
+  invocations work instead of failing validation.
+- CLI: validation errors no longer suggest options that don't exist (e.g.
+  `--cursor: Field required`); fields without a real flag are reported as
+  input fields with a `--input` hint.
+- CLI: `turbine org info` no longer crashes with a missing-argument error
+  (the operation's args object is now passed explicitly).
+- CLI: `turbine component grouped` defaults `--group-by` to `VENDOR` — the
+  API rejects requests without a group-by field.
+- Docs: fixed broken examples caught by the contract suite — `vuln
+  remediate` inputs now use the real `remediationId`/`remediationIds`/
+  `vulnerabilityFilter` shapes with valid enum justifications, list-typed
+  nested inputs are emitted as arrays, boolean flags are emitted value-less,
+  `api secret` uses a `SECRET_ID` placeholder (not `ASSET_ID`), `api
+  asset-upload` shows `--upload-id`, `api grouped-dependencies` includes
+  `--grouped-by VENDOR`, and `api schema --type` uses a type that exists
+  (`Asset`).
 
 ## 0.1.17
 
