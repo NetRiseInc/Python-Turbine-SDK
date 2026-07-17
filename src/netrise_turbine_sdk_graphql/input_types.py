@@ -28,6 +28,7 @@ from .enums import (
     CredentialsField,
     CryptoLibrariesSortField,
     CryptoRemediationStatus,
+    CycloneDxVersion,
     DependencyField,
     DependencyGroupByField,
     DependencySortField,
@@ -39,6 +40,8 @@ from .enums import (
     HighProfileCategory,
     HighProfileExploitFilterField,
     HighProfileExploitSortField,
+    JiraSetupAction,
+    JiraSetupMode,
     LicenseIssuesField,
     LicenseIssuesSortField,
     LicenseIssueStatus,
@@ -68,7 +71,6 @@ from .enums import (
     RiskCategoryFilter,
     SbomFormat,
     SbomType,
-    SbomVersion,
     SecretCategory,
     SecretRemediationStatus,
     SecretSeverity,
@@ -77,6 +79,7 @@ from .enums import (
     Severity,
     SiftSearchType,
     SortOrder,
+    SpdxVersion,
     UserActionEnum,
     UserManagementEventSelection,
     VexJustification,
@@ -1128,8 +1131,12 @@ class SubmitAssetInput(BaseModel):
     type: Optional[AssetType] = None
     sbom_type: Optional[SbomType] = Field(alias="sbomType", default=None)
     "sbomType = Whether is SBOM ingestion or FIRMWARE ingestion. value means SBOM ingestion //  CycloneDX, SPDX"
-    sbom_version: Optional[SbomVersion] = Field(alias="sbomVersion", default=None)
-    "version: SBOM version if applies // CYCLONEDX_V1_4, SPDX_V2_2. SPDX_V2_3"
+    cyclonedx_version: Optional[CycloneDxVersion] = Field(
+        alias="cyclonedxVersion", default=None
+    )
+    "SBOM spec version for CycloneDX ingest (v1.1–v1.7). Prefer over sbomVersion."
+    spdx_version: Optional[SpdxVersion] = Field(alias="spdxVersion", default=None)
+    "SBOM spec version for SPDX ingest (v2.1–v2.3, v3.0, v3.0.1). Prefer over sbomVersion."
     sbom_format: Optional[SbomFormat] = Field(alias="sbomFormat", default=None)
     "format: JSON, XML, SPDX"
     asset_group_ids: Optional[list[str]] = Field(alias="assetGroupIds", default=None)
@@ -1327,6 +1334,42 @@ class GetDependencyReachabilityInput(BaseModel):
     component_id: str = Field(alias="componentId")
 
 
+class VulnerabilityJiraTicketsInput(BaseModel):
+    asset_id: str = Field(alias="assetId")
+    advisory_id: str = Field(alias="advisoryId")
+    identification_ids: Optional[list[str]] = Field(
+        alias="identificationIds", default=None
+    )
+
+
+class JiraIntegrationUnlinkVulnerabilityTicketInput(BaseModel):
+    asset_id: str = Field(alias="assetId")
+    advisory_id: str = Field(alias="advisoryId")
+    identification_ids: Optional[list[str]] = Field(
+        alias="identificationIds", default=None
+    )
+    ticket_id: str = Field(alias="ticketId")
+
+
+class JiraIntegrationDeleteConnectedSpaceInput(BaseModel):
+    space_id: str = Field(alias="spaceId")
+
+
+class JiraIntegrationAddConnectedSpaceInput(BaseModel):
+    space_id: Optional[str] = Field(alias="spaceId", default=None)
+
+
+class JiraIntegrationSetupActionInput(BaseModel):
+    action: JiraSetupAction
+    site_id: Optional[str] = Field(alias="siteId", default=None)
+    space_ids: Optional[list[str]] = Field(alias="spaceIds", default=None)
+
+
+class JiraIntegrationSetupInput(BaseModel):
+    mode: Optional[JiraSetupMode] = None
+    initialize: Optional[bool] = None
+
+
 class MisconfigurationsInput(BaseModel):
     asset_id: str = Field(alias="assetId")
     cursor: "Cursor"
@@ -1486,6 +1529,12 @@ class DeleteAcrInput(BaseModel):
     acr_id: str = Field(alias="acrId")
 
 
+class BulkDeleteAcrsInput(BaseModel):
+    """Input payload for the `bulkDeleteACRs` mutation."""
+
+    acr_ids: list[str] = Field(alias="acrIds")
+
+
 class ReplaceAcrInput(BaseModel):
     """Input payload for the `replaceACR` mutation."""
 
@@ -1509,14 +1558,6 @@ class RemoveOrgUserInput(BaseModel):
 
     user_id: str = Field(alias="userId")
     "The id of the user to remove from the current organization."
-
-
-class ResetOrgUserPasswordInput(BaseModel):
-    """Input payload for the `resetOrgUserPassword` mutation. Triggers a password
-    reset flow for the targeted user."""
-
-    user_id: str = Field(alias="userId")
-    "The id of the user whose password should be reset."
 
 
 class GetSecretReachabilityInput(BaseModel):

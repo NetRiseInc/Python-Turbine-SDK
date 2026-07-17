@@ -666,17 +666,26 @@ cfg = TurbineClientConfig.from_env(load_env_file=False)
 
 - [mutation_add_asset_groups_to_assets](operations/mutation_add_asset_groups_to_assets.md): Associate a list of existing asset groups with selected assets.
 - [mutation_add_assets_to_asset_group](operations/mutation_add_assets_to_asset_group.md): Add specified assets to an existing asset group for organization.
+- [mutation_add_security_group_member](operations/mutation_add_security_group_member.md): Add a user as a member of an RBAC security group.
 - [mutation_asset_add_dependency](operations/mutation_asset_add_dependency.md): Manually inject a missing dependency component into an asset's inventory.
 - [mutation_asset_modify_dependency](operations/mutation_asset_modify_dependency.md): Update metadata or details for a manually added asset dependency.
 - [mutation_asset_remove_dependencies](operations/mutation_asset_remove_dependencies.md): Remove specific dependencies from the component list of an asset.
 - [mutation_asset_submit](operations/mutation_asset_submit.md): Upload firmware or SBOMs with metadata, group assignments, and CPEs.
 - [mutation_asset_update](operations/mutation_asset_update.md): Modify metadata such as name, vendor, or version for assets.
+- [mutation_bulk_delete_ac_rs](operations/mutation_bulk_delete_ac_rs.md): Delete multiple access control records in one call; already-deleted records are treated as success.
+- [mutation_create_acr](operations/mutation_create_acr.md): Create an access control record granting a user or security group a role on a resource.
 - [mutation_create_asset_comparison_report](operations/mutation_create_asset_comparison_report.md): Create a new comparison report to diff vulnerabilities and components between two assets.
 - [mutation_create_asset_group](operations/mutation_create_asset_group.md): Create a new named group to organize and track assets.
+- [mutation_create_custom_role](operations/mutation_create_custom_role.md): Create an org-scoped custom role with a chosen set of permissions.
 - [mutation_create_notification_configuration](operations/mutation_create_notification_configuration.md): Create a notification configuration defining channel, scopes, and triggers for alerts.
+- [mutation_create_security_group](operations/mutation_create_security_group.md): Create a new RBAC security group in the current organization.
+- [mutation_delete_acr](operations/mutation_delete_acr.md): Delete a single access control record, revoking the associated grant.
 - [mutation_delete_asset_comparison_report](operations/mutation_delete_asset_comparison_report.md): Permanently delete an asset comparison report by its ID.
 - [mutation_delete_asset_group](operations/mutation_delete_asset_group.md): Permanently remove an asset group while keeping contained assets intact.
+- [mutation_delete_custom_role](operations/mutation_delete_custom_role.md): Permanently delete a custom role from the organization.
 - [mutation_delete_notification_configuration](operations/mutation_delete_notification_configuration.md): Permanently delete a notification configuration by its ID.
+- [mutation_delete_security_group](operations/mutation_delete_security_group.md): Permanently delete a security group from the organization.
+- [mutation_invite_user](operations/mutation_invite_user.md): Invite a user to the organization with a role and optional security group memberships.
 - [mutation_notify_notification_configuration](operations/mutation_notify_notification_configuration.md): Send a test notification using an existing notification configuration.
 - [mutation_remediate_all_asset_vulnerabilities](operations/mutation_remediate_all_asset_vulnerabilities.md): Apply a remediation status to all vulnerabilities matching specific filters.
 - [mutation_remediate_asset_vulnerabilities](operations/mutation_remediate_asset_vulnerabilities.md): Bulk apply VEX remediation status to multiple vulnerabilities on assets.
@@ -688,12 +697,18 @@ cfg = TurbineClientConfig.from_env(load_env_file=False)
 - [mutation_remediate_secrets](operations/mutation_remediate_secrets.md): Apply remediation status and justification to exposed secrets in assets.
 - [mutation_remove_all_asset_groups_from_assets](operations/mutation_remove_all_asset_groups_from_assets.md): Disassociate all asset groups from a specified list of assets.
 - [mutation_remove_assets_from_asset_group](operations/mutation_remove_assets_from_asset_group.md): Remove selected assets from a specific asset group container configuration.
+- [mutation_remove_org_user](operations/mutation_remove_org_user.md): Permanently remove a user from the current organization.
+- [mutation_remove_security_group_member](operations/mutation_remove_security_group_member.md): Remove a user from an RBAC security group.
+- [mutation_replace_acr](operations/mutation_replace_acr.md): Replace an access control record with a new grant in one atomic delete-and-create operation.
 - [mutation_set_asset_groups_to_asset](operations/mutation_set_asset_groups_to_asset.md): Replace all current group associations for an asset with new ones.
 - [mutation_set_assets_to_asset_group](operations/mutation_set_assets_to_asset_group.md): Overwrite the member list of an asset group with new assets.
+- [mutation_set_org_user_status](operations/mutation_set_org_user_status.md): Enable or disable a user account within the current organization.
 - [mutation_submit_rise_ai_analysis](operations/mutation_submit_rise_ai_analysis.md): Request a RISE AI analysis for an eligible asset to generate insights.
 - [mutation_update_asset_group](operations/mutation_update_asset_group.md): Rename or update the description of an existing asset group.
+- [mutation_update_custom_role](operations/mutation_update_custom_role.md): Update the name, description, or permissions of an existing custom role.
 - [mutation_update_notification_configuration](operations/mutation_update_notification_configuration.md): Update channel, scopes, triggers, or status for an existing notification configuration.
 - [mutation_update_org_level_settings](operations/mutation_update_org_level_settings.md): Configure global organization settings such as idle session timeout duration.
+- [mutation_update_security_group](operations/mutation_update_security_group.md): Update the name or description of an existing security group.
 - [mutation_user_action](operations/mutation_user_action.md): Perform administrative actions like enabling or disabling specific user accounts.
 - [mutation_user_delete](operations/mutation_user_delete.md): Permanently delete a user account and remove their access rights.
 - [mutation_user_invite](operations/mutation_user_invite.md): Invite a new user to the organization with a specific role.
@@ -733,7 +748,12 @@ cfg = TurbineClientConfig.from_env(load_env_file=False)
 - [query_get_asset_comparison_report](operations/query_get_asset_comparison_report.md): Retrieve a completed asset comparison report including vulnerability, component, and summary diffs.
 - [query_get_certificate_reachability](operations/query_get_certificate_reachability.md): Determine whether discovered certificates are reachable via executable scripts or system paths.
 - [query_get_dependency_reachability](operations/query_get_dependency_reachability.md): Determine whether a dependency is reachable via executable scripts or system paths.
+- [query_get_my_permissions](operations/query_get_my_permissions.md): Retrieve the flat union of permission IDs the calling user holds across all their access grants.
+- [query_get_resource_permissions](operations/query_get_resource_permissions.md): Retrieve the caller's effective permissions on a specific resource, defaulting to the organization level.
+- [query_get_role](operations/query_get_role.md): Retrieve a single RBAC role by its ID.
+- [query_get_role_delete_impact](operations/query_get_role_delete_impact.md): Preview which users would retain or lose platform access if a custom role were deleted.
 - [query_get_secret_reachability](operations/query_get_secret_reachability.md): Determine whether discovered secrets are reachable via executable scripts or system paths.
+- [query_get_security_group_delete_impact](operations/query_get_security_group_delete_impact.md): Preview which members would retain or lose platform access if a security group were deleted.
 - [query_get_vuln_reachability](operations/query_get_vuln_reachability.md): Determine if a vulnerability can be executed via system paths.
 - [query_grouped_dependencies](operations/query_grouped_dependencies.md): View dependencies aggregated by vendor, license, or specific component type.
 - [query_hashes](operations/query_hashes.md): List cryptographic hashes for files identified within the asset filesystem.
@@ -743,13 +763,23 @@ cfg = TurbineClientConfig.from_env(load_env_file=False)
 - [query_license_issues](operations/query_license_issues.md): List license compliance issues identified across asset components.
 - [query_license_issues_external_filters](operations/query_license_issues_external_filters.md): Retrieve available filter options for license issue queries.
 - [query_licenses_spdx_ids](operations/query_licenses_spdx_ids.md): List available SPDX license identifiers for filtering and reference.
+- [query_list_ac_rs](operations/query_list_ac_rs.md): List access control records for the organization, optionally filtered to a specific user.
 - [query_list_ai_providers](operations/query_list_ai_providers.md): List available AI provider integrations and their current status.
 - [query_list_asset_comparison_reports](operations/query_list_asset_comparison_reports.md): List all asset comparison reports with pagination, filtering, and sorting.
 - [query_list_asset_correlations](operations/query_list_asset_correlations.md): Retrieve cross-asset correlation data linking shared components and vulnerabilities.
 - [query_list_asset_crypto_libraries](operations/query_list_asset_crypto_libraries.md): List cryptographic libraries and algorithms detected within an asset.
+- [query_list_entity_assets](operations/query_list_entity_assets.md): List the assets accessible to a specific user or security group.
+- [query_list_my_ac_rs](operations/query_list_my_ac_rs.md): List the access control records that apply to the calling user.
+- [query_list_my_security_groups](operations/query_list_my_security_groups.md): List the security groups the calling user belongs to.
 - [query_list_notification_configurations](operations/query_list_notification_configurations.md): List all notification configurations with their channels, scopes, and triggers.
 - [query_list_notification_logs](operations/query_list_notification_logs.md): Retrieve a paginated log of notification delivery events and their statuses.
+- [query_list_org_users](operations/query_list_org_users.md): List all users in the organization with their security groups and accessible asset counts.
+- [query_list_permissions](operations/query_list_permissions.md): Retrieve the full permission catalog available for building custom roles.
+- [query_list_roles](operations/query_list_roles.md): List all RBAC roles defined for the current organization.
+- [query_list_security_group_members](operations/query_list_security_group_members.md): List the users who are members of a specific security group.
+- [query_list_security_groups](operations/query_list_security_groups.md): List all RBAC security groups defined for the current organization.
 - [query_match_vulnerabilities](operations/query_match_vulnerabilities.md): Find specific vulnerabilities matching a provided component identifier or package.
+- [query_me](operations/query_me.md): Retrieve the authenticated user's profile including their editable display name.
 - [query_metrics](operations/query_metrics.md): View organization-wide statistics on asset counts, processing, and risk.
 - [query_misconfigurations](operations/query_misconfigurations.md): List failed security checks and configuration risks found in assets.
 - [query_misconfigurations_lite](operations/query_misconfigurations_lite.md): List misconfigurations with trimmed fields — keeps check ID, name, severity, result, and correlation count; drops nested correlation objects.
