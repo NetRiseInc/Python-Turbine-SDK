@@ -62,10 +62,12 @@ from .enums import (
     IdentificationRemediationOperationType,
     IdentifiedViaCategory,
     IdentifierFormat,
-    JiraConnectionAlertType,
-    JiraConnectionEventLogType,
     JiraIntegrationStatus,
-    JiraSyncDirection,
+    JiraSetupAction,
+    JiraSetupActionType,
+    JiraSetupMode,
+    JiraSetupStep,
+    JiraSetupStepStatus,
     JiraSystemCheckStatus,
     Language,
     LicenseIssueSeverity,
@@ -191,6 +193,7 @@ from .input_types import (
     BinaryProtectionsSort,
     BinaryProtectionsSummaryInput,
     BooleanFilter,
+    BulkDeleteAcrsInput,
     CertificateControlInput,
     CertificateExternalFiltersInput,
     CertificateIdentifierInput,
@@ -256,6 +259,11 @@ from .input_types import (
     IdentifiedComponentsPreviewInput,
     InviteOrgUserInput,
     InviteUserInput,
+    JiraIntegrationAddConnectedSpaceInput,
+    JiraIntegrationDeleteConnectedSpaceInput,
+    JiraIntegrationSetupActionInput,
+    JiraIntegrationSetupInput,
+    JiraIntegrationUnlinkVulnerabilityTicketInput,
     LicenseInput,
     LicenseIssueInput,
     LicenseIssuesExternalFiltersInput,
@@ -338,7 +346,6 @@ from .input_types import (
     RemoveOrgUserInput,
     RemoveSecurityGroupMemberInput,
     ReplaceAcrInput,
-    ResetOrgUserPasswordInput,
     RiseAIAnalysisDataInput,
     SbomFindingsControlInput,
     SearchInput,
@@ -377,6 +384,7 @@ from .input_types import (
     VulnerabilityFieldFilter,
     VulnerabilityFilter,
     VulnerabilityInput,
+    VulnerabilityJiraTicketsInput,
     VulnerabilityOverviewFieldFilter,
     VulnerabilityOverviewFilter,
     VulnerabilityOverviewInput,
@@ -386,6 +394,11 @@ from .input_types import (
 )
 from .mutation_add_asset_groups_to_assets import MutationAddAssetGroupsToAssets
 from .mutation_add_assets_to_asset_group import MutationAddAssetsToAssetGroup
+from .mutation_add_security_group_member import (
+    MutationAddSecurityGroupMember,
+    MutationAddSecurityGroupMemberAddSecurityGroupMember,
+    MutationAddSecurityGroupMemberAddSecurityGroupMemberMember,
+)
 from .mutation_asset_add_dependency import (
     MutationAssetAddDependency,
     MutationAssetAddDependencyAsset,
@@ -437,6 +450,15 @@ from .mutation_asset_update import (
     MutationAssetUpdateAssetUpdateFilesystemsFilesPageInfo,
     MutationAssetUpdateAssetUpdateRisk,
 )
+from .mutation_bulk_delete_ac_rs import (
+    MutationBulkDeleteACRs,
+    MutationBulkDeleteACRsBulkDeleteAcRs,
+)
+from .mutation_create_acr import (
+    MutationCreateACR,
+    MutationCreateACRCreateAcr,
+    MutationCreateACRCreateAcrAcr,
+)
 from .mutation_create_asset_comparison_report import (
     MutationCreateAssetComparisonReport,
     MutationCreateAssetComparisonReportCreateAssetComparisonReport,
@@ -445,6 +467,11 @@ from .mutation_create_asset_group import (
     MutationCreateAssetGroup,
     MutationCreateAssetGroupCreateAssetGroup,
     MutationCreateAssetGroupCreateAssetGroupAssetGroup,
+)
+from .mutation_create_custom_role import (
+    MutationCreateCustomRole,
+    MutationCreateCustomRoleCreateCustomRole,
+    MutationCreateCustomRoleCreateCustomRoleRole,
 )
 from .mutation_create_notification_configuration import (
     MutationCreateNotificationConfiguration,
@@ -456,10 +483,32 @@ from .mutation_create_notification_configuration import (
     MutationCreateNotificationConfigurationCreateNotificationConfigurationChannelConfigurationNotificationConfigurationWebhook,
     MutationCreateNotificationConfigurationCreateNotificationConfigurationInventoryScopes,
 )
+from .mutation_create_security_group import (
+    MutationCreateSecurityGroup,
+    MutationCreateSecurityGroupCreateSecurityGroup,
+    MutationCreateSecurityGroupCreateSecurityGroupSecurityGroup,
+    MutationCreateSecurityGroupCreateSecurityGroupSecurityGroupMembers,
+)
+from .mutation_delete_acr import MutationDeleteACR, MutationDeleteACRDeleteAcr
 from .mutation_delete_asset_comparison_report import MutationDeleteAssetComparisonReport
 from .mutation_delete_asset_group import MutationDeleteAssetGroup
+from .mutation_delete_custom_role import (
+    MutationDeleteCustomRole,
+    MutationDeleteCustomRoleDeleteCustomRole,
+)
 from .mutation_delete_notification_configuration import (
     MutationDeleteNotificationConfiguration,
+)
+from .mutation_delete_security_group import (
+    MutationDeleteSecurityGroup,
+    MutationDeleteSecurityGroupDeleteSecurityGroup,
+)
+from .mutation_invite_user import (
+    MutationInviteUser,
+    MutationInviteUserInviteUser,
+    MutationInviteUserInviteUserUser,
+    MutationInviteUserInviteUserUserAcrs,
+    MutationInviteUserInviteUserUserSecurityGroups,
 )
 from .mutation_notify_notification_configuration import (
     MutationNotifyNotificationConfiguration,
@@ -509,8 +558,29 @@ from .mutation_remove_all_asset_groups_from_assets import (
     MutationRemoveAllAssetGroupsFromAssets,
 )
 from .mutation_remove_assets_from_asset_group import MutationRemoveAssetsFromAssetGroup
+from .mutation_remove_org_user import (
+    MutationRemoveOrgUser,
+    MutationRemoveOrgUserRemoveOrgUser,
+)
+from .mutation_remove_security_group_member import (
+    MutationRemoveSecurityGroupMember,
+    MutationRemoveSecurityGroupMemberRemoveSecurityGroupMember,
+)
+from .mutation_replace_acr import (
+    MutationReplaceACR,
+    MutationReplaceACRReplaceAcr,
+    MutationReplaceACRReplaceAcrNewAcr,
+    MutationReplaceACRReplaceAcrReplacedAcr,
+)
 from .mutation_set_asset_groups_to_asset import MutationSetAssetGroupsToAsset
 from .mutation_set_assets_to_asset_group import MutationSetAssetsToAssetGroup
+from .mutation_set_org_user_status import (
+    MutationSetOrgUserStatus,
+    MutationSetOrgUserStatusSetOrgUserStatus,
+    MutationSetOrgUserStatusSetOrgUserStatusUser,
+    MutationSetOrgUserStatusSetOrgUserStatusUserAcrs,
+    MutationSetOrgUserStatusSetOrgUserStatusUserSecurityGroups,
+)
 from .mutation_submit_rise_ai_analysis import (
     MutationSubmitRiseAIAnalysis,
     MutationSubmitRiseAIAnalysisSubmitRiseAiAnalysis,
@@ -519,6 +589,11 @@ from .mutation_update_asset_group import (
     MutationUpdateAssetGroup,
     MutationUpdateAssetGroupUpdateAssetGroup,
     MutationUpdateAssetGroupUpdateAssetGroupAssetGroup,
+)
+from .mutation_update_custom_role import (
+    MutationUpdateCustomRole,
+    MutationUpdateCustomRoleUpdateCustomRole,
+    MutationUpdateCustomRoleUpdateCustomRoleRole,
 )
 from .mutation_update_notification_configuration import (
     MutationUpdateNotificationConfiguration,
@@ -533,6 +608,12 @@ from .mutation_update_notification_configuration import (
 from .mutation_update_org_level_settings import (
     MutationUpdateOrgLevelSettings,
     MutationUpdateOrgLevelSettingsUpdateOrgLevelSettings,
+)
+from .mutation_update_security_group import (
+    MutationUpdateSecurityGroup,
+    MutationUpdateSecurityGroupUpdateSecurityGroup,
+    MutationUpdateSecurityGroupUpdateSecurityGroupSecurityGroup,
+    MutationUpdateSecurityGroupUpdateSecurityGroupSecurityGroupMembers,
 )
 from .mutation_user_action import (
     MutationUserAction,
@@ -887,10 +968,32 @@ from .query_get_dependency_reachability import (
     QueryGetDependencyReachabilityGetDependencyReachability,
     QueryGetDependencyReachabilityGetDependencyReachabilityScripts,
 )
+from .query_get_my_permissions import (
+    QueryGetMyPermissions,
+    QueryGetMyPermissionsGetMyPermissions,
+    QueryGetMyPermissionsGetMyPermissionsRoles,
+)
+from .query_get_resource_permissions import (
+    QueryGetResourcePermissions,
+    QueryGetResourcePermissionsGetResourcePermissions,
+)
+from .query_get_role import QueryGetRole, QueryGetRoleGetRole
+from .query_get_role_delete_impact import (
+    QueryGetRoleDeleteImpact,
+    QueryGetRoleDeleteImpactGetRoleDeleteImpact,
+    QueryGetRoleDeleteImpactGetRoleDeleteImpactUsersWhoLoseAll,
+    QueryGetRoleDeleteImpactGetRoleDeleteImpactUsersWhoRetain,
+)
 from .query_get_secret_reachability import (
     QueryGetSecretReachability,
     QueryGetSecretReachabilityGetSecretReachability,
     QueryGetSecretReachabilityGetSecretReachabilityScripts,
+)
+from .query_get_security_group_delete_impact import (
+    QueryGetSecurityGroupDeleteImpact,
+    QueryGetSecurityGroupDeleteImpactGetSecurityGroupDeleteImpact,
+    QueryGetSecurityGroupDeleteImpactGetSecurityGroupDeleteImpactUsersWhoLoseAll,
+    QueryGetSecurityGroupDeleteImpactGetSecurityGroupDeleteImpactUsersWhoRetain,
 )
 from .query_get_vuln_reachability import (
     QueryGetVulnReachability,
@@ -963,6 +1066,13 @@ from .query_license_issues_external_filters import (
     QueryLicenseIssuesExternalFiltersLicenseIssuesExternalFiltersTypes,
 )
 from .query_licenses_spdx_ids import QueryLicensesSpdxIds
+from .query_list_ac_rs import (
+    QueryListACRs,
+    QueryListACRsListAcRs,
+    QueryListACRsListAcRsEdges,
+    QueryListACRsListAcRsEdgesNode,
+    QueryListACRsListAcRsPageInfo,
+)
 from .query_list_ai_providers import (
     QueryListAiProviders,
     QueryListAiProvidersListAiProviders,
@@ -1014,6 +1124,28 @@ from .query_list_asset_crypto_libraries import (
     QueryListAssetCryptoLibrariesListAssetCryptoLibrariesEdgesNode,
     QueryListAssetCryptoLibrariesListAssetCryptoLibrariesPageInfo,
 )
+from .query_list_entity_assets import (
+    QueryListEntityAssets,
+    QueryListEntityAssetsListEntityAssets,
+    QueryListEntityAssetsListEntityAssetsEdges,
+    QueryListEntityAssetsListEntityAssetsEdgesNode,
+    QueryListEntityAssetsListEntityAssetsPageInfo,
+)
+from .query_list_my_ac_rs import (
+    QueryListMyACRs,
+    QueryListMyACRsListMyAcRs,
+    QueryListMyACRsListMyAcRsEdges,
+    QueryListMyACRsListMyAcRsEdgesNode,
+    QueryListMyACRsListMyAcRsPageInfo,
+)
+from .query_list_my_security_groups import (
+    QueryListMySecurityGroups,
+    QueryListMySecurityGroupsListMySecurityGroups,
+    QueryListMySecurityGroupsListMySecurityGroupsEdges,
+    QueryListMySecurityGroupsListMySecurityGroupsEdgesNode,
+    QueryListMySecurityGroupsListMySecurityGroupsEdgesNodeMembers,
+    QueryListMySecurityGroupsListMySecurityGroupsPageInfo,
+)
 from .query_list_notification_configurations import (
     QueryListNotificationConfigurations,
     QueryListNotificationConfigurationsListNotificationConfigurations,
@@ -1033,6 +1165,42 @@ from .query_list_notification_logs import (
     QueryListNotificationLogsListNotificationLogsEdges,
     QueryListNotificationLogsListNotificationLogsEdgesNode,
     QueryListNotificationLogsListNotificationLogsPageInfo,
+)
+from .query_list_org_users import (
+    QueryListOrgUsers,
+    QueryListOrgUsersListOrgUsers,
+    QueryListOrgUsersListOrgUsersEdges,
+    QueryListOrgUsersListOrgUsersEdgesNode,
+    QueryListOrgUsersListOrgUsersEdgesNodeAcrs,
+    QueryListOrgUsersListOrgUsersEdgesNodeSecurityGroups,
+    QueryListOrgUsersListOrgUsersPageInfo,
+)
+from .query_list_permissions import (
+    QueryListPermissions,
+    QueryListPermissionsListPermissions,
+    QueryListPermissionsListPermissionsPermissions,
+)
+from .query_list_roles import (
+    QueryListRoles,
+    QueryListRolesListRoles,
+    QueryListRolesListRolesEdges,
+    QueryListRolesListRolesEdgesNode,
+    QueryListRolesListRolesPageInfo,
+)
+from .query_list_security_group_members import (
+    QueryListSecurityGroupMembers,
+    QueryListSecurityGroupMembersListSecurityGroupMembers,
+    QueryListSecurityGroupMembersListSecurityGroupMembersEdges,
+    QueryListSecurityGroupMembersListSecurityGroupMembersEdgesNode,
+    QueryListSecurityGroupMembersListSecurityGroupMembersPageInfo,
+)
+from .query_list_security_groups import (
+    QueryListSecurityGroups,
+    QueryListSecurityGroupsListSecurityGroups,
+    QueryListSecurityGroupsListSecurityGroupsEdges,
+    QueryListSecurityGroupsListSecurityGroupsEdgesNode,
+    QueryListSecurityGroupsListSecurityGroupsEdgesNodeMembers,
+    QueryListSecurityGroupsListSecurityGroupsPageInfo,
 )
 from .query_match_vulnerabilities import (
     QueryMatchVulnerabilities,
@@ -1066,6 +1234,7 @@ from .query_match_vulnerabilities import (
     QueryMatchVulnerabilitiesMatchVulnerabilitiesProblemTypes,
     QueryMatchVulnerabilitiesMatchVulnerabilitiesReferences,
 )
+from .query_me import QueryMe, QueryMeMe
 from .query_metrics import (
     QueryMetrics,
     QueryMetricsMetrics,
@@ -1382,6 +1551,7 @@ __all__ = [
     "BinaryProtectionsSummaryInput",
     "BindNowType",
     "BooleanFilter",
+    "BulkDeleteAcrsInput",
     "CategoryOfInterestName",
     "CertificateControlInput",
     "CertificateExternalFiltersInput",
@@ -1493,10 +1663,17 @@ __all__ = [
     "IdentifierFormat",
     "InviteOrgUserInput",
     "InviteUserInput",
-    "JiraConnectionAlertType",
-    "JiraConnectionEventLogType",
+    "JiraIntegrationAddConnectedSpaceInput",
+    "JiraIntegrationDeleteConnectedSpaceInput",
+    "JiraIntegrationSetupActionInput",
+    "JiraIntegrationSetupInput",
     "JiraIntegrationStatus",
-    "JiraSyncDirection",
+    "JiraIntegrationUnlinkVulnerabilityTicketInput",
+    "JiraSetupAction",
+    "JiraSetupActionType",
+    "JiraSetupMode",
+    "JiraSetupStep",
+    "JiraSetupStepStatus",
     "JiraSystemCheckStatus",
     "Language",
     "LicenseInput",
@@ -1550,6 +1727,9 @@ __all__ = [
     "ModifyDependencyInput",
     "MutationAddAssetGroupsToAssets",
     "MutationAddAssetsToAssetGroup",
+    "MutationAddSecurityGroupMember",
+    "MutationAddSecurityGroupMemberAddSecurityGroupMember",
+    "MutationAddSecurityGroupMemberAddSecurityGroupMemberMember",
     "MutationAssetAddDependency",
     "MutationAssetAddDependencyAsset",
     "MutationAssetAddDependencyAssetAddDependency",
@@ -1591,11 +1771,19 @@ __all__ = [
     "MutationAssetUpdateAssetUpdateFilesystemsFilesFilesListFile",
     "MutationAssetUpdateAssetUpdateFilesystemsFilesPageInfo",
     "MutationAssetUpdateAssetUpdateRisk",
+    "MutationBulkDeleteACRs",
+    "MutationBulkDeleteACRsBulkDeleteAcRs",
+    "MutationCreateACR",
+    "MutationCreateACRCreateAcr",
+    "MutationCreateACRCreateAcrAcr",
     "MutationCreateAssetComparisonReport",
     "MutationCreateAssetComparisonReportCreateAssetComparisonReport",
     "MutationCreateAssetGroup",
     "MutationCreateAssetGroupCreateAssetGroup",
     "MutationCreateAssetGroupCreateAssetGroupAssetGroup",
+    "MutationCreateCustomRole",
+    "MutationCreateCustomRoleCreateCustomRole",
+    "MutationCreateCustomRoleCreateCustomRoleRole",
     "MutationCreateNotificationConfiguration",
     "MutationCreateNotificationConfigurationCreateNotificationConfiguration",
     "MutationCreateNotificationConfigurationCreateNotificationConfigurationActivityScopes",
@@ -1604,9 +1792,24 @@ __all__ = [
     "MutationCreateNotificationConfigurationCreateNotificationConfigurationChannelConfigurationNotificationConfigurationEmail",
     "MutationCreateNotificationConfigurationCreateNotificationConfigurationChannelConfigurationNotificationConfigurationWebhook",
     "MutationCreateNotificationConfigurationCreateNotificationConfigurationInventoryScopes",
+    "MutationCreateSecurityGroup",
+    "MutationCreateSecurityGroupCreateSecurityGroup",
+    "MutationCreateSecurityGroupCreateSecurityGroupSecurityGroup",
+    "MutationCreateSecurityGroupCreateSecurityGroupSecurityGroupMembers",
+    "MutationDeleteACR",
+    "MutationDeleteACRDeleteAcr",
     "MutationDeleteAssetComparisonReport",
     "MutationDeleteAssetGroup",
+    "MutationDeleteCustomRole",
+    "MutationDeleteCustomRoleDeleteCustomRole",
     "MutationDeleteNotificationConfiguration",
+    "MutationDeleteSecurityGroup",
+    "MutationDeleteSecurityGroupDeleteSecurityGroup",
+    "MutationInviteUser",
+    "MutationInviteUserInviteUser",
+    "MutationInviteUserInviteUserUser",
+    "MutationInviteUserInviteUserUserAcrs",
+    "MutationInviteUserInviteUserUserSecurityGroups",
     "MutationNotifyNotificationConfiguration",
     "MutationRemediateAllAssetVulnerabilities",
     "MutationRemediateAllAssetVulnerabilitiesRemediateAllAssetVulnerabilities",
@@ -1635,13 +1838,29 @@ __all__ = [
     "MutationRemediateSecretsRemediateSecrets",
     "MutationRemoveAllAssetGroupsFromAssets",
     "MutationRemoveAssetsFromAssetGroup",
+    "MutationRemoveOrgUser",
+    "MutationRemoveOrgUserRemoveOrgUser",
+    "MutationRemoveSecurityGroupMember",
+    "MutationRemoveSecurityGroupMemberRemoveSecurityGroupMember",
+    "MutationReplaceACR",
+    "MutationReplaceACRReplaceAcr",
+    "MutationReplaceACRReplaceAcrNewAcr",
+    "MutationReplaceACRReplaceAcrReplacedAcr",
     "MutationSetAssetGroupsToAsset",
     "MutationSetAssetsToAssetGroup",
+    "MutationSetOrgUserStatus",
+    "MutationSetOrgUserStatusSetOrgUserStatus",
+    "MutationSetOrgUserStatusSetOrgUserStatusUser",
+    "MutationSetOrgUserStatusSetOrgUserStatusUserAcrs",
+    "MutationSetOrgUserStatusSetOrgUserStatusUserSecurityGroups",
     "MutationSubmitRiseAIAnalysis",
     "MutationSubmitRiseAIAnalysisSubmitRiseAiAnalysis",
     "MutationUpdateAssetGroup",
     "MutationUpdateAssetGroupUpdateAssetGroup",
     "MutationUpdateAssetGroupUpdateAssetGroupAssetGroup",
+    "MutationUpdateCustomRole",
+    "MutationUpdateCustomRoleUpdateCustomRole",
+    "MutationUpdateCustomRoleUpdateCustomRoleRole",
     "MutationUpdateNotificationConfiguration",
     "MutationUpdateNotificationConfigurationUpdateNotificationConfiguration",
     "MutationUpdateNotificationConfigurationUpdateNotificationConfigurationActivityScopes",
@@ -1652,6 +1871,10 @@ __all__ = [
     "MutationUpdateNotificationConfigurationUpdateNotificationConfigurationInventoryScopes",
     "MutationUpdateOrgLevelSettings",
     "MutationUpdateOrgLevelSettingsUpdateOrgLevelSettings",
+    "MutationUpdateSecurityGroup",
+    "MutationUpdateSecurityGroupUpdateSecurityGroup",
+    "MutationUpdateSecurityGroupUpdateSecurityGroupSecurityGroup",
+    "MutationUpdateSecurityGroupUpdateSecurityGroupSecurityGroupMembers",
     "MutationUserAction",
     "MutationUserActionUser",
     "MutationUserActionUserAction",
@@ -1996,9 +2219,24 @@ __all__ = [
     "QueryGetDependencyReachability",
     "QueryGetDependencyReachabilityGetDependencyReachability",
     "QueryGetDependencyReachabilityGetDependencyReachabilityScripts",
+    "QueryGetMyPermissions",
+    "QueryGetMyPermissionsGetMyPermissions",
+    "QueryGetMyPermissionsGetMyPermissionsRoles",
+    "QueryGetResourcePermissions",
+    "QueryGetResourcePermissionsGetResourcePermissions",
+    "QueryGetRole",
+    "QueryGetRoleDeleteImpact",
+    "QueryGetRoleDeleteImpactGetRoleDeleteImpact",
+    "QueryGetRoleDeleteImpactGetRoleDeleteImpactUsersWhoLoseAll",
+    "QueryGetRoleDeleteImpactGetRoleDeleteImpactUsersWhoRetain",
+    "QueryGetRoleGetRole",
     "QueryGetSecretReachability",
     "QueryGetSecretReachabilityGetSecretReachability",
     "QueryGetSecretReachabilityGetSecretReachabilityScripts",
+    "QueryGetSecurityGroupDeleteImpact",
+    "QueryGetSecurityGroupDeleteImpactGetSecurityGroupDeleteImpact",
+    "QueryGetSecurityGroupDeleteImpactGetSecurityGroupDeleteImpactUsersWhoLoseAll",
+    "QueryGetSecurityGroupDeleteImpactGetSecurityGroupDeleteImpactUsersWhoRetain",
     "QueryGetVulnReachability",
     "QueryGetVulnReachabilityGetVulnReachability",
     "QueryGetVulnReachabilityGetVulnReachabilityScripts",
@@ -2054,6 +2292,11 @@ __all__ = [
     "QueryLicenseLicense",
     "QueryLicenseLicenseAdditionalCounts",
     "QueryLicensesSpdxIds",
+    "QueryListACRs",
+    "QueryListACRsListAcRs",
+    "QueryListACRsListAcRsEdges",
+    "QueryListACRsListAcRsEdgesNode",
+    "QueryListACRsListAcRsPageInfo",
     "QueryListAiProviders",
     "QueryListAiProvidersListAiProviders",
     "QueryListAssetComparisonReports",
@@ -2097,6 +2340,22 @@ __all__ = [
     "QueryListAssetCryptoLibrariesListAssetCryptoLibrariesEdges",
     "QueryListAssetCryptoLibrariesListAssetCryptoLibrariesEdgesNode",
     "QueryListAssetCryptoLibrariesListAssetCryptoLibrariesPageInfo",
+    "QueryListEntityAssets",
+    "QueryListEntityAssetsListEntityAssets",
+    "QueryListEntityAssetsListEntityAssetsEdges",
+    "QueryListEntityAssetsListEntityAssetsEdgesNode",
+    "QueryListEntityAssetsListEntityAssetsPageInfo",
+    "QueryListMyACRs",
+    "QueryListMyACRsListMyAcRs",
+    "QueryListMyACRsListMyAcRsEdges",
+    "QueryListMyACRsListMyAcRsEdgesNode",
+    "QueryListMyACRsListMyAcRsPageInfo",
+    "QueryListMySecurityGroups",
+    "QueryListMySecurityGroupsListMySecurityGroups",
+    "QueryListMySecurityGroupsListMySecurityGroupsEdges",
+    "QueryListMySecurityGroupsListMySecurityGroupsEdgesNode",
+    "QueryListMySecurityGroupsListMySecurityGroupsEdgesNodeMembers",
+    "QueryListMySecurityGroupsListMySecurityGroupsPageInfo",
     "QueryListNotificationConfigurations",
     "QueryListNotificationConfigurationsListNotificationConfigurations",
     "QueryListNotificationConfigurationsListNotificationConfigurationsEdges",
@@ -2113,6 +2372,32 @@ __all__ = [
     "QueryListNotificationLogsListNotificationLogsEdges",
     "QueryListNotificationLogsListNotificationLogsEdgesNode",
     "QueryListNotificationLogsListNotificationLogsPageInfo",
+    "QueryListOrgUsers",
+    "QueryListOrgUsersListOrgUsers",
+    "QueryListOrgUsersListOrgUsersEdges",
+    "QueryListOrgUsersListOrgUsersEdgesNode",
+    "QueryListOrgUsersListOrgUsersEdgesNodeAcrs",
+    "QueryListOrgUsersListOrgUsersEdgesNodeSecurityGroups",
+    "QueryListOrgUsersListOrgUsersPageInfo",
+    "QueryListPermissions",
+    "QueryListPermissionsListPermissions",
+    "QueryListPermissionsListPermissionsPermissions",
+    "QueryListRoles",
+    "QueryListRolesListRoles",
+    "QueryListRolesListRolesEdges",
+    "QueryListRolesListRolesEdgesNode",
+    "QueryListRolesListRolesPageInfo",
+    "QueryListSecurityGroupMembers",
+    "QueryListSecurityGroupMembersListSecurityGroupMembers",
+    "QueryListSecurityGroupMembersListSecurityGroupMembersEdges",
+    "QueryListSecurityGroupMembersListSecurityGroupMembersEdgesNode",
+    "QueryListSecurityGroupMembersListSecurityGroupMembersPageInfo",
+    "QueryListSecurityGroups",
+    "QueryListSecurityGroupsListSecurityGroups",
+    "QueryListSecurityGroupsListSecurityGroupsEdges",
+    "QueryListSecurityGroupsListSecurityGroupsEdgesNode",
+    "QueryListSecurityGroupsListSecurityGroupsEdgesNodeMembers",
+    "QueryListSecurityGroupsListSecurityGroupsPageInfo",
     "QueryMatchVulnerabilities",
     "QueryMatchVulnerabilitiesMatchVulnerabilities",
     "QueryMatchVulnerabilitiesMatchVulnerabilitiesCurrentRemediation",
@@ -2143,6 +2428,8 @@ __all__ = [
     "QueryMatchVulnerabilitiesMatchVulnerabilitiesImpactV4ThreatCvssSecondaryAssociatedBaseMetricV40",
     "QueryMatchVulnerabilitiesMatchVulnerabilitiesProblemTypes",
     "QueryMatchVulnerabilitiesMatchVulnerabilitiesReferences",
+    "QueryMe",
+    "QueryMeMe",
     "QueryMetrics",
     "QueryMetricsMetrics",
     "QueryMetricsMetricsAssetsByRiskCategory",
@@ -2361,7 +2648,6 @@ __all__ = [
     "RemoveOrgUserInput",
     "RemoveSecurityGroupMemberInput",
     "ReplaceAcrInput",
-    "ResetOrgUserPasswordInput",
     "RiseAIAnalysisDataInput",
     "RiseAIStatus",
     "RiskCategory",
@@ -2428,6 +2714,7 @@ __all__ = [
     "VulnerabilityFieldFilter",
     "VulnerabilityFilter",
     "VulnerabilityInput",
+    "VulnerabilityJiraTicketsInput",
     "VulnerabilityNVDStatus",
     "VulnerabilityOverviewFieldFilter",
     "VulnerabilityOverviewFilter",

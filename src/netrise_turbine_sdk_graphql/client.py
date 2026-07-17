@@ -5,11 +5,13 @@ from typing import Any, Optional, Union
 
 from .base_client import BaseClient
 from .base_model import UNSET, UnsetType
+from .enums import AcrEntityType, AcrResourceType
 from .input_types import (
     ActivityInput,
     AddAssetGroupsToAssetsInput,
     AddAssetsToAssetGroupInput,
     AddDependencyInput,
+    AddSecurityGroupMemberInput,
     AssetGroupAnalyticsInput,
     AssetGroupMembersInput,
     AssetGroupsInput,
@@ -21,19 +23,27 @@ from .input_types import (
     AssetVulnerabilityRemediationInput,
     BinaryProtectionsInput,
     BinaryProtectionsSummaryInput,
+    BulkDeleteAcrsInput,
     CertificateExternalFiltersInput,
     CertificatesInput,
+    CreateAcrInput,
     CreateAllAssetVulnerabilitiesRemediationInput,
     CreateAssetComparisonReportInput,
     CreateAssetGroupInput,
     CreateAssetVulnerabilityRemediationInput,
     CreateAssetVulnerabilityRemediationsInput,
+    CreateCustomRoleInput,
     CreateNotificationConfigurationInput,
     CreateSecretsRemediationInput,
+    CreateSecurityGroupInput,
     CredentialsInput,
+    Cursor,
+    DeleteAcrInput,
     DeleteAssetComparisonReportInput,
     DeleteAssetGroupInput,
+    DeleteCustomRoleInput,
     DeleteNotificationConfigurationInput,
+    DeleteSecurityGroupInput,
     DependencyInput,
     DependencyKnownExploitsInput,
     ExtractedFirmwareDownloadInput,
@@ -50,6 +60,7 @@ from .input_types import (
     HashesInput,
     IdentificationInput,
     IdentifiedComponentsPreviewInput,
+    InviteOrgUserInput,
     InviteUserInput,
     LicenseInput,
     LicenseIssueInput,
@@ -79,6 +90,9 @@ from .input_types import (
     RemediatePublicKeysInput,
     RemoveAllAssetGroupsFromAssetsInput,
     RemoveAssetsFromAssetGroupInput,
+    RemoveOrgUserInput,
+    RemoveSecurityGroupMemberInput,
+    ReplaceAcrInput,
     RiseAIAnalysisDataInput,
     SearchInput,
     SecretCategoriesInput,
@@ -89,11 +103,14 @@ from .input_types import (
     SecretTypesAndCountInput,
     SetAssetGroupsToAssetInput,
     SetAssetsToAssetGroupInput,
+    SetOrgUserStatusInput,
     SetUserRoleInput,
     SubmitAssetInput,
     UpdateAssetGroupInput,
     UpdateAssetInput,
+    UpdateCustomRoleInput,
     UpdateNotificationConfigurationInput,
+    UpdateSecurityGroupInput,
     UpdateUserInput,
     UserActionInput,
     UserInput,
@@ -105,21 +122,30 @@ from .input_types import (
 )
 from .mutation_add_asset_groups_to_assets import MutationAddAssetGroupsToAssets
 from .mutation_add_assets_to_asset_group import MutationAddAssetsToAssetGroup
+from .mutation_add_security_group_member import MutationAddSecurityGroupMember
 from .mutation_asset_add_dependency import MutationAssetAddDependency
 from .mutation_asset_modify_dependency import MutationAssetModifyDependency
 from .mutation_asset_remove_dependencies import MutationAssetRemoveDependencies
 from .mutation_asset_submit import MutationAssetSubmit
 from .mutation_asset_update import MutationAssetUpdate
+from .mutation_bulk_delete_ac_rs import MutationBulkDeleteACRs
+from .mutation_create_acr import MutationCreateACR
 from .mutation_create_asset_comparison_report import MutationCreateAssetComparisonReport
 from .mutation_create_asset_group import MutationCreateAssetGroup
+from .mutation_create_custom_role import MutationCreateCustomRole
 from .mutation_create_notification_configuration import (
     MutationCreateNotificationConfiguration,
 )
+from .mutation_create_security_group import MutationCreateSecurityGroup
+from .mutation_delete_acr import MutationDeleteACR
 from .mutation_delete_asset_comparison_report import MutationDeleteAssetComparisonReport
 from .mutation_delete_asset_group import MutationDeleteAssetGroup
+from .mutation_delete_custom_role import MutationDeleteCustomRole
 from .mutation_delete_notification_configuration import (
     MutationDeleteNotificationConfiguration,
 )
+from .mutation_delete_security_group import MutationDeleteSecurityGroup
+from .mutation_invite_user import MutationInviteUser
 from .mutation_notify_notification_configuration import (
     MutationNotifyNotificationConfiguration,
 )
@@ -139,14 +165,20 @@ from .mutation_remove_all_asset_groups_from_assets import (
     MutationRemoveAllAssetGroupsFromAssets,
 )
 from .mutation_remove_assets_from_asset_group import MutationRemoveAssetsFromAssetGroup
+from .mutation_remove_org_user import MutationRemoveOrgUser
+from .mutation_remove_security_group_member import MutationRemoveSecurityGroupMember
+from .mutation_replace_acr import MutationReplaceACR
 from .mutation_set_asset_groups_to_asset import MutationSetAssetGroupsToAsset
 from .mutation_set_assets_to_asset_group import MutationSetAssetsToAssetGroup
+from .mutation_set_org_user_status import MutationSetOrgUserStatus
 from .mutation_submit_rise_ai_analysis import MutationSubmitRiseAIAnalysis
 from .mutation_update_asset_group import MutationUpdateAssetGroup
+from .mutation_update_custom_role import MutationUpdateCustomRole
 from .mutation_update_notification_configuration import (
     MutationUpdateNotificationConfiguration,
 )
 from .mutation_update_org_level_settings import MutationUpdateOrgLevelSettings
+from .mutation_update_security_group import MutationUpdateSecurityGroup
 from .mutation_user_action import MutationUserAction
 from .mutation_user_delete import MutationUserDelete
 from .mutation_user_invite import MutationUserInvite
@@ -186,7 +218,12 @@ from .query_get_ai_model_data import QueryGetAiModelData
 from .query_get_asset_comparison_report import QueryGetAssetComparisonReport
 from .query_get_certificate_reachability import QueryGetCertificateReachability
 from .query_get_dependency_reachability import QueryGetDependencyReachability
+from .query_get_my_permissions import QueryGetMyPermissions
+from .query_get_resource_permissions import QueryGetResourcePermissions
+from .query_get_role import QueryGetRole
+from .query_get_role_delete_impact import QueryGetRoleDeleteImpact
 from .query_get_secret_reachability import QueryGetSecretReachability
+from .query_get_security_group_delete_impact import QueryGetSecurityGroupDeleteImpact
 from .query_get_vuln_reachability import QueryGetVulnReachability
 from .query_grouped_dependencies import QueryGroupedDependencies
 from .query_hashes import QueryHashes
@@ -196,13 +233,23 @@ from .query_license_issue import QueryLicenseIssue
 from .query_license_issues import QueryLicenseIssues
 from .query_license_issues_external_filters import QueryLicenseIssuesExternalFilters
 from .query_licenses_spdx_ids import QueryLicensesSpdxIds
+from .query_list_ac_rs import QueryListACRs
 from .query_list_ai_providers import QueryListAiProviders
 from .query_list_asset_comparison_reports import QueryListAssetComparisonReports
 from .query_list_asset_correlations import QueryListAssetCorrelations
 from .query_list_asset_crypto_libraries import QueryListAssetCryptoLibraries
+from .query_list_entity_assets import QueryListEntityAssets
+from .query_list_my_ac_rs import QueryListMyACRs
+from .query_list_my_security_groups import QueryListMySecurityGroups
 from .query_list_notification_configurations import QueryListNotificationConfigurations
 from .query_list_notification_logs import QueryListNotificationLogs
+from .query_list_org_users import QueryListOrgUsers
+from .query_list_permissions import QueryListPermissions
+from .query_list_roles import QueryListRoles
+from .query_list_security_group_members import QueryListSecurityGroupMembers
+from .query_list_security_groups import QueryListSecurityGroups
 from .query_match_vulnerabilities import QueryMatchVulnerabilities
+from .query_me import QueryMe
 from .query_metrics import QueryMetrics
 from .query_misconfigurations import QueryMisconfigurations
 from .query_misconfigurations_lite import QueryMisconfigurationsLite
@@ -2721,6 +2768,127 @@ class Client(BaseClient):
         data = self.get_data(response)
         return QueryGetDependencyReachability.model_validate(data)
 
+    def query_get_my_permissions(self, **kwargs: Any) -> QueryGetMyPermissions:
+        query = gql(
+            """
+            query QueryGetMyPermissions {
+              getMyPermissions {
+                highestPrecedenceRole
+                permissions
+                roles {
+                  atAsset
+                  atAssetGroup
+                  atOrg
+                  roleName
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {}
+        response = self.execute(
+            query=query,
+            operation_name="QueryGetMyPermissions",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryGetMyPermissions.model_validate(data)
+
+    def query_get_resource_permissions(
+        self,
+        get_resource_permissions_resource_type: AcrResourceType,
+        get_resource_permissions_resource_id: Union[Optional[str], UnsetType] = UNSET,
+        **kwargs: Any
+    ) -> QueryGetResourcePermissions:
+        query = gql(
+            """
+            query QueryGetResourcePermissions($getResourcePermissions_resourceType: AcrResourceType!, $getResourcePermissions_resourceId: String) {
+              getResourcePermissions(
+                resourceType: $getResourcePermissions_resourceType
+                resourceId: $getResourcePermissions_resourceId
+              ) {
+                permissions
+                resourceId
+                resourceType
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "getResourcePermissions_resourceType": get_resource_permissions_resource_type,
+            "getResourcePermissions_resourceId": get_resource_permissions_resource_id,
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryGetResourcePermissions",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryGetResourcePermissions.model_validate(data)
+
+    def query_get_role(self, get_role_role_id: str, **kwargs: Any) -> QueryGetRole:
+        query = gql(
+            """
+            query QueryGetRole($getRole_roleId: ID!) {
+              getRole(roleId: $getRole_roleId) {
+                id
+                description
+                isBuiltin
+                lastModifiedBy
+                lastModifiedByEmail
+                lastModifiedTime
+                name
+                orgId
+                permissions
+                precedence
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {"getRole_roleId": get_role_role_id}
+        response = self.execute(
+            query=query, operation_name="QueryGetRole", variables=variables, **kwargs
+        )
+        data = self.get_data(response)
+        return QueryGetRole.model_validate(data)
+
+    def query_get_role_delete_impact(
+        self, get_role_delete_impact_role_id: str, **kwargs: Any
+    ) -> QueryGetRoleDeleteImpact:
+        query = gql(
+            """
+            query QueryGetRoleDeleteImpact($getRoleDeleteImpact_roleId: ID!) {
+              getRoleDeleteImpact(roleId: $getRoleDeleteImpact_roleId) {
+                acrCount
+                totalAffectedUsers
+                usersWhoLoseAll {
+                  displayName
+                  email
+                  userId
+                }
+                usersWhoRetain {
+                  displayName
+                  email
+                  userId
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "getRoleDeleteImpact_roleId": get_role_delete_impact_role_id
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryGetRoleDeleteImpact",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryGetRoleDeleteImpact.model_validate(data)
+
     def query_get_secret_reachability(
         self, get_secret_reachability_args: GetSecretReachabilityInput, **kwargs: Any
     ) -> QueryGetSecretReachability:
@@ -2753,6 +2921,42 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return QueryGetSecretReachability.model_validate(data)
+
+    def query_get_security_group_delete_impact(
+        self, get_security_group_delete_impact_security_group_id: str, **kwargs: Any
+    ) -> QueryGetSecurityGroupDeleteImpact:
+        query = gql(
+            """
+            query QueryGetSecurityGroupDeleteImpact($getSecurityGroupDeleteImpact_securityGroupId: ID!) {
+              getSecurityGroupDeleteImpact(
+                securityGroupId: $getSecurityGroupDeleteImpact_securityGroupId
+              ) {
+                totalMembers
+                usersWhoLoseAll {
+                  displayName
+                  email
+                  userId
+                }
+                usersWhoRetain {
+                  displayName
+                  email
+                  userId
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "getSecurityGroupDeleteImpact_securityGroupId": get_security_group_delete_impact_security_group_id
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryGetSecurityGroupDeleteImpact",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryGetSecurityGroupDeleteImpact.model_validate(data)
 
     def query_get_vuln_reachability(
         self, get_vuln_reachability_args: GetVulnReachabilityInput, **kwargs: Any
@@ -3198,6 +3402,61 @@ class Client(BaseClient):
         data = self.get_data(response)
         return QueryLicensesSpdxIds.model_validate(data)
 
+    def query_list_ac_rs(
+        self,
+        list_ac_rs_user_id: Union[Optional[str], UnsetType] = UNSET,
+        list_ac_rs_cursor: Union[Optional[Cursor], UnsetType] = UNSET,
+        **kwargs: Any
+    ) -> QueryListACRs:
+        query = gql(
+            """
+            query QueryListACRs($listACRs_userId: ID, $listACRs_cursor: Cursor) {
+              listACRs(userId: $listACRs_userId, cursor: $listACRs_cursor) {
+                edges {
+                  cursor
+                  node {
+                    id
+                    createdBy
+                    createdTime
+                    directPermissions
+                    entityId
+                    entityMemberCount
+                    entityName
+                    entityType
+                    expiresAt
+                    lastModifiedBy
+                    lastModifiedTime
+                    orgId
+                    resourceId
+                    resourceName
+                    resourceType
+                    roleId
+                    roleName
+                    rolePermissions
+                    userEmails
+                  }
+                }
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                  startCursor
+                  totalCount
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "listACRs_userId": list_ac_rs_user_id,
+            "listACRs_cursor": list_ac_rs_cursor,
+        }
+        response = self.execute(
+            query=query, operation_name="QueryListACRs", variables=variables, **kwargs
+        )
+        data = self.get_data(response)
+        return QueryListACRs.model_validate(data)
+
     def query_list_ai_providers(
         self,
         list_ai_providers_args: Union[
@@ -3571,6 +3830,155 @@ class Client(BaseClient):
         data = self.get_data(response)
         return QueryListAssetCryptoLibraries.model_validate(data)
 
+    def query_list_entity_assets(
+        self,
+        list_entity_assets_entity_type: AcrEntityType,
+        list_entity_assets_entity_id: str,
+        list_entity_assets_cursor: Union[Optional[Cursor], UnsetType] = UNSET,
+        **kwargs: Any
+    ) -> QueryListEntityAssets:
+        query = gql(
+            """
+            query QueryListEntityAssets($listEntityAssets_entityType: AcrEntityType!, $listEntityAssets_entityId: ID!, $listEntityAssets_cursor: Cursor) {
+              listEntityAssets(
+                entityType: $listEntityAssets_entityType
+                entityId: $listEntityAssets_entityId
+                cursor: $listEntityAssets_cursor
+              ) {
+                edges {
+                  cursor
+                  node {
+                    id
+                    assetType
+                    name
+                  }
+                }
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                  startCursor
+                  totalCount
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "listEntityAssets_entityType": list_entity_assets_entity_type,
+            "listEntityAssets_entityId": list_entity_assets_entity_id,
+            "listEntityAssets_cursor": list_entity_assets_cursor,
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryListEntityAssets",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryListEntityAssets.model_validate(data)
+
+    def query_list_my_ac_rs(
+        self,
+        list_my_ac_rs_cursor: Union[Optional[Cursor], UnsetType] = UNSET,
+        **kwargs: Any
+    ) -> QueryListMyACRs:
+        query = gql(
+            """
+            query QueryListMyACRs($listMyACRs_cursor: Cursor) {
+              listMyACRs(cursor: $listMyACRs_cursor) {
+                edges {
+                  cursor
+                  node {
+                    id
+                    createdBy
+                    createdTime
+                    directPermissions
+                    entityId
+                    entityMemberCount
+                    entityName
+                    entityType
+                    expiresAt
+                    lastModifiedBy
+                    lastModifiedTime
+                    orgId
+                    resourceId
+                    resourceName
+                    resourceType
+                    roleId
+                    roleName
+                    rolePermissions
+                    userEmails
+                  }
+                }
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                  startCursor
+                  totalCount
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {"listMyACRs_cursor": list_my_ac_rs_cursor}
+        response = self.execute(
+            query=query, operation_name="QueryListMyACRs", variables=variables, **kwargs
+        )
+        data = self.get_data(response)
+        return QueryListMyACRs.model_validate(data)
+
+    def query_list_my_security_groups(
+        self,
+        list_my_security_groups_cursor: Union[Optional[Cursor], UnsetType] = UNSET,
+        **kwargs: Any
+    ) -> QueryListMySecurityGroups:
+        query = gql(
+            """
+            query QueryListMySecurityGroups($listMySecurityGroups_cursor: Cursor) {
+              listMySecurityGroups(cursor: $listMySecurityGroups_cursor) {
+                edges {
+                  cursor
+                  node {
+                    id
+                    createdBy
+                    createdTime
+                    description
+                    lastModifiedTime
+                    lastSeenTime
+                    memberCount
+                    members {
+                      displayName
+                      email
+                      userId
+                    }
+                    name
+                  }
+                }
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                  startCursor
+                  totalCount
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "listMySecurityGroups_cursor": list_my_security_groups_cursor
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryListMySecurityGroups",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryListMySecurityGroups.model_validate(data)
+
     def query_list_notification_configurations(
         self,
         list_notification_configurations_args: ListNotificationConfigurationsInput,
@@ -3682,6 +4090,246 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return QueryListNotificationLogs.model_validate(data)
+
+    def query_list_org_users(
+        self,
+        list_org_users_cursor: Union[Optional[Cursor], UnsetType] = UNSET,
+        **kwargs: Any
+    ) -> QueryListOrgUsers:
+        query = gql(
+            """
+            query QueryListOrgUsers($listOrgUsers_cursor: Cursor) {
+              listOrgUsers(cursor: $listOrgUsers_cursor) {
+                edges {
+                  cursor
+                  node {
+                    id
+                    accessibleAssetCount
+                    acrs {
+                      id
+                      createdBy
+                      createdTime
+                      directPermissions
+                      entityId
+                      entityMemberCount
+                      entityName
+                      entityType
+                      expiresAt
+                      lastModifiedBy
+                      lastModifiedTime
+                      orgId
+                      resourceId
+                      resourceName
+                      resourceType
+                      roleId
+                      roleName
+                      rolePermissions
+                      userEmails
+                    }
+                    createdTime
+                    disabledAt
+                    disabledBy
+                    displayName
+                    email
+                    emailVerified
+                    isExternal
+                    lastModifiedTime
+                    lastSeenTime
+                    orgId
+                    permissionCount
+                    securityGroups {
+                      id
+                      maxRolePrecedence
+                      name
+                    }
+                    status
+                  }
+                }
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                  startCursor
+                  totalCount
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {"listOrgUsers_cursor": list_org_users_cursor}
+        response = self.execute(
+            query=query,
+            operation_name="QueryListOrgUsers",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryListOrgUsers.model_validate(data)
+
+    def query_list_permissions(self, **kwargs: Any) -> QueryListPermissions:
+        query = gql(
+            """
+            query QueryListPermissions {
+              listPermissions {
+                permissions {
+                  id
+                  category
+                  description
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {}
+        response = self.execute(
+            query=query,
+            operation_name="QueryListPermissions",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryListPermissions.model_validate(data)
+
+    def query_list_roles(
+        self,
+        list_roles_cursor: Union[Optional[Cursor], UnsetType] = UNSET,
+        **kwargs: Any
+    ) -> QueryListRoles:
+        query = gql(
+            """
+            query QueryListRoles($listRoles_cursor: Cursor) {
+              listRoles(cursor: $listRoles_cursor) {
+                edges {
+                  cursor
+                  node {
+                    id
+                    description
+                    isBuiltin
+                    lastModifiedBy
+                    lastModifiedByEmail
+                    lastModifiedTime
+                    name
+                    orgId
+                    permissions
+                    precedence
+                  }
+                }
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                  startCursor
+                  totalCount
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {"listRoles_cursor": list_roles_cursor}
+        response = self.execute(
+            query=query, operation_name="QueryListRoles", variables=variables, **kwargs
+        )
+        data = self.get_data(response)
+        return QueryListRoles.model_validate(data)
+
+    def query_list_security_group_members(
+        self,
+        list_security_group_members_security_group_id: str,
+        list_security_group_members_cursor: Union[Optional[Cursor], UnsetType] = UNSET,
+        **kwargs: Any
+    ) -> QueryListSecurityGroupMembers:
+        query = gql(
+            """
+            query QueryListSecurityGroupMembers($listSecurityGroupMembers_securityGroupId: ID!, $listSecurityGroupMembers_cursor: Cursor) {
+              listSecurityGroupMembers(
+                securityGroupId: $listSecurityGroupMembers_securityGroupId
+                cursor: $listSecurityGroupMembers_cursor
+              ) {
+                edges {
+                  cursor
+                  node {
+                    accessibleAssetCount
+                    createdTime
+                    displayName
+                    email
+                    lastSeenTime
+                    source
+                    userId
+                  }
+                }
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                  startCursor
+                  totalCount
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "listSecurityGroupMembers_securityGroupId": list_security_group_members_security_group_id,
+            "listSecurityGroupMembers_cursor": list_security_group_members_cursor,
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryListSecurityGroupMembers",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryListSecurityGroupMembers.model_validate(data)
+
+    def query_list_security_groups(
+        self,
+        list_security_groups_cursor: Union[Optional[Cursor], UnsetType] = UNSET,
+        **kwargs: Any
+    ) -> QueryListSecurityGroups:
+        query = gql(
+            """
+            query QueryListSecurityGroups($listSecurityGroups_cursor: Cursor) {
+              listSecurityGroups(cursor: $listSecurityGroups_cursor) {
+                edges {
+                  cursor
+                  node {
+                    id
+                    createdBy
+                    createdTime
+                    description
+                    lastModifiedTime
+                    lastSeenTime
+                    memberCount
+                    members {
+                      displayName
+                      email
+                      userId
+                    }
+                    name
+                  }
+                }
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                  startCursor
+                  totalCount
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "listSecurityGroups_cursor": list_security_groups_cursor
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryListSecurityGroups",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryListSecurityGroups.model_validate(data)
 
     def query_match_vulnerabilities(
         self, match_vulnerabilities_args: MatchVulnerabilitiesInput, **kwargs: Any
@@ -3944,6 +4592,40 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return QueryMatchVulnerabilities.model_validate(data)
+
+    def query_me(self, **kwargs: Any) -> QueryMe:
+        query = gql(
+            """
+            query QueryMe {
+              me {
+                id
+                createdAt
+                deletedAt
+                disabled
+                disabledReason
+                email
+                failedLoginAttempts
+                isOrgDomainUser
+                lastFailedLogin
+                lastPasswordReset
+                lastSuccessfulLogin
+                name
+                organization
+                passwordDisabled
+                picture
+                role
+                updatedAt
+                verified
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {}
+        response = self.execute(
+            query=query, operation_name="QueryMe", variables=variables, **kwargs
+        )
+        data = self.get_data(response)
+        return QueryMe.model_validate(data)
 
     def query_metrics(self, **kwargs: Any) -> QueryMetrics:
         query = gql(
@@ -5588,6 +6270,38 @@ class Client(BaseClient):
         data = self.get_data(response)
         return MutationAddAssetsToAssetGroup.model_validate(data)
 
+    def mutation_add_security_group_member(
+        self, add_security_group_member_args: AddSecurityGroupMemberInput, **kwargs: Any
+    ) -> MutationAddSecurityGroupMember:
+        query = gql(
+            """
+            mutation MutationAddSecurityGroupMember($addSecurityGroupMember_args: AddSecurityGroupMemberInput!) {
+              addSecurityGroupMember(args: $addSecurityGroupMember_args) {
+                member {
+                  accessibleAssetCount
+                  createdTime
+                  displayName
+                  email
+                  lastSeenTime
+                  source
+                  userId
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "addSecurityGroupMember_args": add_security_group_member_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationAddSecurityGroupMember",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationAddSecurityGroupMember.model_validate(data)
+
     def mutation_asset_add_dependency(
         self, asset_add_dependency_args: AddDependencyInput, **kwargs: Any
     ) -> MutationAssetAddDependency:
@@ -5909,6 +6623,70 @@ class Client(BaseClient):
         data = self.get_data(response)
         return MutationAssetUpdate.model_validate(data)
 
+    def mutation_bulk_delete_ac_rs(
+        self, bulk_delete_ac_rs_args: BulkDeleteAcrsInput, **kwargs: Any
+    ) -> MutationBulkDeleteACRs:
+        query = gql(
+            """
+            mutation MutationBulkDeleteACRs($bulkDeleteACRs_args: BulkDeleteAcrsInput!) {
+              bulkDeleteACRs(args: $bulkDeleteACRs_args) {
+                success
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {"bulkDeleteACRs_args": bulk_delete_ac_rs_args}
+        response = self.execute(
+            query=query,
+            operation_name="MutationBulkDeleteACRs",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationBulkDeleteACRs.model_validate(data)
+
+    def mutation_create_acr(
+        self, create_acr_args: CreateAcrInput, **kwargs: Any
+    ) -> MutationCreateACR:
+        query = gql(
+            """
+            mutation MutationCreateACR($createACR_args: CreateAcrInput!) {
+              createACR(args: $createACR_args) {
+                acr {
+                  id
+                  createdBy
+                  createdTime
+                  directPermissions
+                  entityId
+                  entityMemberCount
+                  entityName
+                  entityType
+                  expiresAt
+                  lastModifiedBy
+                  lastModifiedTime
+                  orgId
+                  resourceId
+                  resourceName
+                  resourceType
+                  roleId
+                  roleName
+                  rolePermissions
+                  userEmails
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {"createACR_args": create_acr_args}
+        response = self.execute(
+            query=query,
+            operation_name="MutationCreateACR",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationCreateACR.model_validate(data)
+
     def mutation_create_asset_comparison_report(
         self,
         create_asset_comparison_report_args: CreateAssetComparisonReportInput,
@@ -5962,6 +6740,41 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return MutationCreateAssetGroup.model_validate(data)
+
+    def mutation_create_custom_role(
+        self, create_custom_role_args: CreateCustomRoleInput, **kwargs: Any
+    ) -> MutationCreateCustomRole:
+        query = gql(
+            """
+            mutation MutationCreateCustomRole($createCustomRole_args: CreateCustomRoleInput!) {
+              createCustomRole(args: $createCustomRole_args) {
+                role {
+                  id
+                  description
+                  isBuiltin
+                  lastModifiedBy
+                  lastModifiedByEmail
+                  lastModifiedTime
+                  name
+                  orgId
+                  permissions
+                  precedence
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "createCustomRole_args": create_custom_role_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationCreateCustomRole",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationCreateCustomRole.model_validate(data)
 
     def mutation_create_notification_configuration(
         self,
@@ -6023,6 +6836,67 @@ class Client(BaseClient):
         data = self.get_data(response)
         return MutationCreateNotificationConfiguration.model_validate(data)
 
+    def mutation_create_security_group(
+        self, create_security_group_args: CreateSecurityGroupInput, **kwargs: Any
+    ) -> MutationCreateSecurityGroup:
+        query = gql(
+            """
+            mutation MutationCreateSecurityGroup($createSecurityGroup_args: CreateSecurityGroupInput!) {
+              createSecurityGroup(args: $createSecurityGroup_args) {
+                securityGroup {
+                  id
+                  createdBy
+                  createdTime
+                  description
+                  lastModifiedTime
+                  lastSeenTime
+                  memberCount
+                  members {
+                    displayName
+                    email
+                    userId
+                  }
+                  name
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "createSecurityGroup_args": create_security_group_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationCreateSecurityGroup",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationCreateSecurityGroup.model_validate(data)
+
+    def mutation_delete_acr(
+        self, delete_acr_args: DeleteAcrInput, **kwargs: Any
+    ) -> MutationDeleteACR:
+        query = gql(
+            """
+            mutation MutationDeleteACR($deleteACR_args: DeleteAcrInput!) {
+              deleteACR(args: $deleteACR_args) {
+                acrId
+                success
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {"deleteACR_args": delete_acr_args}
+        response = self.execute(
+            query=query,
+            operation_name="MutationDeleteACR",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationDeleteACR.model_validate(data)
+
     def mutation_delete_asset_comparison_report(
         self,
         delete_asset_comparison_report_args: DeleteAssetComparisonReportInput,
@@ -6069,6 +6943,31 @@ class Client(BaseClient):
         data = self.get_data(response)
         return MutationDeleteAssetGroup.model_validate(data)
 
+    def mutation_delete_custom_role(
+        self, delete_custom_role_args: DeleteCustomRoleInput, **kwargs: Any
+    ) -> MutationDeleteCustomRole:
+        query = gql(
+            """
+            mutation MutationDeleteCustomRole($deleteCustomRole_args: DeleteCustomRoleInput!) {
+              deleteCustomRole(args: $deleteCustomRole_args) {
+                roleId
+                success
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "deleteCustomRole_args": delete_custom_role_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationDeleteCustomRole",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationDeleteCustomRole.model_validate(data)
+
     def mutation_delete_notification_configuration(
         self,
         delete_notification_configuration_args: DeleteNotificationConfigurationInput,
@@ -6092,6 +6991,94 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return MutationDeleteNotificationConfiguration.model_validate(data)
+
+    def mutation_delete_security_group(
+        self, delete_security_group_args: DeleteSecurityGroupInput, **kwargs: Any
+    ) -> MutationDeleteSecurityGroup:
+        query = gql(
+            """
+            mutation MutationDeleteSecurityGroup($deleteSecurityGroup_args: DeleteSecurityGroupInput!) {
+              deleteSecurityGroup(args: $deleteSecurityGroup_args) {
+                securityGroupId
+                success
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "deleteSecurityGroup_args": delete_security_group_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationDeleteSecurityGroup",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationDeleteSecurityGroup.model_validate(data)
+
+    def mutation_invite_user(
+        self, invite_user_args: InviteOrgUserInput, **kwargs: Any
+    ) -> MutationInviteUser:
+        query = gql(
+            """
+            mutation MutationInviteUser($inviteUser_args: InviteOrgUserInput!) {
+              inviteUser(args: $inviteUser_args) {
+                user {
+                  id
+                  accessibleAssetCount
+                  acrs {
+                    id
+                    createdBy
+                    createdTime
+                    directPermissions
+                    entityId
+                    entityMemberCount
+                    entityName
+                    entityType
+                    expiresAt
+                    lastModifiedBy
+                    lastModifiedTime
+                    orgId
+                    resourceId
+                    resourceName
+                    resourceType
+                    roleId
+                    roleName
+                    rolePermissions
+                    userEmails
+                  }
+                  createdTime
+                  disabledAt
+                  disabledBy
+                  displayName
+                  email
+                  emailVerified
+                  isExternal
+                  lastModifiedTime
+                  lastSeenTime
+                  orgId
+                  permissionCount
+                  securityGroups {
+                    id
+                    maxRolePrecedence
+                    name
+                  }
+                  status
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {"inviteUser_args": invite_user_args}
+        response = self.execute(
+            query=query,
+            operation_name="MutationInviteUser",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationInviteUser.model_validate(data)
 
     def mutation_notify_notification_configuration(
         self,
@@ -6472,6 +7459,120 @@ class Client(BaseClient):
         data = self.get_data(response)
         return MutationRemoveAssetsFromAssetGroup.model_validate(data)
 
+    def mutation_remove_org_user(
+        self, remove_org_user_args: RemoveOrgUserInput, **kwargs: Any
+    ) -> MutationRemoveOrgUser:
+        query = gql(
+            """
+            mutation MutationRemoveOrgUser($removeOrgUser_args: RemoveOrgUserInput!) {
+              removeOrgUser(args: $removeOrgUser_args) {
+                success
+                userId
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {"removeOrgUser_args": remove_org_user_args}
+        response = self.execute(
+            query=query,
+            operation_name="MutationRemoveOrgUser",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationRemoveOrgUser.model_validate(data)
+
+    def mutation_remove_security_group_member(
+        self,
+        remove_security_group_member_args: RemoveSecurityGroupMemberInput,
+        **kwargs: Any
+    ) -> MutationRemoveSecurityGroupMember:
+        query = gql(
+            """
+            mutation MutationRemoveSecurityGroupMember($removeSecurityGroupMember_args: RemoveSecurityGroupMemberInput!) {
+              removeSecurityGroupMember(args: $removeSecurityGroupMember_args) {
+                securityGroupId
+                success
+                userId
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "removeSecurityGroupMember_args": remove_security_group_member_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationRemoveSecurityGroupMember",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationRemoveSecurityGroupMember.model_validate(data)
+
+    def mutation_replace_acr(
+        self, replace_acr_args: ReplaceAcrInput, **kwargs: Any
+    ) -> MutationReplaceACR:
+        query = gql(
+            """
+            mutation MutationReplaceACR($replaceACR_args: ReplaceAcrInput!) {
+              replaceACR(args: $replaceACR_args) {
+                newAcr {
+                  id
+                  createdBy
+                  createdTime
+                  directPermissions
+                  entityId
+                  entityMemberCount
+                  entityName
+                  entityType
+                  expiresAt
+                  lastModifiedBy
+                  lastModifiedTime
+                  orgId
+                  resourceId
+                  resourceName
+                  resourceType
+                  roleId
+                  roleName
+                  rolePermissions
+                  userEmails
+                }
+                replacedAcr {
+                  id
+                  createdBy
+                  createdTime
+                  directPermissions
+                  entityId
+                  entityMemberCount
+                  entityName
+                  entityType
+                  expiresAt
+                  lastModifiedBy
+                  lastModifiedTime
+                  orgId
+                  resourceId
+                  resourceName
+                  resourceType
+                  roleId
+                  roleName
+                  rolePermissions
+                  userEmails
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {"replaceACR_args": replace_acr_args}
+        response = self.execute(
+            query=query,
+            operation_name="MutationReplaceACR",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationReplaceACR.model_validate(data)
+
     def mutation_set_asset_groups_to_asset(
         self, set_asset_groups_to_asset_args: SetAssetGroupsToAssetInput, **kwargs: Any
     ) -> MutationSetAssetGroupsToAsset:
@@ -6515,6 +7616,71 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return MutationSetAssetsToAssetGroup.model_validate(data)
+
+    def mutation_set_org_user_status(
+        self, set_org_user_status_args: SetOrgUserStatusInput, **kwargs: Any
+    ) -> MutationSetOrgUserStatus:
+        query = gql(
+            """
+            mutation MutationSetOrgUserStatus($setOrgUserStatus_args: SetOrgUserStatusInput!) {
+              setOrgUserStatus(args: $setOrgUserStatus_args) {
+                user {
+                  id
+                  accessibleAssetCount
+                  acrs {
+                    id
+                    createdBy
+                    createdTime
+                    directPermissions
+                    entityId
+                    entityMemberCount
+                    entityName
+                    entityType
+                    expiresAt
+                    lastModifiedBy
+                    lastModifiedTime
+                    orgId
+                    resourceId
+                    resourceName
+                    resourceType
+                    roleId
+                    roleName
+                    rolePermissions
+                    userEmails
+                  }
+                  createdTime
+                  disabledAt
+                  disabledBy
+                  displayName
+                  email
+                  emailVerified
+                  isExternal
+                  lastModifiedTime
+                  lastSeenTime
+                  orgId
+                  permissionCount
+                  securityGroups {
+                    id
+                    maxRolePrecedence
+                    name
+                  }
+                  status
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "setOrgUserStatus_args": set_org_user_status_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationSetOrgUserStatus",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationSetOrgUserStatus.model_validate(data)
 
     def mutation_submit_rise_ai_analysis(
         self, submit_rise_ai_analysis_args: RiseAIAnalysisDataInput, **kwargs: Any
@@ -6567,6 +7733,41 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return MutationUpdateAssetGroup.model_validate(data)
+
+    def mutation_update_custom_role(
+        self, update_custom_role_args: UpdateCustomRoleInput, **kwargs: Any
+    ) -> MutationUpdateCustomRole:
+        query = gql(
+            """
+            mutation MutationUpdateCustomRole($updateCustomRole_args: UpdateCustomRoleInput!) {
+              updateCustomRole(args: $updateCustomRole_args) {
+                role {
+                  id
+                  description
+                  isBuiltin
+                  lastModifiedBy
+                  lastModifiedByEmail
+                  lastModifiedTime
+                  name
+                  orgId
+                  permissions
+                  precedence
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "updateCustomRole_args": update_custom_role_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationUpdateCustomRole",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationUpdateCustomRole.model_validate(data)
 
     def mutation_update_notification_configuration(
         self,
@@ -6651,6 +7852,44 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return MutationUpdateOrgLevelSettings.model_validate(data)
+
+    def mutation_update_security_group(
+        self, update_security_group_args: UpdateSecurityGroupInput, **kwargs: Any
+    ) -> MutationUpdateSecurityGroup:
+        query = gql(
+            """
+            mutation MutationUpdateSecurityGroup($updateSecurityGroup_args: UpdateSecurityGroupInput!) {
+              updateSecurityGroup(args: $updateSecurityGroup_args) {
+                securityGroup {
+                  id
+                  createdBy
+                  createdTime
+                  description
+                  lastModifiedTime
+                  lastSeenTime
+                  memberCount
+                  members {
+                    displayName
+                    email
+                    userId
+                  }
+                  name
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "updateSecurityGroup_args": update_security_group_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationUpdateSecurityGroup",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationUpdateSecurityGroup.model_validate(data)
 
     def mutation_user_action(
         self, user_action_args: UserActionInput, **kwargs: Any

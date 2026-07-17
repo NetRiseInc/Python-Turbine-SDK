@@ -571,9 +571,12 @@ class SbomVersion(str, Enum):
     VERSION_V1_4 = "VERSION_V1_4"
     VERSION_V1_5 = "VERSION_V1_5"
     VERSION_V1_6 = "VERSION_V1_6"
+    VERSION_V1_7 = "VERSION_V1_7"
     VERSION_V2_1 = "VERSION_V2_1"
     VERSION_V2_2 = "VERSION_V2_2"
     VERSION_V2_3 = "VERSION_V2_3"
+    VERSION_V3_0 = "VERSION_V3_0"
+    VERSION_V3_0_1 = "VERSION_V3_0_1"
 
 
 class SbomFormat(str, Enum):
@@ -1977,6 +1980,7 @@ class CycloneDxContributorsContactInfoType(str, Enum):
 
 class CycloneDxVersion(str, Enum):
     VERSION_UNSPECIFIED = "VERSION_UNSPECIFIED"
+    VERSION_V1_7 = "VERSION_V1_7"
     VERSION_V1_6 = "VERSION_V1_6"
     VERSION_V1_5 = "VERSION_V1_5"
     VERSION_V1_4 = "VERSION_V1_4"
@@ -1996,6 +2000,8 @@ class SpdxVersion(str, Enum):
     VERSION_V2_3 = "VERSION_V2_3"
     VERSION_V2_2 = "VERSION_V2_2"
     VERSION_V2_1 = "VERSION_V2_1"
+    VERSION_V3_0 = "VERSION_V3_0"
+    VERSION_V3_0_1 = "VERSION_V3_0_1"
 
 
 class SpdxFormat(str, Enum):
@@ -2237,22 +2243,44 @@ class JiraSystemCheckStatus(str, Enum):
     WARNING = "WARNING"
 
 
-class JiraSyncDirection(str, Enum):
-    JIRA_TO_NETRISE = "JIRA_TO_NETRISE"
-    NETRISE_TO_JIRA = "NETRISE_TO_JIRA"
+class JiraSetupMode(str, Enum):
+    SETUP = "SETUP"
+    RECONNECT = "RECONNECT"
 
 
-class JiraConnectionEventLogType(str, Enum):
-    SYNC = "SYNC"
-    WARNING = "WARNING"
-    AUTH = "AUTH"
-    ERROR = "ERROR"
+class JiraSetupStep(str, Enum):
+    AUTHORIZE = "AUTHORIZE"
+    INSTALL_APP = "INSTALL_APP"
+    SELECT_SPACES = "SELECT_SPACES"
 
 
-class JiraConnectionAlertType(str, Enum):
-    INFO = "INFO"
-    ERROR = "ERROR"
-    WARNING = "WARNING"
+class JiraSetupStepStatus(str, Enum):
+    PENDING = "PENDING"
+    ACTIVE = "ACTIVE"
+    WAITING = "WAITING"
+    COMPLETED = "COMPLETED"
+
+
+class JiraSetupActionType(str, Enum):
+    OPEN_ATLASSIAN = "OPEN_ATLASSIAN"
+    CONTINUE = "CONTINUE"
+    OPEN_MARKETPLACE = "OPEN_MARKETPLACE"
+    FINISH_SETUP = "FINISH_SETUP"
+    WAITING = "WAITING"
+    RECONNECT = "RECONNECT"
+
+
+class JiraSetupAction(str, Enum):
+    START = "START"
+    START_AUTHORIZATION = "START_AUTHORIZATION"
+    RETRY_AUTHORIZATION = "RETRY_AUTHORIZATION"
+    SELECT_SITE = "SELECT_SITE"
+    OPEN_MARKETPLACE = "OPEN_MARKETPLACE"
+    POLL_STATUS = "POLL_STATUS"
+    UPDATE_SPACE_SELECTION = "UPDATE_SPACE_SELECTION"
+    FINISH_SETUP = "FINISH_SETUP"
+    CANCEL = "CANCEL"
+    START_RECONNECT = "START_RECONNECT"
 
 
 class MisconfigurationCategoryType(str, Enum):
