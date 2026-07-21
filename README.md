@@ -74,6 +74,27 @@ for asset in sdk.iter_assets_relay_summary(page_size=100):
             print(asset.name, vuln.cve, vuln.severity, vuln.cvss_score)
 ```
 
+## Custom headers
+
+`TurbineClient` can attach extra HTTP headers to every GraphQL request — useful when your organization has been given a header-based exemption (e.g. a rate-limit bypass secret):
+
+```python
+from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
+
+sdk = TurbineClient(
+    TurbineClientConfig.from_env(),
+    extra_headers={"X-RateLimit-Bypass": "<your-secret>"},
+)
+```
+
+Or set the `TURBINE_EXTRA_HEADERS` environment variable (a JSON object) — no code changes needed, and the `turbine` CLI picks it up too:
+
+```bash
+TURBINE_EXTRA_HEADERS='{"X-RateLimit-Bypass": "<your-secret>"}'
+```
+
+An explicit `extra_headers=` argument takes precedence over the environment variable (pass `{}` to disable it). The `Authorization` header is always managed by the client and cannot be overridden.
+
 ## File listing
 
 `list_files` returns the complete recursive file listing for an asset in one call:

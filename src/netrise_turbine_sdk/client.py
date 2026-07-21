@@ -228,6 +228,13 @@ class TurbineClient:
             ``None`` disables per-second rate limiting.
         rate_limit_per_minute: Max requests per minute across this client.
             ``None`` disables per-minute rate limiting.
+        extra_headers: Additional HTTP headers sent with every GraphQL
+            request (e.g. ``{"X-RateLimit-Bypass": "secret"}``). The
+            ``Authorization`` header managed by the client always takes
+            precedence over any conflicting entry. When ``None`` (default),
+            the ``TURBINE_EXTRA_HEADERS`` environment variable is consulted:
+            it must contain a JSON object of string keys/values. Pass an
+            explicit ``{}`` to disable the environment fallback.
     """
 
     def __init__(
@@ -243,6 +250,7 @@ class TurbineClient:
         max_in_flight: Optional[int] = None,
         rate_limit_per_second: Optional[float] = None,
         rate_limit_per_minute: Optional[float] = None,
+        extra_headers: Optional[Dict[str, str]] = None,
     ) -> None:
         self._config = config
         self._timeout = timeout
@@ -256,6 +264,11 @@ class TurbineClient:
         self._max_in_flight = max_in_flight
         self._rate_limit_per_second = rate_limit_per_second
         self._rate_limit_per_minute = rate_limit_per_minute
+        self._extra_headers: Dict[str, str] = (
+            dict(extra_headers)
+            if extra_headers is not None
+            else _parse_extra_headers_env()
+        )
 
         self._cached_token: Optional[str] = None
         self._cached_token_expires_at: float = 0.0
@@ -373,7 +386,8 @@ class TurbineClient:
                 "TurbineClient is closed; construct a new instance to issue more queries"
             )
 
-        headers = self._get_auth_header()
+        # Auth header last so extra headers can never override Authorization.
+        headers = {**self._extra_headers, **self._get_auth_header()}
 
         if self._graphql_client is not None:
             self._graphql_client.http_client.headers.update(headers)
@@ -1608,6 +1622,36 @@ def _attr_matcher(
     if not allowed:
         return None
     return lambda row: str(getattr(row, attr, "")).upper() in allowed
+
+
+def _parse_extra_headers_env() -> Dict[str, str]:
+    """Parse ``TURBINE_EXTRA_HEADERS`` into a header dict.
+
+    The variable must hold a JSON object with string keys and string values,
+    e.g. ``TURBINE_EXTRA_HEADERS='{"X-RateLimit-Bypass": "secret"}'``.
+    Returns ``{}`` when the variable is unset or blank. Raises ``ValueError``
+    on malformed content — this often carries a credential, so silently
+    dropping it would be worse than failing loudly.
+    """
+    import json
+
+    raw = (os.getenv("TURBINE_EXTRA_HEADERS") or "").strip()
+    if not raw:
+        return {}
+    try:
+        parsed = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise ValueError(
+            f"TURBINE_EXTRA_HEADERS is not valid JSON: {exc}"
+        ) from exc
+    if not isinstance(parsed, dict) or not all(
+        isinstance(k, str) and isinstance(v, str) for k, v in parsed.items()
+    ):
+        raise ValueError(
+            "TURBINE_EXTRA_HEADERS must be a JSON object of string keys and "
+            'string values, e.g. {"X-RateLimit-Bypass": "secret"}'
+        )
+    return parsed
 
 
 def _strip_or_none(v: Optional[str]) -> Optional[str]:
