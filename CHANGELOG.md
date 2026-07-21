@@ -6,6 +6,10 @@ All notable changes to `netrise-turbine-sdk` are documented here.
 
 ### Added
 
+- `TurbineClient` accepts `extra_headers=` (keyword-only) to send custom HTTP
+  headers with every GraphQL request, with a `TURBINE_EXTRA_HEADERS` env-var
+  fallback (JSON object) that the CLI inherits automatically. The
+  `Authorization` header always takes precedence and cannot be overridden.
 - REST-friendly SDK helpers: `iter_assets`, `iter_assets_full`,
   `iter_assets_summary`, `get_asset`, and `get_vulnerability`.
 - Convenience filtering via iterator keyword arguments and `where(...)`.
