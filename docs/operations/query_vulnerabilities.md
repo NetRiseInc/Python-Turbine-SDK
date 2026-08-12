@@ -51,6 +51,7 @@ Lookups: `field=` (exact), `field__contains=`, `field__in=`, `field__gt=`, `fiel
 | `vulnerabilities.edges[].node.id` | `string` | no |
 | `vulnerabilities.edges[].node.attackComplexity` | `string` | yes |
 | `vulnerabilities.edges[].node.attackVector` | `string` | yes |
+| `vulnerabilities.edges[].node.componentId` | `string` | yes |
 | `vulnerabilities.edges[].node.correlations[]` | `object` | yes |
 | `vulnerabilities.edges[].node.correlations[].artifact` | `string` | yes |
 | `vulnerabilities.edges[].node.correlations[].assetId` | `string` | yes |
@@ -85,6 +86,12 @@ Lookups: `field=` (exact), `field__contains=`, `field__in=`, `field__gt=`, `fiel
 | `vulnerabilities.edges[].node.maturity` | `string` | yes |
 | `vulnerabilities.edges[].node.name` | `string` | yes |
 | `vulnerabilities.edges[].node.severity` | `string` | yes |
+| `vulnerabilities.edges[].node.ssvc` | `object` | yes |
+| `vulnerabilities.edges[].node.ssvc.automatable` | `boolean` | yes |
+| `vulnerabilities.edges[].node.ssvc.dateAccessed` | `string` | yes |
+| `vulnerabilities.edges[].node.ssvc.exploitation` | `SsvcExploitation` | yes |
+| `vulnerabilities.edges[].node.ssvc.source` | `string` | yes |
+| `vulnerabilities.edges[].node.ssvc.technicalImpact` | `SsvcTechnicalImpact` | yes |
 | `vulnerabilities.edges[].node.vendor` | `string` | yes |
 | `vulnerabilities.edges[].node.version` | `string` | yes |
 | `vulnerabilities.pageInfo` | `object` | no |

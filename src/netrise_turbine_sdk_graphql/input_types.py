@@ -67,6 +67,7 @@ from .enums import (
     OrgUserStatus,
     PrivateKeysField,
     PublicKeysField,
+    RemediatedVulnerabilitiesByAssetSortField,
     RemediationResponses,
     RiskCategoryFilter,
     SbomFormat,
@@ -80,6 +81,7 @@ from .enums import (
     SiftSearchType,
     SortOrder,
     SpdxVersion,
+    SsvcCategorizationFilter,
     UserActionEnum,
     UserManagementEventSelection,
     VexJustification,
@@ -89,6 +91,7 @@ from .enums import (
     VulnerabilityField,
     VulnerabilityOverviewFilterField,
     VulnerabilityOverviewSortField,
+    VulnerabilityRemediationStatus,
     VulnerabilitySortField,
 )
 
@@ -1337,18 +1340,7 @@ class GetDependencyReachabilityInput(BaseModel):
 class VulnerabilityJiraTicketsInput(BaseModel):
     asset_id: str = Field(alias="assetId")
     advisory_id: str = Field(alias="advisoryId")
-    identification_ids: Optional[list[str]] = Field(
-        alias="identificationIds", default=None
-    )
-
-
-class JiraIntegrationUnlinkVulnerabilityTicketInput(BaseModel):
-    asset_id: str = Field(alias="assetId")
-    advisory_id: str = Field(alias="advisoryId")
-    identification_ids: Optional[list[str]] = Field(
-        alias="identificationIds", default=None
-    )
-    ticket_id: str = Field(alias="ticketId")
+    component_id: str = Field(alias="componentId")
 
 
 class JiraIntegrationDeleteConnectedSpaceInput(BaseModel):
@@ -1357,6 +1349,77 @@ class JiraIntegrationDeleteConnectedSpaceInput(BaseModel):
 
 class JiraIntegrationAddConnectedSpaceInput(BaseModel):
     space_id: Optional[str] = Field(alias="spaceId", default=None)
+
+
+class JiraSpaceIssueTypesInput(BaseModel):
+    space_id: str = Field(alias="spaceId")
+
+
+class JiraSpaceIssueFieldsInput(BaseModel):
+    space_id: str = Field(alias="spaceId")
+    issue_type_id: str = Field(alias="issueTypeId")
+
+
+class JiraProjectUsersInput(BaseModel):
+    space_id: str = Field(alias="spaceId")
+    query: str
+    max_results: Optional[int] = Field(alias="maxResults", default=None)
+
+
+class JiraProjectVersionsInput(BaseModel):
+    space_id: str = Field(alias="spaceId")
+    include_released: Optional[bool] = Field(alias="includeReleased", default=None)
+    include_archived: Optional[bool] = Field(alias="includeArchived", default=None)
+    max_results: Optional[int] = Field(alias="maxResults", default=None)
+
+
+class JiraProjectComponentsInput(BaseModel):
+    space_id: str = Field(alias="spaceId")
+    max_results: Optional[int] = Field(alias="maxResults", default=None)
+
+
+class JiraProjectLabelsInput(BaseModel):
+    space_id: str = Field(alias="spaceId")
+    query: str
+    max_results: Optional[int] = Field(alias="maxResults", default=None)
+
+
+class JiraProjectSprintsInput(BaseModel):
+    space_id: str = Field(alias="spaceId")
+    query: str
+    include_closed: Optional[bool] = Field(alias="includeClosed", default=None)
+    max_results: Optional[int] = Field(alias="maxResults", default=None)
+
+
+class JiraProjectTeamsInput(BaseModel):
+    space_id: str = Field(alias="spaceId")
+    query: str
+    max_results: Optional[int] = Field(alias="maxResults", default=None)
+
+
+class JiraFieldValueInput(BaseModel):
+    key: str
+    values: list[str]
+    schema_type: str = Field(alias="schemaType")
+    schema_custom: Optional[str] = Field(alias="schemaCustom", default=None)
+    "Jira schema.custom URI for custom fields."
+    item_type: Optional[str] = Field(alias="itemType", default=None)
+    "Jira schema.items for array fields. Empty/omitted for non-array fields."
+
+
+class JiraVulnerabilityRefInput(BaseModel):
+    asset_id: str = Field(alias="assetId")
+    component_id: str = Field(alias="componentId")
+    vulnerability_id: str = Field(alias="vulnerabilityId")
+
+
+class JiraIntegrationCreateIssueInput(BaseModel):
+    space_id: str = Field(alias="spaceId")
+    issue_type_id: str = Field(alias="issueTypeId")
+    summary: str
+    description: str
+    fields: Optional[list["JiraFieldValueInput"]] = None
+    vulnerability: Optional["JiraVulnerabilityRefInput"] = None
 
 
 class JiraIntegrationSetupActionInput(BaseModel):
@@ -1641,6 +1704,26 @@ class CreateAllAssetVulnerabilitiesRemediationInput(BaseModel):
     status: VexStatus
 
 
+class VulnerabilityRemediationSummaryInput(BaseModel):
+    asset_group_ids: Optional[list[str]] = Field(alias="assetGroupIds", default=None)
+    "Optionally limit the org-wide counts to the assets in these asset groups."
+
+
+class RemediatedVulnerabilitiesByAssetSort(BaseModel):
+    field: Optional[RemediatedVulnerabilitiesByAssetSortField] = None
+    order: Optional[SortOrder] = None
+
+
+class RemediatedVulnerabilitiesByAssetInput(BaseModel):
+    cursor: "Cursor"
+    status: VulnerabilityRemediationStatus
+    "Which remediation-status bucket to group by asset; UNSPECIFIED is rejected."
+    sort: Optional["RemediatedVulnerabilitiesByAssetSort"] = None
+    "Optional server-side sort for the grouped-by-asset list."
+    asset_group_ids: Optional[list[str]] = Field(alias="assetGroupIds", default=None)
+    "Optionally limit the listing to the assets in these asset groups."
+
+
 class VulnerabilityOverviewInput(BaseModel):
     filter: Optional["VulnerabilityOverviewFilter"] = None
     sort: Optional["VulnerabilityOverviewSort"] = None
@@ -1670,6 +1753,9 @@ class VulnerabilityOverviewFilter(BaseModel):
     vulnerability_id: Optional[str] = Field(alias="vulnerabilityId", default=None)
     priority_score_str: Optional[str] = Field(alias="priorityScoreStr", default=None)
     severity: Optional[Severity] = None
+    ssvc_categorization: Optional[SsvcCategorizationFilter] = Field(
+        alias="ssvcCategorization", default=None
+    )
     fields: Optional[list[Optional["VulnerabilityOverviewFieldFilter"]]] = None
 
 
@@ -1816,6 +1902,7 @@ DependencyFilter.model_rebuild()
 DependencyAnalyticFilter.model_rebuild()
 GroupedDependencyFilter.model_rebuild()
 ValueFilter.model_rebuild()
+JiraIntegrationCreateIssueInput.model_rebuild()
 MisconfigurationsInput.model_rebuild()
 MisconfigurationsFilter.model_rebuild()
 CreateAcrInput.model_rebuild()
@@ -1824,6 +1911,7 @@ UsersInput.model_rebuild()
 CreateAssetVulnerabilityRemediationInput.model_rebuild()
 CreateAssetVulnerabilityRemediationsInput.model_rebuild()
 CreateAllAssetVulnerabilitiesRemediationInput.model_rebuild()
+RemediatedVulnerabilitiesByAssetInput.model_rebuild()
 VulnerabilityOverviewInput.model_rebuild()
 VulnerabilityOverviewFilter.model_rebuild()
 PaginatedVulnerabilitiesInput.model_rebuild()

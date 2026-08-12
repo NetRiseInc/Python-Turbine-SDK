@@ -224,6 +224,12 @@ Find specific vulnerabilities matching a provided component identifier or packag
 | `matchVulnerabilities[].references[].refsource` | `string` | no |
 | `matchVulnerabilities[].references[].url` | `string` | no |
 | `matchVulnerabilities[].severity` | `string` | no |
+| `matchVulnerabilities[].ssvc` | `object` | yes |
+| `matchVulnerabilities[].ssvc.automatable` | `boolean` | yes |
+| `matchVulnerabilities[].ssvc.dateAccessed` | `string` | yes |
+| `matchVulnerabilities[].ssvc.exploitation` | `SsvcExploitation` | yes |
+| `matchVulnerabilities[].ssvc.source` | `string` | yes |
+| `matchVulnerabilities[].ssvc.technicalImpact` | `SsvcTechnicalImpact` | yes |
 | `matchVulnerabilities[].tags[]` | `string` | yes |
 | `matchVulnerabilities[].updatedDatetime` | `string` | no |
 

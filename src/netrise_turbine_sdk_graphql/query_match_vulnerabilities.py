@@ -8,6 +8,8 @@ from pydantic import Field
 from .base_model import BaseModel
 from .enums import (
     RemediationResponses,
+    SsvcExploitation,
+    SsvcTechnicalImpact,
     VexJustification,
     VexStatus,
     VulnerabilityNVDStatus,
@@ -48,6 +50,7 @@ class QueryMatchVulnerabilitiesMatchVulnerabilities(BaseModel):
         list["QueryMatchVulnerabilitiesMatchVulnerabilitiesReferences"]
     ]
     severity: str
+    ssvc: Optional["QueryMatchVulnerabilitiesMatchVulnerabilitiesSsvc"]
     tags: Optional[list[str]]
     updated_datetime: str = Field(alias="updatedDatetime")
 
@@ -400,6 +403,14 @@ class QueryMatchVulnerabilitiesMatchVulnerabilitiesReferences(BaseModel):
     name: Optional[str]
     refsource: str
     url: str
+
+
+class QueryMatchVulnerabilitiesMatchVulnerabilitiesSsvc(BaseModel):
+    automatable: Optional[bool]
+    date_accessed: Optional[str] = Field(alias="dateAccessed")
+    exploitation: Optional[SsvcExploitation]
+    source: Optional[str]
+    technical_impact: Optional[SsvcTechnicalImpact] = Field(alias="technicalImpact")
 
 
 QueryMatchVulnerabilities.model_rebuild()

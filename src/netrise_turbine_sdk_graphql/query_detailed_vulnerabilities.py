@@ -6,6 +6,7 @@ from typing import Optional
 from pydantic import Field
 
 from .base_model import BaseModel
+from .enums import SsvcExploitation, SsvcTechnicalImpact
 
 
 class QueryDetailedVulnerabilities(BaseModel):
@@ -55,6 +56,7 @@ class QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNode(BaseModel):
         list["QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNodeReferences"]
     ]
     severity: Optional[str]
+    ssvc: Optional["QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNodeSsvc"]
     updated_datetime: Optional[str] = Field(alias="updatedDatetime")
 
 
@@ -300,6 +302,14 @@ class QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNodeReferences(Bas
     name: Optional[str]
     refsource: str
     url: str
+
+
+class QueryDetailedVulnerabilitiesDetailedVulnerabilitiesEdgesNodeSsvc(BaseModel):
+    automatable: Optional[bool]
+    date_accessed: Optional[str] = Field(alias="dateAccessed")
+    exploitation: Optional[SsvcExploitation]
+    source: Optional[str]
+    technical_impact: Optional[SsvcTechnicalImpact] = Field(alias="technicalImpact")
 
 
 class QueryDetailedVulnerabilitiesDetailedVulnerabilitiesPageInfo(BaseModel):
