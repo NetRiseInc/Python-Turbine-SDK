@@ -26,6 +26,10 @@ Access high-level risk data and charts for organization dashboards.
 | `analytics.knownExploitedVulnerabilities.affectedAssets` | `integer` | yes |
 | `analytics.knownExploitedVulnerabilities.pastDue` | `integer` | yes |
 | `analytics.knownExploitedVulnerabilities.uniqueKevs` | `integer` | yes |
+| `analytics.ssvcCategorizationSummary` | `object` | no |
+| `analytics.ssvcCategorizationSummary.activeAutomatablePartial` | `integer` | yes |
+| `analytics.ssvcCategorizationSummary.activeAutomatableTotal` | `integer` | yes |
+| `analytics.ssvcCategorizationSummary.kevActiveAutomatableTotal` | `integer` | yes |
 | `analytics.vulnerabilitiesByAge[]` | `object` | no |
 | `analytics.vulnerabilitiesByAge[].age` | `string` | yes |
 | `analytics.vulnerabilitiesByAge[].ageGroupId` | `integer` | no |

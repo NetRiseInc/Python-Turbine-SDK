@@ -686,6 +686,13 @@ cfg = TurbineClientConfig.from_env(load_env_file=False)
 - [mutation_delete_notification_configuration](operations/mutation_delete_notification_configuration.md): Permanently delete a notification configuration by its ID.
 - [mutation_delete_security_group](operations/mutation_delete_security_group.md): Permanently delete a security group from the organization.
 - [mutation_invite_user](operations/mutation_invite_user.md): Invite a user to the organization with a role and optional security group memberships.
+- [mutation_jira_integration_add_connected_space](operations/mutation_jira_integration_add_connected_space.md): Add a Jira space to the integration's connected spaces list.
+- [mutation_jira_integration_create_issue](operations/mutation_jira_integration_create_issue.md): Create a Jira issue and optionally link it to a vulnerability finding.
+- [mutation_jira_integration_delete_connected_space](operations/mutation_jira_integration_delete_connected_space.md): Remove a connected Jira space from the integration.
+- [mutation_jira_integration_disconnect](operations/mutation_jira_integration_disconnect.md): Disconnect the Jira integration from the organization.
+- [mutation_jira_integration_reconnect](operations/mutation_jira_integration_reconnect.md): Re-enable a Jira installation when the OAuth and app install steps are already complete.
+- [mutation_jira_integration_setup_action](operations/mutation_jira_integration_setup_action.md): Perform an action in the Jira integration setup or reconnect flow.
+- [mutation_jira_integration_test_connection](operations/mutation_jira_integration_test_connection.md): Verify that the Jira integration connection is healthy.
 - [mutation_notify_notification_configuration](operations/mutation_notify_notification_configuration.md): Send a test notification using an existing notification configuration.
 - [mutation_remediate_all_asset_vulnerabilities](operations/mutation_remediate_all_asset_vulnerabilities.md): Apply a remediation status to all vulnerabilities matching specific filters.
 - [mutation_remediate_asset_vulnerabilities](operations/mutation_remediate_asset_vulnerabilities.md): Bulk apply VEX remediation status to multiple vulnerabilities on assets.
@@ -758,6 +765,16 @@ cfg = TurbineClientConfig.from_env(load_env_file=False)
 - [query_grouped_dependencies](operations/query_grouped_dependencies.md): View dependencies aggregated by vendor, license, or specific component type.
 - [query_hashes](operations/query_hashes.md): List cryptographic hashes for files identified within the asset filesystem.
 - [query_identified_components_preview](operations/query_identified_components_preview.md): Return organization-wide component counts filtered by enabled identification methods, with before/after deltas when verification settings change.
+- [query_jira_integration](operations/query_jira_integration.md): Retrieve the Jira integration summary and connection health details.
+- [query_jira_integration_setup](operations/query_jira_integration_setup.md): Retrieve the current state of the Jira integration setup wizard.
+- [query_jira_project_components](operations/query_jira_project_components.md): List the Jira project components available for a connected space.
+- [query_jira_project_labels](operations/query_jira_project_labels.md): Search the Jira labels available for a connected space; labels are instance-global.
+- [query_jira_project_sprints](operations/query_jira_project_sprints.md): Search the Jira sprints available for a connected space.
+- [query_jira_project_teams](operations/query_jira_project_teams.md): Search the Atlassian Teams available for a connected Jira space.
+- [query_jira_project_users](operations/query_jira_project_users.md): Search the assignable Jira users for a connected space.
+- [query_jira_project_versions](operations/query_jira_project_versions.md): List the Jira project versions available for a connected space.
+- [query_jira_space_issue_fields](operations/query_jira_space_issue_fields.md): Retrieve the creatable fields, including priority options, for a Jira space and issue type.
+- [query_jira_space_issue_types](operations/query_jira_space_issue_types.md): Retrieve the issue types available for a connected Jira space.
 - [query_license](operations/query_license.md): Retrieve detailed information for a specific software license.
 - [query_license_issue](operations/query_license_issue.md): Get details about a specific license compliance issue.
 - [query_license_issues](operations/query_license_issues.md): List license compliance issues identified across asset components.
@@ -790,6 +807,7 @@ cfg = TurbineClientConfig.from_env(load_env_file=False)
 - [query_private_keys](operations/query_private_keys.md): Detect private cryptographic keys stored insecurely on the asset filesystem.
 - [query_public_key_external_filters](operations/query_public_key_external_filters.md): Retrieve available filter options for public key queries.
 - [query_public_keys](operations/query_public_keys.md): List public cryptographic keys found within the asset's file system.
+- [query_remediated_vulnerabilities_by_asset](operations/query_remediated_vulnerabilities_by_asset.md): List remediated vulnerabilities grouped by asset for a single remediation-status bucket, with pagination, filtering, and sorting.
 - [query_rise_ai_analysis_data](operations/query_rise_ai_analysis_data.md): Check for the contents of the RISE AI analysis report.
 - [query_rise_ai_availability](operations/query_rise_ai_availability.md): Check eligibility and status of RISE AI analysis for an asset.
 - [query_search](operations/query_search.md): Execute keyword searches across all artifacts and files in organization.
@@ -807,4 +825,6 @@ cfg = TurbineClientConfig.from_env(load_env_file=False)
 - [query_vulnerabilities_overview](operations/query_vulnerabilities_overview.md): Get a summary of vulnerability counts and severity across assets.
 - [query_vulnerability](operations/query_vulnerability.md): Retrieve detailed metadata, scores, and descriptions for a specific vulnerability.
 - [query_vulnerability_external_filters](operations/query_vulnerability_external_filters.md): Count vulnerabilities matching external threat feeds like CISA or botnets.
+- [query_vulnerability_jira_tickets](operations/query_vulnerability_jira_tickets.md): Retrieve the Jira tickets linked to a vulnerability finding on an asset.
 - [query_vulnerability_lite](operations/query_vulnerability_lite.md): Retrieve a single vulnerability with preferred CVSS v3.1 score only — drops full v2/v4 impact blocks, exploit references, and problem type details.
+- [query_vulnerability_remediation_summary](operations/query_vulnerability_remediation_summary.md): Get org-wide counts of applied VEX remediation statuses, grouped into the overview remediation-status buckets.

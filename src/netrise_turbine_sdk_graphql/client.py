@@ -62,6 +62,19 @@ from .input_types import (
     IdentifiedComponentsPreviewInput,
     InviteOrgUserInput,
     InviteUserInput,
+    JiraIntegrationAddConnectedSpaceInput,
+    JiraIntegrationCreateIssueInput,
+    JiraIntegrationDeleteConnectedSpaceInput,
+    JiraIntegrationSetupActionInput,
+    JiraIntegrationSetupInput,
+    JiraProjectComponentsInput,
+    JiraProjectLabelsInput,
+    JiraProjectSprintsInput,
+    JiraProjectTeamsInput,
+    JiraProjectUsersInput,
+    JiraProjectVersionsInput,
+    JiraSpaceIssueFieldsInput,
+    JiraSpaceIssueTypesInput,
     LicenseInput,
     LicenseIssueInput,
     LicenseIssuesExternalFiltersInput,
@@ -85,6 +98,7 @@ from .input_types import (
     PublicKeyExternalFiltersInput,
     PublicKeysInput,
     RemediateCertificatesInput,
+    RemediatedVulnerabilitiesByAssetInput,
     RemediateLicenseIssuesInput,
     RemediatePrivateKeysInput,
     RemediatePublicKeysInput,
@@ -117,7 +131,9 @@ from .input_types import (
     UsersInput,
     VulnerabilityExternalFiltersInput,
     VulnerabilityInput,
+    VulnerabilityJiraTicketsInput,
     VulnerabilityOverviewInput,
+    VulnerabilityRemediationSummaryInput,
     packageDependenciesByIdInput,
 )
 from .mutation_add_asset_groups_to_assets import MutationAddAssetGroupsToAssets
@@ -146,6 +162,19 @@ from .mutation_delete_notification_configuration import (
 )
 from .mutation_delete_security_group import MutationDeleteSecurityGroup
 from .mutation_invite_user import MutationInviteUser
+from .mutation_jira_integration_add_connected_space import (
+    MutationJiraIntegrationAddConnectedSpace,
+)
+from .mutation_jira_integration_create_issue import MutationJiraIntegrationCreateIssue
+from .mutation_jira_integration_delete_connected_space import (
+    MutationJiraIntegrationDeleteConnectedSpace,
+)
+from .mutation_jira_integration_disconnect import MutationJiraIntegrationDisconnect
+from .mutation_jira_integration_reconnect import MutationJiraIntegrationReconnect
+from .mutation_jira_integration_setup_action import MutationJiraIntegrationSetupAction
+from .mutation_jira_integration_test_connection import (
+    MutationJiraIntegrationTestConnection,
+)
 from .mutation_notify_notification_configuration import (
     MutationNotifyNotificationConfiguration,
 )
@@ -228,6 +257,16 @@ from .query_get_vuln_reachability import QueryGetVulnReachability
 from .query_grouped_dependencies import QueryGroupedDependencies
 from .query_hashes import QueryHashes
 from .query_identified_components_preview import QueryIdentifiedComponentsPreview
+from .query_jira_integration import QueryJiraIntegration
+from .query_jira_integration_setup import QueryJiraIntegrationSetup
+from .query_jira_project_components import QueryJiraProjectComponents
+from .query_jira_project_labels import QueryJiraProjectLabels
+from .query_jira_project_sprints import QueryJiraProjectSprints
+from .query_jira_project_teams import QueryJiraProjectTeams
+from .query_jira_project_users import QueryJiraProjectUsers
+from .query_jira_project_versions import QueryJiraProjectVersions
+from .query_jira_space_issue_fields import QueryJiraSpaceIssueFields
+from .query_jira_space_issue_types import QueryJiraSpaceIssueTypes
 from .query_license import QueryLicense
 from .query_license_issue import QueryLicenseIssue
 from .query_license_issues import QueryLicenseIssues
@@ -260,6 +299,9 @@ from .query_private_key_external_filters import QueryPrivateKeyExternalFilters
 from .query_private_keys import QueryPrivateKeys
 from .query_public_key_external_filters import QueryPublicKeyExternalFilters
 from .query_public_keys import QueryPublicKeys
+from .query_remediated_vulnerabilities_by_asset import (
+    QueryRemediatedVulnerabilitiesByAsset,
+)
 from .query_rise_ai_analysis_data import QueryRiseAIAnalysisData
 from .query_rise_ai_availability import QueryRiseAIAvailability
 from .query_search import QuerySearch
@@ -277,7 +319,11 @@ from .query_vulnerabilities_lite import QueryVulnerabilitiesLite
 from .query_vulnerabilities_overview import QueryVulnerabilitiesOverview
 from .query_vulnerability import QueryVulnerability
 from .query_vulnerability_external_filters import QueryVulnerabilityExternalFilters
+from .query_vulnerability_jira_tickets import QueryVulnerabilityJiraTickets
 from .query_vulnerability_lite import QueryVulnerabilityLite
+from .query_vulnerability_remediation_summary import (
+    QueryVulnerabilityRemediationSummary,
+)
 
 
 def gql(q: str) -> str:
@@ -727,6 +773,8 @@ class Client(BaseClient):
                   node {
                     id
                     activityType
+                    assetId
+                    assetName
                     correlationId
                     createdAt
                     description
@@ -758,12 +806,14 @@ class Client(BaseClient):
                       ... on IdentificationAddedPayload {
                         identificationId
                         name
+                        remediationAction
                         vendor
                         version
                       }
                       ... on IdentificationRemovedPayload {
                         identificationId
                         name
+                        remediationAction
                         vendor
                         version
                       }
@@ -784,6 +834,7 @@ class Client(BaseClient):
                         description
                         severity
                         vexJustification
+                        vexStatus
                         vulnerabilityId
                       }
                       ... on VulnerabilityUpdatedPayload {
@@ -825,12 +876,37 @@ class Client(BaseClient):
                         componentVersion
                         issueName
                       }
+                      ... on GroupCreatedPayload {
+                        description
+                        groupId
+                        name
+                      }
+                      ... on GroupUpdatedPayload {
+                        description
+                        groupId
+                        name
+                      }
+                      ... on GroupDeletedPayload {
+                        groupId
+                        name
+                      }
+                      ... on GroupMembershipChangedPayload {
+                        groupId
+                        membersAdded
+                        membersRemoved
+                        name
+                      }
+                      ... on OrgSettingsUpdatedPayload {
+                        _empty
+                      }
                       ... on UnspecifiedPayload {
                         payloadType
                         rawData
                       }
                     }
                     entityType
+                    orgId
+                    orgName
                     user
                   }
                 }
@@ -872,6 +948,11 @@ class Client(BaseClient):
                   affectedAssets
                   pastDue
                   uniqueKevs
+                }
+                ssvcCategorizationSummary {
+                  activeAutomatablePartial
+                  activeAutomatableTotal
+                  kevActiveAutomatableTotal
                 }
                 vulnerabilitiesByAge {
                   age
@@ -2228,6 +2309,13 @@ class Client(BaseClient):
                       url
                     }
                     severity
+                    ssvc {
+                      automatable
+                      dateAccessed
+                      exploitation
+                      source
+                      technicalImpact
+                    }
                     updatedDatetime
                   }
                 }
@@ -3191,6 +3279,354 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return QueryIdentifiedComponentsPreview.model_validate(data)
+
+    def query_jira_integration(self, **kwargs: Any) -> QueryJiraIntegration:
+        query = gql(
+            """
+            query QueryJiraIntegration {
+              jiraIntegration {
+                apiConnectivityActive
+                connectionHealth {
+                  addableSpaces {
+                    id
+                    avatarUrl
+                    name
+                    openTicketsCount
+                    selected
+                  }
+                  connectedSpaces {
+                    id
+                    avatarUrl
+                    category
+                    iconColorIndex
+                    name
+                    openTicketsCount
+                    projectKey
+                  }
+                  connectionStatusLabel
+                  instanceUrl
+                  metrics {
+                    connectedSpaces
+                    lastSync
+                  }
+                  systemChecks {
+                    id
+                    description
+                    status
+                    title
+                  }
+                }
+                instanceUrl
+                jiraAppInstalledComplete
+                jiraInstallationId
+                lastUpdated
+                oauthInstallStepComplete
+                oauthTokenActive
+                spacesCount
+                status
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {}
+        response = self.execute(
+            query=query,
+            operation_name="QueryJiraIntegration",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryJiraIntegration.model_validate(data)
+
+    def query_jira_integration_setup(
+        self,
+        jira_integration_setup_args: Union[
+            Optional[JiraIntegrationSetupInput], UnsetType
+        ] = UNSET,
+        **kwargs: Any
+    ) -> QueryJiraIntegrationSetup:
+        query = gql(
+            """
+            query QueryJiraIntegrationSetup($jiraIntegrationSetup_args: JiraIntegrationSetupInput) {
+              jiraIntegrationSetup(args: $jiraIntegrationSetup_args) {
+                appVersion
+                availableSites {
+                  id
+                  selectable
+                  url
+                }
+                availableSpaces {
+                  id
+                  avatarUrl
+                  name
+                  openTicketsCount
+                  selected
+                }
+                currentStep
+                error {
+                  message
+                  title
+                }
+                instanceUrl
+                mode
+                primaryAction {
+                  actionType
+                  disabled
+                  label
+                  loading
+                  url
+                }
+                reconnectSummary {
+                  connectedSpacesCount
+                }
+                selectedSiteId
+                selectedSpaceIds
+                steps {
+                  description
+                  detail
+                  status
+                  step
+                  title
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "jiraIntegrationSetup_args": jira_integration_setup_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryJiraIntegrationSetup",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryJiraIntegrationSetup.model_validate(data)
+
+    def query_jira_project_components(
+        self, jira_project_components_args: JiraProjectComponentsInput, **kwargs: Any
+    ) -> QueryJiraProjectComponents:
+        query = gql(
+            """
+            query QueryJiraProjectComponents($jiraProjectComponents_args: JiraProjectComponentsInput!) {
+              jiraProjectComponents(args: $jiraProjectComponents_args) {
+                id
+                description
+                name
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "jiraProjectComponents_args": jira_project_components_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryJiraProjectComponents",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryJiraProjectComponents.model_validate(data)
+
+    def query_jira_project_labels(
+        self, jira_project_labels_args: JiraProjectLabelsInput, **kwargs: Any
+    ) -> QueryJiraProjectLabels:
+        query = gql(
+            """
+            query QueryJiraProjectLabels($jiraProjectLabels_args: JiraProjectLabelsInput!) {
+              jiraProjectLabels(args: $jiraProjectLabels_args) {
+                name
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "jiraProjectLabels_args": jira_project_labels_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryJiraProjectLabels",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryJiraProjectLabels.model_validate(data)
+
+    def query_jira_project_sprints(
+        self, jira_project_sprints_args: JiraProjectSprintsInput, **kwargs: Any
+    ) -> QueryJiraProjectSprints:
+        query = gql(
+            """
+            query QueryJiraProjectSprints($jiraProjectSprints_args: JiraProjectSprintsInput!) {
+              jiraProjectSprints(args: $jiraProjectSprints_args) {
+                id
+                boardId
+                endDate
+                name
+                startDate
+                state
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "jiraProjectSprints_args": jira_project_sprints_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryJiraProjectSprints",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryJiraProjectSprints.model_validate(data)
+
+    def query_jira_project_teams(
+        self, jira_project_teams_args: JiraProjectTeamsInput, **kwargs: Any
+    ) -> QueryJiraProjectTeams:
+        query = gql(
+            """
+            query QueryJiraProjectTeams($jiraProjectTeams_args: JiraProjectTeamsInput!) {
+              jiraProjectTeams(args: $jiraProjectTeams_args) {
+                id
+                avatarUrl
+                displayName
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "jiraProjectTeams_args": jira_project_teams_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryJiraProjectTeams",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryJiraProjectTeams.model_validate(data)
+
+    def query_jira_project_users(
+        self, jira_project_users_args: JiraProjectUsersInput, **kwargs: Any
+    ) -> QueryJiraProjectUsers:
+        query = gql(
+            """
+            query QueryJiraProjectUsers($jiraProjectUsers_args: JiraProjectUsersInput!) {
+              jiraProjectUsers(args: $jiraProjectUsers_args) {
+                accountId
+                active
+                avatarUrl
+                displayName
+                emailAddress
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "jiraProjectUsers_args": jira_project_users_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryJiraProjectUsers",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryJiraProjectUsers.model_validate(data)
+
+    def query_jira_project_versions(
+        self, jira_project_versions_args: JiraProjectVersionsInput, **kwargs: Any
+    ) -> QueryJiraProjectVersions:
+        query = gql(
+            """
+            query QueryJiraProjectVersions($jiraProjectVersions_args: JiraProjectVersionsInput!) {
+              jiraProjectVersions(args: $jiraProjectVersions_args) {
+                id
+                archived
+                description
+                name
+                releaseDate
+                released
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "jiraProjectVersions_args": jira_project_versions_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryJiraProjectVersions",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryJiraProjectVersions.model_validate(data)
+
+    def query_jira_space_issue_fields(
+        self, jira_space_issue_fields_args: JiraSpaceIssueFieldsInput, **kwargs: Any
+    ) -> QueryJiraSpaceIssueFields:
+        query = gql(
+            """
+            query QueryJiraSpaceIssueFields($jiraSpaceIssueFields_args: JiraSpaceIssueFieldsInput!) {
+              jiraSpaceIssueFields(args: $jiraSpaceIssueFields_args) {
+                allowedValues {
+                  id
+                  value
+                }
+                itemType
+                key
+                name
+                required
+                schemaCustom
+                schemaType
+                supported
+                unsupportedRequired
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "jiraSpaceIssueFields_args": jira_space_issue_fields_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryJiraSpaceIssueFields",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryJiraSpaceIssueFields.model_validate(data)
+
+    def query_jira_space_issue_types(
+        self, jira_space_issue_types_args: JiraSpaceIssueTypesInput, **kwargs: Any
+    ) -> QueryJiraSpaceIssueTypes:
+        query = gql(
+            """
+            query QueryJiraSpaceIssueTypes($jiraSpaceIssueTypes_args: JiraSpaceIssueTypesInput!) {
+              jiraSpaceIssueTypes(args: $jiraSpaceIssueTypes_args) {
+                id
+                iconUrl
+                name
+                subtask
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "jiraSpaceIssueTypes_args": jira_space_issue_types_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryJiraSpaceIssueTypes",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryJiraSpaceIssueTypes.model_validate(data)
 
     def query_license(self, license_args: LicenseInput, **kwargs: Any) -> QueryLicense:
         query = gql(
@@ -4575,6 +5011,13 @@ class Client(BaseClient):
                   url
                 }
                 severity
+                ssvc {
+                  automatable
+                  dateAccessed
+                  exploitation
+                  source
+                  technicalImpact
+                }
                 tags
                 updatedDatetime
               }
@@ -5362,6 +5805,49 @@ class Client(BaseClient):
         data = self.get_data(response)
         return QueryPublicKeys.model_validate(data)
 
+    def query_remediated_vulnerabilities_by_asset(
+        self,
+        remediated_vulnerabilities_by_asset_args: RemediatedVulnerabilitiesByAssetInput,
+        **kwargs: Any
+    ) -> QueryRemediatedVulnerabilitiesByAsset:
+        query = gql(
+            """
+            query QueryRemediatedVulnerabilitiesByAsset($remediatedVulnerabilitiesByAsset_args: RemediatedVulnerabilitiesByAssetInput!) {
+              remediatedVulnerabilitiesByAsset(args: $remediatedVulnerabilitiesByAsset_args) {
+                edges {
+                  cursor
+                  node {
+                    assetId
+                    assetName
+                    assetStatus
+                    assetVendor
+                    remediationCount
+                    remediationStatus
+                  }
+                }
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                  hasPreviousPage
+                  startCursor
+                  totalCount
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "remediatedVulnerabilitiesByAsset_args": remediated_vulnerabilities_by_asset_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryRemediatedVulnerabilitiesByAsset",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryRemediatedVulnerabilitiesByAsset.model_validate(data)
+
     def query_rise_ai_analysis_data(
         self, rise_ai_analysis_data_args: RiseAIAnalysisDataInput, **kwargs: Any
     ) -> QueryRiseAIAnalysisData:
@@ -5811,6 +6297,7 @@ class Client(BaseClient):
                     id
                     attackComplexity
                     attackVector
+                    componentId
                     correlations {
                       artifact
                       assetId
@@ -5848,6 +6335,13 @@ class Client(BaseClient):
                     maturity
                     name
                     severity
+                    ssvc {
+                      automatable
+                      dateAccessed
+                      exploitation
+                      source
+                      technicalImpact
+                    }
                     vendor
                     version
                   }
@@ -6174,6 +6668,13 @@ class Client(BaseClient):
                   url
                 }
                 severity
+                ssvc {
+                  automatable
+                  dateAccessed
+                  exploitation
+                  source
+                  technicalImpact
+                }
                 tags
                 updatedDatetime
               }
@@ -6223,6 +6724,70 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return QueryVulnerabilityExternalFilters.model_validate(data)
+
+    def query_vulnerability_jira_tickets(
+        self,
+        vulnerability_jira_tickets_args: VulnerabilityJiraTicketsInput,
+        **kwargs: Any
+    ) -> QueryVulnerabilityJiraTickets:
+        query = gql(
+            """
+            query QueryVulnerabilityJiraTickets($vulnerabilityJiraTickets_args: VulnerabilityJiraTicketsInput!) {
+              vulnerabilityJiraTickets(args: $vulnerabilityJiraTickets_args) {
+                id
+                assignee
+                projectId
+                status
+                ticketKey
+                updatedAt
+                url
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "vulnerabilityJiraTickets_args": vulnerability_jira_tickets_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryVulnerabilityJiraTickets",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryVulnerabilityJiraTickets.model_validate(data)
+
+    def query_vulnerability_remediation_summary(
+        self,
+        vulnerability_remediation_summary_args: Union[
+            Optional[VulnerabilityRemediationSummaryInput], UnsetType
+        ] = UNSET,
+        **kwargs: Any
+    ) -> QueryVulnerabilityRemediationSummary:
+        query = gql(
+            """
+            query QueryVulnerabilityRemediationSummary($vulnerabilityRemediationSummary_args: VulnerabilityRemediationSummaryInput) {
+              vulnerabilityRemediationSummary(args: $vulnerabilityRemediationSummary_args) {
+                exploitable
+                inTriage
+                netriseAutoResolved
+                resolved
+                total
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "vulnerabilityRemediationSummary_args": vulnerability_remediation_summary_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryVulnerabilityRemediationSummary",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryVulnerabilityRemediationSummary.model_validate(data)
 
     def mutation_add_asset_groups_to_assets(
         self,
@@ -7080,6 +7645,305 @@ class Client(BaseClient):
         data = self.get_data(response)
         return MutationInviteUser.model_validate(data)
 
+    def mutation_jira_integration_add_connected_space(
+        self,
+        jira_integration_add_connected_space_args: JiraIntegrationAddConnectedSpaceInput,
+        **kwargs: Any
+    ) -> MutationJiraIntegrationAddConnectedSpace:
+        query = gql(
+            """
+            mutation MutationJiraIntegrationAddConnectedSpace($jiraIntegrationAddConnectedSpace_args: JiraIntegrationAddConnectedSpaceInput!) {
+              jiraIntegrationAddConnectedSpace(args: $jiraIntegrationAddConnectedSpace_args) {
+                error
+                success
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "jiraIntegrationAddConnectedSpace_args": jira_integration_add_connected_space_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationJiraIntegrationAddConnectedSpace",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationJiraIntegrationAddConnectedSpace.model_validate(data)
+
+    def mutation_jira_integration_create_issue(
+        self,
+        jira_integration_create_issue_args: JiraIntegrationCreateIssueInput,
+        **kwargs: Any
+    ) -> MutationJiraIntegrationCreateIssue:
+        query = gql(
+            """
+            mutation MutationJiraIntegrationCreateIssue($jiraIntegrationCreateIssue_args: JiraIntegrationCreateIssueInput!) {
+              jiraIntegrationCreateIssue(args: $jiraIntegrationCreateIssue_args) {
+                error
+                success
+                ticket {
+                  id
+                  assignee
+                  projectId
+                  status
+                  ticketKey
+                  updatedAt
+                  url
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "jiraIntegrationCreateIssue_args": jira_integration_create_issue_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationJiraIntegrationCreateIssue",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationJiraIntegrationCreateIssue.model_validate(data)
+
+    def mutation_jira_integration_delete_connected_space(
+        self,
+        jira_integration_delete_connected_space_args: JiraIntegrationDeleteConnectedSpaceInput,
+        **kwargs: Any
+    ) -> MutationJiraIntegrationDeleteConnectedSpace:
+        query = gql(
+            """
+            mutation MutationJiraIntegrationDeleteConnectedSpace($jiraIntegrationDeleteConnectedSpace_args: JiraIntegrationDeleteConnectedSpaceInput!) {
+              jiraIntegrationDeleteConnectedSpace(
+                args: $jiraIntegrationDeleteConnectedSpace_args
+              ) {
+                error
+                success
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "jiraIntegrationDeleteConnectedSpace_args": jira_integration_delete_connected_space_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationJiraIntegrationDeleteConnectedSpace",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationJiraIntegrationDeleteConnectedSpace.model_validate(data)
+
+    def mutation_jira_integration_disconnect(
+        self, **kwargs: Any
+    ) -> MutationJiraIntegrationDisconnect:
+        query = gql(
+            """
+            mutation MutationJiraIntegrationDisconnect {
+              jiraIntegrationDisconnect {
+                apiConnectivityActive
+                connectionHealth {
+                  addableSpaces {
+                    id
+                    avatarUrl
+                    name
+                    openTicketsCount
+                    selected
+                  }
+                  connectedSpaces {
+                    id
+                    avatarUrl
+                    category
+                    iconColorIndex
+                    name
+                    openTicketsCount
+                    projectKey
+                  }
+                  connectionStatusLabel
+                  instanceUrl
+                  metrics {
+                    connectedSpaces
+                    lastSync
+                  }
+                  systemChecks {
+                    id
+                    description
+                    status
+                    title
+                  }
+                }
+                instanceUrl
+                jiraAppInstalledComplete
+                jiraInstallationId
+                lastUpdated
+                oauthInstallStepComplete
+                oauthTokenActive
+                spacesCount
+                status
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {}
+        response = self.execute(
+            query=query,
+            operation_name="MutationJiraIntegrationDisconnect",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationJiraIntegrationDisconnect.model_validate(data)
+
+    def mutation_jira_integration_reconnect(
+        self, **kwargs: Any
+    ) -> MutationJiraIntegrationReconnect:
+        query = gql(
+            """
+            mutation MutationJiraIntegrationReconnect {
+              jiraIntegrationReconnect {
+                apiConnectivityActive
+                connectionHealth {
+                  addableSpaces {
+                    id
+                    avatarUrl
+                    name
+                    openTicketsCount
+                    selected
+                  }
+                  connectedSpaces {
+                    id
+                    avatarUrl
+                    category
+                    iconColorIndex
+                    name
+                    openTicketsCount
+                    projectKey
+                  }
+                  connectionStatusLabel
+                  instanceUrl
+                  metrics {
+                    connectedSpaces
+                    lastSync
+                  }
+                  systemChecks {
+                    id
+                    description
+                    status
+                    title
+                  }
+                }
+                instanceUrl
+                jiraAppInstalledComplete
+                jiraInstallationId
+                lastUpdated
+                oauthInstallStepComplete
+                oauthTokenActive
+                spacesCount
+                status
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {}
+        response = self.execute(
+            query=query,
+            operation_name="MutationJiraIntegrationReconnect",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationJiraIntegrationReconnect.model_validate(data)
+
+    def mutation_jira_integration_setup_action(
+        self,
+        jira_integration_setup_action_args: JiraIntegrationSetupActionInput,
+        **kwargs: Any
+    ) -> MutationJiraIntegrationSetupAction:
+        query = gql(
+            """
+            mutation MutationJiraIntegrationSetupAction($jiraIntegrationSetupAction_args: JiraIntegrationSetupActionInput!) {
+              jiraIntegrationSetupAction(args: $jiraIntegrationSetupAction_args) {
+                appVersion
+                availableSites {
+                  id
+                  selectable
+                  url
+                }
+                availableSpaces {
+                  id
+                  avatarUrl
+                  name
+                  openTicketsCount
+                  selected
+                }
+                currentStep
+                error {
+                  message
+                  title
+                }
+                instanceUrl
+                mode
+                primaryAction {
+                  actionType
+                  disabled
+                  label
+                  loading
+                  url
+                }
+                reconnectSummary {
+                  connectedSpacesCount
+                }
+                selectedSiteId
+                selectedSpaceIds
+                steps {
+                  description
+                  detail
+                  status
+                  step
+                  title
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "jiraIntegrationSetupAction_args": jira_integration_setup_action_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationJiraIntegrationSetupAction",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationJiraIntegrationSetupAction.model_validate(data)
+
+    def mutation_jira_integration_test_connection(
+        self, **kwargs: Any
+    ) -> MutationJiraIntegrationTestConnection:
+        query = gql(
+            """
+            mutation MutationJiraIntegrationTestConnection {
+              jiraIntegrationTestConnection {
+                error
+                success
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {}
+        response = self.execute(
+            query=query,
+            operation_name="MutationJiraIntegrationTestConnection",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationJiraIntegrationTestConnection.model_validate(data)
+
     def mutation_notify_notification_configuration(
         self,
         notify_notification_configuration_args: NotifyNotificationConfigurationInput,
@@ -7142,6 +8006,7 @@ class Client(BaseClient):
                 id
                 attackComplexity
                 attackVector
+                componentId
                 correlations {
                   artifact
                   assetId
@@ -7179,6 +8044,13 @@ class Client(BaseClient):
                 maturity
                 name
                 severity
+                ssvc {
+                  automatable
+                  dateAccessed
+                  exploitation
+                  source
+                  technicalImpact
+                }
                 vendor
                 version
               }
@@ -7209,6 +8081,7 @@ class Client(BaseClient):
                 id
                 attackComplexity
                 attackVector
+                componentId
                 correlations {
                   artifact
                   assetId
@@ -7246,6 +8119,13 @@ class Client(BaseClient):
                 maturity
                 name
                 severity
+                ssvc {
+                  automatable
+                  dateAccessed
+                  exploitation
+                  source
+                  technicalImpact
+                }
                 vendor
                 version
               }

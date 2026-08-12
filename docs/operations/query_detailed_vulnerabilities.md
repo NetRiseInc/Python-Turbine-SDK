@@ -163,6 +163,12 @@ Retrieve in-depth vulnerability data including descriptions and CVSS vector stri
 | `detailedVulnerabilities.edges[].node.references[].refsource` | `string` | no |
 | `detailedVulnerabilities.edges[].node.references[].url` | `string` | no |
 | `detailedVulnerabilities.edges[].node.severity` | `string` | yes |
+| `detailedVulnerabilities.edges[].node.ssvc` | `object` | yes |
+| `detailedVulnerabilities.edges[].node.ssvc.automatable` | `boolean` | yes |
+| `detailedVulnerabilities.edges[].node.ssvc.dateAccessed` | `string` | yes |
+| `detailedVulnerabilities.edges[].node.ssvc.exploitation` | `SsvcExploitation` | yes |
+| `detailedVulnerabilities.edges[].node.ssvc.source` | `string` | yes |
+| `detailedVulnerabilities.edges[].node.ssvc.technicalImpact` | `SsvcTechnicalImpact` | yes |
 | `detailedVulnerabilities.edges[].node.updatedDatetime` | `string` | yes |
 | `detailedVulnerabilities.pageInfo` | `object` | no |
 | `detailedVulnerabilities.pageInfo.endCursor` | `string` | yes |

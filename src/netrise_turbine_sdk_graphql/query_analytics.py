@@ -28,6 +28,9 @@ class QueryAnalyticsAnalytics(BaseModel):
     known_exploited_vulnerabilities: (
         "QueryAnalyticsAnalyticsKnownExploitedVulnerabilities"
     ) = Field(alias="knownExploitedVulnerabilities")
+    ssvc_categorization_summary: "QueryAnalyticsAnalyticsSsvcCategorizationSummary" = (
+        Field(alias="ssvcCategorizationSummary")
+    )
     vulnerabilities_by_age: list["QueryAnalyticsAnalyticsVulnerabilitiesByAge"] = Field(
         alias="vulnerabilitiesByAge"
     )
@@ -63,6 +66,14 @@ class QueryAnalyticsAnalyticsKnownExploitedVulnerabilities(BaseModel):
     affected_assets: Optional[int] = Field(alias="affectedAssets")
     past_due: Optional[int] = Field(alias="pastDue")
     unique_kevs: Optional[int] = Field(alias="uniqueKevs")
+
+
+class QueryAnalyticsAnalyticsSsvcCategorizationSummary(BaseModel):
+    active_automatable_partial: Optional[int] = Field(alias="activeAutomatablePartial")
+    active_automatable_total: Optional[int] = Field(alias="activeAutomatableTotal")
+    kev_active_automatable_total: Optional[int] = Field(
+        alias="kevActiveAutomatableTotal"
+    )
 
 
 class QueryAnalyticsAnalyticsVulnerabilitiesByAge(BaseModel):

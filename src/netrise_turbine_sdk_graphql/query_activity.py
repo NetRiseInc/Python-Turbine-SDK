@@ -13,6 +13,7 @@ from .enums import (
     SecretCategory,
     SecretType,
     VexJustification,
+    VexStatus,
 )
 
 
@@ -33,6 +34,8 @@ class QueryActivityActivityEdges(BaseModel):
 class QueryActivityActivityEdgesNode(BaseModel):
     id: str
     activity_type: ActivityType = Field(alias="activityType")
+    asset_id: Optional[str] = Field(alias="assetId")
+    asset_name: Optional[str] = Field(alias="assetName")
     correlation_id: str = Field(alias="correlationId")
     created_at: str = Field(alias="createdAt")
     description: Optional[str]
@@ -52,9 +55,16 @@ class QueryActivityActivityEdgesNode(BaseModel):
         "QueryActivityActivityEdgesNodeEntityAssetGroupRemovedPayload",
         "QueryActivityActivityEdgesNodeEntitySecretRemediatedPayload",
         "QueryActivityActivityEdgesNodeEntityLicenseIssueRemediatedPayload",
+        "QueryActivityActivityEdgesNodeEntityGroupCreatedPayload",
+        "QueryActivityActivityEdgesNodeEntityGroupUpdatedPayload",
+        "QueryActivityActivityEdgesNodeEntityGroupDeletedPayload",
+        "QueryActivityActivityEdgesNodeEntityGroupMembershipChangedPayload",
+        "QueryActivityActivityEdgesNodeEntityOrgSettingsUpdatedPayload",
         "QueryActivityActivityEdgesNodeEntityUnspecifiedPayload",
     ] = Field(discriminator="typename__")
     entity_type: ActivityEntityType = Field(alias="entityType")
+    org_id: Optional[str] = Field(alias="orgId")
+    org_name: Optional[str] = Field(alias="orgName")
     user: str
 
 
@@ -93,6 +103,7 @@ class QueryActivityActivityEdgesNodeEntityIdentificationAddedPayload(BaseModel):
     typename__: Literal["IdentificationAddedPayload"] = Field(alias="__typename")
     identification_id: Optional[str] = Field(alias="identificationId")
     name: Optional[str]
+    remediation_action: Optional[str] = Field(alias="remediationAction")
     vendor: Optional[str]
     version: Optional[str]
 
@@ -101,6 +112,7 @@ class QueryActivityActivityEdgesNodeEntityIdentificationRemovedPayload(BaseModel
     typename__: Literal["IdentificationRemovedPayload"] = Field(alias="__typename")
     identification_id: Optional[str] = Field(alias="identificationId")
     name: Optional[str]
+    remediation_action: Optional[str] = Field(alias="remediationAction")
     vendor: Optional[str]
     version: Optional[str]
 
@@ -125,6 +137,7 @@ class QueryActivityActivityEdgesNodeEntityVulnerabilityRemediatedPayload(BaseMod
     description: Optional[str]
     severity: Optional[str]
     vex_justification: Optional[VexJustification] = Field(alias="vexJustification")
+    vex_status: Optional[VexStatus] = Field(alias="vexStatus")
     vulnerability_id: Optional[str] = Field(alias="vulnerabilityId")
 
 
@@ -179,6 +192,39 @@ class QueryActivityActivityEdgesNodeEntityLicenseIssueRemediatedPayload(BaseMode
     component_name: Optional[str] = Field(alias="componentName")
     component_version: Optional[str] = Field(alias="componentVersion")
     issue_name: Optional[str] = Field(alias="issueName")
+
+
+class QueryActivityActivityEdgesNodeEntityGroupCreatedPayload(BaseModel):
+    typename__: Literal["GroupCreatedPayload"] = Field(alias="__typename")
+    description: Optional[str]
+    group_id: Optional[str] = Field(alias="groupId")
+    name: Optional[str]
+
+
+class QueryActivityActivityEdgesNodeEntityGroupUpdatedPayload(BaseModel):
+    typename__: Literal["GroupUpdatedPayload"] = Field(alias="__typename")
+    description: Optional[str]
+    group_id: Optional[str] = Field(alias="groupId")
+    name: Optional[str]
+
+
+class QueryActivityActivityEdgesNodeEntityGroupDeletedPayload(BaseModel):
+    typename__: Literal["GroupDeletedPayload"] = Field(alias="__typename")
+    group_id: Optional[str] = Field(alias="groupId")
+    name: Optional[str]
+
+
+class QueryActivityActivityEdgesNodeEntityGroupMembershipChangedPayload(BaseModel):
+    typename__: Literal["GroupMembershipChangedPayload"] = Field(alias="__typename")
+    group_id: Optional[str] = Field(alias="groupId")
+    members_added: list[str] = Field(alias="membersAdded")
+    members_removed: list[str] = Field(alias="membersRemoved")
+    name: Optional[str]
+
+
+class QueryActivityActivityEdgesNodeEntityOrgSettingsUpdatedPayload(BaseModel):
+    typename__: Literal["OrgSettingsUpdatedPayload"] = Field(alias="__typename")
+    empty: Optional[bool] = Field(alias="_empty")
 
 
 class QueryActivityActivityEdgesNodeEntityUnspecifiedPayload(BaseModel):

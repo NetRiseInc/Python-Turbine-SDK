@@ -18,6 +18,7 @@ Bulk apply VEX remediation status to multiple vulnerabilities on assets.
 | `remediateAssetVulnerabilities[].id` | `string` | no |
 | `remediateAssetVulnerabilities[].attackComplexity` | `string` | yes |
 | `remediateAssetVulnerabilities[].attackVector` | `string` | yes |
+| `remediateAssetVulnerabilities[].componentId` | `string` | yes |
 | `remediateAssetVulnerabilities[].correlations[]` | `object` | yes |
 | `remediateAssetVulnerabilities[].correlations[].artifact` | `string` | yes |
 | `remediateAssetVulnerabilities[].correlations[].assetId` | `string` | yes |
@@ -52,6 +53,12 @@ Bulk apply VEX remediation status to multiple vulnerabilities on assets.
 | `remediateAssetVulnerabilities[].maturity` | `string` | yes |
 | `remediateAssetVulnerabilities[].name` | `string` | yes |
 | `remediateAssetVulnerabilities[].severity` | `string` | yes |
+| `remediateAssetVulnerabilities[].ssvc` | `object` | yes |
+| `remediateAssetVulnerabilities[].ssvc.automatable` | `boolean` | yes |
+| `remediateAssetVulnerabilities[].ssvc.dateAccessed` | `string` | yes |
+| `remediateAssetVulnerabilities[].ssvc.exploitation` | `SsvcExploitation` | yes |
+| `remediateAssetVulnerabilities[].ssvc.source` | `string` | yes |
+| `remediateAssetVulnerabilities[].ssvc.technicalImpact` | `SsvcTechnicalImpact` | yes |
 | `remediateAssetVulnerabilities[].vendor` | `string` | yes |
 | `remediateAssetVulnerabilities[].version` | `string` | yes |
 

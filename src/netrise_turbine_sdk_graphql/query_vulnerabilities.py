@@ -6,7 +6,14 @@ from typing import Optional
 from pydantic import Field
 
 from .base_model import BaseModel
-from .enums import RemediationResponses, RiskCategory, VexJustification, VexStatus
+from .enums import (
+    RemediationResponses,
+    RiskCategory,
+    SsvcExploitation,
+    SsvcTechnicalImpact,
+    VexJustification,
+    VexStatus,
+)
 
 
 class QueryVulnerabilities(BaseModel):
@@ -27,6 +34,7 @@ class QueryVulnerabilitiesVulnerabilitiesEdgesNode(BaseModel):
     id: str
     attack_complexity: Optional[str] = Field(alias="attackComplexity")
     attack_vector: Optional[str] = Field(alias="attackVector")
+    component_id: Optional[str] = Field(alias="componentId")
     correlations: Optional[
         list[Optional["QueryVulnerabilitiesVulnerabilitiesEdgesNodeCorrelations"]]
     ]
@@ -48,6 +56,7 @@ class QueryVulnerabilitiesVulnerabilitiesEdgesNode(BaseModel):
     maturity: Optional[str]
     name: Optional[str]
     severity: Optional[str]
+    ssvc: Optional["QueryVulnerabilitiesVulnerabilitiesEdgesNodeSsvc"]
     vendor: Optional[str]
     version: Optional[str]
 
@@ -78,6 +87,14 @@ class QueryVulnerabilitiesVulnerabilitiesEdgesNodeCurrentRemediation(BaseModel):
     responses: Optional[list[Optional[RemediationResponses]]]
     status: VexStatus
     vulnerability_id: str = Field(alias="vulnerabilityId")
+
+
+class QueryVulnerabilitiesVulnerabilitiesEdgesNodeSsvc(BaseModel):
+    automatable: Optional[bool]
+    date_accessed: Optional[str] = Field(alias="dateAccessed")
+    exploitation: Optional[SsvcExploitation]
+    source: Optional[str]
+    technical_impact: Optional[SsvcTechnicalImpact] = Field(alias="technicalImpact")
 
 
 class QueryVulnerabilitiesVulnerabilitiesPageInfo(BaseModel):
