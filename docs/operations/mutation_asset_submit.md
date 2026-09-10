@@ -63,6 +63,7 @@ Upload firmware or SBOMs with metadata, group assignments, and CPEs.
 | `asset.submit.asset.analytic.vulnerability.low` | `integer` | no |
 | `asset.submit.asset.analytic.vulnerability.medium` | `integer` | no |
 | `asset.submit.asset.assetCpe` | `string` | yes |
+| `asset.submit.asset.assetCpes[]` | `string` | yes |
 | `asset.submit.asset.assetGroupCount` | `integer` | yes |
 | `asset.submit.asset.assetGroupIds[]` | `string` | yes |
 | `asset.submit.asset.createdAt` | `string` | yes |
@@ -74,6 +75,7 @@ Upload firmware or SBOMs with metadata, group assignments, and CPEs.
 | `asset.submit.asset.filesystems[].files.pageInfo` | `object` | yes |
 | `asset.submit.asset.firstAnalysisTime` | `string` | yes |
 | `asset.submit.asset.hasRemediation` | `boolean` | yes |
+| `asset.submit.asset.license` | `string` | yes |
 | `asset.submit.asset.name` | `string` | yes |
 | `asset.submit.asset.orgId` | `string` | yes |
 | `asset.submit.asset.product` | `string` | yes |

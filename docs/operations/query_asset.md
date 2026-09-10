@@ -62,6 +62,7 @@ Retrieve detailed metadata and risk information for a single asset.
 | `asset.analytic.vulnerability.low` | `integer` | no |
 | `asset.analytic.vulnerability.medium` | `integer` | no |
 | `asset.assetCpe` | `string` | yes |
+| `asset.assetCpes[]` | `string` | yes |
 | `asset.assetGroupCount` | `integer` | yes |
 | `asset.assetGroupIds[]` | `string` | yes |
 | `asset.createdAt` | `string` | yes |
@@ -85,6 +86,7 @@ Retrieve detailed metadata and risk information for a single asset.
 | `asset.filesystems[].files.pageInfo.totalSize` | `integer` | yes |
 | `asset.firstAnalysisTime` | `string` | yes |
 | `asset.hasRemediation` | `boolean` | yes |
+| `asset.license` | `string` | yes |
 | `asset.name` | `string` | yes |
 | `asset.orgId` | `string` | yes |
 | `asset.product` | `string` | yes |

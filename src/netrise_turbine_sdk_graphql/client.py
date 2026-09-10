@@ -1052,6 +1052,7 @@ class Client(BaseClient):
                   }
                 }
                 assetCpe
+                assetCpes
                 assetGroupCount
                 assetGroupIds
                 createdAt
@@ -1080,6 +1081,7 @@ class Client(BaseClient):
                 }
                 firstAnalysisTime
                 hasRemediation
+                license
                 name
                 orgId
                 product
@@ -1198,6 +1200,7 @@ class Client(BaseClient):
                       }
                     }
                     assetCpe
+                    assetCpes
                     assetGroupCount
                     assetGroupIds
                     createdAt
@@ -1207,6 +1210,7 @@ class Client(BaseClient):
                     }
                     firstAnalysisTime
                     hasRemediation
+                    license
                     name
                     orgId
                     product
@@ -1493,6 +1497,7 @@ class Client(BaseClient):
                       }
                     }
                     assetCpe
+                    assetCpes
                     assetGroupCount
                     assetGroupIds
                     createdAt
@@ -1502,6 +1507,7 @@ class Client(BaseClient):
                     }
                     firstAnalysisTime
                     hasRemediation
+                    license
                     name
                     orgId
                     product
@@ -5295,12 +5301,14 @@ class Client(BaseClient):
                       assets {
                         id
                         assetCpe
+                        assetCpes
                         assetGroupCount
                         assetGroupIds
                         createdAt
                         fileName
                         firstAnalysisTime
                         hasRemediation
+                        license
                         name
                         orgId
                         product
@@ -6332,6 +6340,7 @@ class Client(BaseClient):
                     identificationIds
                     inKnownExploitedVulnerabilities
                     isReachable
+                    jiraTicketCount
                     maturity
                     name
                     severity
@@ -6737,7 +6746,10 @@ class Client(BaseClient):
                 id
                 assignee
                 projectId
+                spaceName
                 status
+                statusCategory
+                statusCategoryColor
                 ticketKey
                 updatedAt
                 url
@@ -7009,6 +7021,7 @@ class Client(BaseClient):
                       }
                     }
                     assetCpe
+                    assetCpes
                     assetGroupCount
                     assetGroupIds
                     createdAt
@@ -7028,6 +7041,7 @@ class Client(BaseClient):
                     }
                     firstAnalysisTime
                     hasRemediation
+                    license
                     name
                     orgId
                     product
@@ -7128,6 +7142,7 @@ class Client(BaseClient):
                     }
                   }
                   assetCpe
+                  assetCpes
                   assetGroupCount
                   assetGroupIds
                   createdAt
@@ -7156,6 +7171,7 @@ class Client(BaseClient):
                   }
                   firstAnalysisTime
                   hasRemediation
+                  license
                   name
                   orgId
                   product
@@ -7687,7 +7703,10 @@ class Client(BaseClient):
                   id
                   assignee
                   projectId
+                  spaceName
                   status
+                  statusCategory
+                  statusCategoryColor
                   ticketKey
                   updatedAt
                   url
@@ -8041,6 +8060,7 @@ class Client(BaseClient):
                 identificationIds
                 inKnownExploitedVulnerabilities
                 isReachable
+                jiraTicketCount
                 maturity
                 name
                 severity
@@ -8116,6 +8136,7 @@ class Client(BaseClient):
                 identificationIds
                 inKnownExploitedVulnerabilities
                 isReachable
+                jiraTicketCount
                 maturity
                 name
                 severity

@@ -53,6 +53,7 @@ class QueryVulnerabilitiesVulnerabilitiesEdgesNode(BaseModel):
         alias="inKnownExploitedVulnerabilities"
     )
     is_reachable: Optional[bool] = Field(alias="isReachable")
+    jira_ticket_count: Optional[int] = Field(alias="jiraTicketCount")
     maturity: Optional[str]
     name: Optional[str]
     severity: Optional[str]

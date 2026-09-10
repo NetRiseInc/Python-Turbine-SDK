@@ -31,12 +31,14 @@ View the dependency tree hierarchy for a specific software package.
 | `packageDependenciesById.associatedFiles[].component.file.assets[]` | `object` | yes |
 | `packageDependenciesById.associatedFiles[].component.file.assets[].id` | `string` | yes |
 | `packageDependenciesById.associatedFiles[].component.file.assets[].assetCpe` | `string` | yes |
+| `packageDependenciesById.associatedFiles[].component.file.assets[].assetCpes[]` | `string` | yes |
 | `packageDependenciesById.associatedFiles[].component.file.assets[].assetGroupCount` | `integer` | yes |
 | `packageDependenciesById.associatedFiles[].component.file.assets[].assetGroupIds[]` | `string` | yes |
 | `packageDependenciesById.associatedFiles[].component.file.assets[].createdAt` | `string` | yes |
 | `packageDependenciesById.associatedFiles[].component.file.assets[].fileName` | `string` | yes |
 | `packageDependenciesById.associatedFiles[].component.file.assets[].firstAnalysisTime` | `string` | yes |
 | `packageDependenciesById.associatedFiles[].component.file.assets[].hasRemediation` | `boolean` | yes |
+| `packageDependenciesById.associatedFiles[].component.file.assets[].license` | `string` | yes |
 | `packageDependenciesById.associatedFiles[].component.file.assets[].name` | `string` | yes |
 | `packageDependenciesById.associatedFiles[].component.file.assets[].orgId` | `string` | yes |
 | `packageDependenciesById.associatedFiles[].component.file.assets[].product` | `string` | yes |

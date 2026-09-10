@@ -17,6 +17,7 @@ class QueryAssetAsset(BaseModel):
     id: Optional[str]
     analytic: Optional["QueryAssetAssetAnalytic"]
     asset_cpe: Optional[str] = Field(alias="assetCpe")
+    asset_cpes: Optional[list[str]] = Field(alias="assetCpes")
     asset_group_count: Optional[int] = Field(alias="assetGroupCount")
     asset_group_ids: Optional[list[str]] = Field(alias="assetGroupIds")
     created_at: Optional[str] = Field(alias="createdAt")
@@ -24,6 +25,7 @@ class QueryAssetAsset(BaseModel):
     filesystems: Optional[list["QueryAssetAssetFilesystems"]]
     first_analysis_time: Optional[str] = Field(alias="firstAnalysisTime")
     has_remediation: Optional[bool] = Field(alias="hasRemediation")
+    license: Optional[str]
     name: Optional[str]
     org_id: Optional[str] = Field(alias="orgId")
     product: Optional[str]

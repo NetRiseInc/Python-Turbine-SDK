@@ -61,6 +61,7 @@ Modify metadata such as name, vendor, or version for assets.
 | `asset.update.analytic.vulnerability.low` | `integer` | no |
 | `asset.update.analytic.vulnerability.medium` | `integer` | no |
 | `asset.update.assetCpe` | `string` | yes |
+| `asset.update.assetCpes[]` | `string` | yes |
 | `asset.update.assetGroupCount` | `integer` | yes |
 | `asset.update.assetGroupIds[]` | `string` | yes |
 | `asset.update.createdAt` | `string` | yes |
@@ -77,6 +78,7 @@ Modify metadata such as name, vendor, or version for assets.
 | `asset.update.filesystems[].files.pageInfo.totalSize` | `integer` | yes |
 | `asset.update.firstAnalysisTime` | `string` | yes |
 | `asset.update.hasRemediation` | `boolean` | yes |
+| `asset.update.license` | `string` | yes |
 | `asset.update.name` | `string` | yes |
 | `asset.update.orgId` | `string` | yes |
 | `asset.update.product` | `string` | yes |

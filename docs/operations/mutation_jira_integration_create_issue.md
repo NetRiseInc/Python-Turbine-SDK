@@ -21,7 +21,10 @@ Create a Jira issue and optionally link it to a vulnerability finding.
 | `jiraIntegrationCreateIssue.ticket.id` | `string` | no |
 | `jiraIntegrationCreateIssue.ticket.assignee` | `string` | yes |
 | `jiraIntegrationCreateIssue.ticket.projectId` | `string` | no |
+| `jiraIntegrationCreateIssue.ticket.spaceName` | `string` | no |
 | `jiraIntegrationCreateIssue.ticket.status` | `string` | no |
+| `jiraIntegrationCreateIssue.ticket.statusCategory` | `string` | yes |
+| `jiraIntegrationCreateIssue.ticket.statusCategoryColor` | `string` | yes |
 | `jiraIntegrationCreateIssue.ticket.ticketKey` | `string` | no |
 | `jiraIntegrationCreateIssue.ticket.updatedAt` | `string` | no |
 | `jiraIntegrationCreateIssue.ticket.url` | `string` | no |

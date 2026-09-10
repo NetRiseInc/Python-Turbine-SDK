@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "netrise-turbine-sdk"
-version = "0.1.25"
+version = "0.1.26"
 description = "Turbine GraphQL Python SDK (generated via ariadne-codegen)"
 authors = ["NetRise <anthony.feddersen@netrise.io>"]
 readme = "README.md"
@@ -32,7 +32,12 @@ queries_path = "../sdk-artifacts/queries/"
 target_package_name = "netrise_turbine_sdk_graphql"
 target_package_path = "src"
 async_client = false
-files_to_include = ["custom_scalars.py", "py.typed"]
+# Own BaseClient + exceptions so error messages survive regeneration.
+# Custom base_client_file_path stops ariadne from shipping its stock
+# exceptions.py; we copy ours via files_to_include instead.
+base_client_name = "BaseClient"
+base_client_file_path = "codegen/base_client.py"
+files_to_include = ["custom_scalars.py", "py.typed", "codegen/exceptions.py"]
 
 [tool.ariadne-codegen.scalars.BigInt]
 type = "int"

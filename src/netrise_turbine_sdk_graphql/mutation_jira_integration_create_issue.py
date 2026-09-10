@@ -26,7 +26,10 @@ class MutationJiraIntegrationCreateIssueJiraIntegrationCreateIssueTicket(BaseMod
     id: str
     assignee: Optional[str]
     project_id: str = Field(alias="projectId")
+    space_name: str = Field(alias="spaceName")
     status: str
+    status_category: Optional[str] = Field(alias="statusCategory")
+    status_category_color: Optional[str] = Field(alias="statusCategoryColor")
     ticket_key: str = Field(alias="ticketKey")
     updated_at: str = Field(alias="updatedAt")
     url: str

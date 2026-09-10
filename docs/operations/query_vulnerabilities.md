@@ -83,6 +83,7 @@ Lookups: `field=` (exact), `field__contains=`, `field__in=`, `field__gt=`, `fiel
 | `vulnerabilities.edges[].node.identificationIds[]` | `string` | yes |
 | `vulnerabilities.edges[].node.inKnownExploitedVulnerabilities` | `boolean` | yes |
 | `vulnerabilities.edges[].node.isReachable` | `boolean` | yes |
+| `vulnerabilities.edges[].node.jiraTicketCount` | `integer` | yes |
 | `vulnerabilities.edges[].node.maturity` | `string` | yes |
 | `vulnerabilities.edges[].node.name` | `string` | yes |
 | `vulnerabilities.edges[].node.severity` | `string` | yes |
