@@ -41,6 +41,14 @@ All notable changes to `netrise-turbine-sdk` are documented here.
 
 ### Changed
 
+- GraphQL client errors now say what failed and what to do next: HTTP
+  errors are status-aware (401/403/404/429/5xx), include the operation
+  name, endpoint, and `x-request-id` when present, and never echo
+  request headers. GraphQL errors append the field path and server
+  error code. Class names and catch sites are unchanged.
+- `netrise_turbine_sdk_graphql` no longer re-exports exception types from
+  its package `__init__`. Import them from
+  `netrise_turbine_sdk_graphql.exceptions` or from `netrise_turbine_sdk`.
 - Composed asset IDs (`<id>|<revision>`) are no longer exposed: the SDK's
   `resolve_upload` strips the internal `|<revision>` suffix from `asset_id`,
   and the CLI strips it from every output value under `composedAssetId` /

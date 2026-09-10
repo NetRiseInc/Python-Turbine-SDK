@@ -65,6 +65,7 @@ List all assets associated with a specific asset group container.
 | `assetGroupMembers.edges[].node.analytic.vulnerability.low` | `integer` | no |
 | `assetGroupMembers.edges[].node.analytic.vulnerability.medium` | `integer` | no |
 | `assetGroupMembers.edges[].node.assetCpe` | `string` | yes |
+| `assetGroupMembers.edges[].node.assetCpes[]` | `string` | yes |
 | `assetGroupMembers.edges[].node.assetGroupCount` | `integer` | yes |
 | `assetGroupMembers.edges[].node.assetGroupIds[]` | `string` | yes |
 | `assetGroupMembers.edges[].node.createdAt` | `string` | yes |
@@ -73,6 +74,7 @@ List all assets associated with a specific asset group container.
 | `assetGroupMembers.edges[].node.filesystems[].id` | `string` | no |
 | `assetGroupMembers.edges[].node.firstAnalysisTime` | `string` | yes |
 | `assetGroupMembers.edges[].node.hasRemediation` | `boolean` | yes |
+| `assetGroupMembers.edges[].node.license` | `string` | yes |
 | `assetGroupMembers.edges[].node.name` | `string` | yes |
 | `assetGroupMembers.edges[].node.orgId` | `string` | yes |
 | `assetGroupMembers.edges[].node.product` | `string` | yes |

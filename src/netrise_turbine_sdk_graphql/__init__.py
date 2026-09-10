@@ -145,13 +145,6 @@ from .enums import (
     VulnerabilityRemediationStatus,
     VulnerabilitySortField,
 )
-from .exceptions import (
-    GraphQLClientError,
-    GraphQLClientGraphQLError,
-    GraphQLClientGraphQLMultiError,
-    GraphQLClientHttpError,
-    GraphQLClientInvalidResponseError,
-)
 from .fragments import (
     AssetAnalyticLite,
     AssetAnalyticLiteComponents,
@@ -1773,11 +1766,6 @@ __all__ = [
     "GetDependencyReachabilityInput",
     "GetSecretReachabilityInput",
     "GetVulnReachabilityInput",
-    "GraphQLClientError",
-    "GraphQLClientGraphQLError",
-    "GraphQLClientGraphQLMultiError",
-    "GraphQLClientHttpError",
-    "GraphQLClientInvalidResponseError",
     "GroupedDependenciesInput",
     "GroupedDependencyField",
     "GroupedDependencyFieldFilter",

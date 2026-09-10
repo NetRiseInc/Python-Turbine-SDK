@@ -50,6 +50,7 @@ Bulk apply VEX remediation status to multiple vulnerabilities on assets.
 | `remediateAssetVulnerabilities[].identificationIds[]` | `string` | yes |
 | `remediateAssetVulnerabilities[].inKnownExploitedVulnerabilities` | `boolean` | yes |
 | `remediateAssetVulnerabilities[].isReachable` | `boolean` | yes |
+| `remediateAssetVulnerabilities[].jiraTicketCount` | `integer` | yes |
 | `remediateAssetVulnerabilities[].maturity` | `string` | yes |
 | `remediateAssetVulnerabilities[].name` | `string` | yes |
 | `remediateAssetVulnerabilities[].severity` | `string` | yes |

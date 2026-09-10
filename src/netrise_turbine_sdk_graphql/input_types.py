@@ -1098,14 +1098,18 @@ class AddDependencyInput(BaseModel):
 
 
 class ModifyDependencyInput(BaseModel):
-    """Request input for editing an existing dependency."""
+    """Request input for editing an existing dependency.
+
+    At least one of name, vendor, version, type, license, cpes, or purls on
+    `dependencyFields` must differ from the current component. Changing only
+    `dependencyFields.description` and/or `reason` is not a valid modification."""
 
     identification: "IdentificationInput"
     "Targeting existing dependency via composedAssetId + identificationIds"
     dependency_fields: "DependencyDetailsInput" = Field(alias="dependencyFields")
-    "New dependency data to replace the existing one"
+    "New dependency data to replace the existing one.\nMust include a change to name, vendor, version, type, license, cpes, or purls\n(description-only updates are not valid for modify)."
     reason: Optional[str] = None
-    "Optional new reason for the edit"
+    "Optional reason for the edit. Updating reason alone (with or without description)\ndoes not make the modification valid; a meaningful dependency field must also change."
 
 
 class UpdateAssetInput(BaseModel):
@@ -1118,6 +1122,9 @@ class UpdateAssetInput(BaseModel):
     "Component's version"
     product: Optional[str] = None
     "Component's model/product"
+    asset_cpes: Optional[list[str]] = Field(alias="assetCpes", default=None)
+    "Ordered CPE 2.3 strings. Empty list clears all CPEs."
+    license: Optional[str] = None
 
 
 class SubmitAssetInput(BaseModel):
@@ -1791,6 +1798,7 @@ class PaginatedVulnerabilitiesInput(BaseModel):
 class PaginatedDetailedVulnerabilitiesInput(BaseModel):
     asset_id: str = Field(alias="assetId")
     cursor: Optional["Cursor"] = None
+    "Page size is capped at 250. A `first`/`last` above that is rejected with a `BAD_USER_INPUT` error."
     filter: Optional["DetailedVulnerabilityFilter"] = None
 
 

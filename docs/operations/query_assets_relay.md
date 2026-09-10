@@ -92,6 +92,7 @@ Lookups: `field=` (exact), `field__contains=`, `field__in=`, `field__gt=`, `fiel
 | `assetsRelay.edges[].node.analytic.vulnerability.low` | `integer` | no |
 | `assetsRelay.edges[].node.analytic.vulnerability.medium` | `integer` | no |
 | `assetsRelay.edges[].node.assetCpe` | `string` | yes |
+| `assetsRelay.edges[].node.assetCpes[]` | `string` | yes |
 | `assetsRelay.edges[].node.assetGroupCount` | `integer` | yes |
 | `assetsRelay.edges[].node.assetGroupIds[]` | `string` | yes |
 | `assetsRelay.edges[].node.createdAt` | `string` | yes |
@@ -100,6 +101,7 @@ Lookups: `field=` (exact), `field__contains=`, `field__in=`, `field__gt=`, `fiel
 | `assetsRelay.edges[].node.filesystems[].id` | `string` | no |
 | `assetsRelay.edges[].node.firstAnalysisTime` | `string` | yes |
 | `assetsRelay.edges[].node.hasRemediation` | `boolean` | yes |
+| `assetsRelay.edges[].node.license` | `string` | yes |
 | `assetsRelay.edges[].node.name` | `string` | yes |
 | `assetsRelay.edges[].node.orgId` | `string` | yes |
 | `assetsRelay.edges[].node.product` | `string` | yes |
