@@ -9,7 +9,7 @@ versioning policy and release notes.
 
 ---
 
-## Quick Start
+## Quick start
 
 ### 1. Install
 
@@ -46,787 +46,245 @@ for asset in sdk.iter_assets(page_size=10, max_pages=1):
     print(f"{asset.name}  risk={asset.risk.score}  critical_vulns={critical}")
 ```
 
-That's it -- authentication, pagination, and connection pooling are handled for you.
+Authentication, pagination, and connection pooling are handled for you.
 
 ---
 
-## Core Concepts
-
-### Three levels of API access
-
-The SDK offers three levels of access, trading convenience for control:
+## Pick a level
 
 | Level | What you get | When to use |
 | --- | --- | --- |
-| **1. Lite iterators** (recommended) | Typed, auto-paginated iterators with lean payloads | Most workflows -- lists, reports, triage, CSV exports |
-| **2. Full iterators** | Same iterators but requesting every field to depth 5 | When you need deeply-nested data (correlations, remediation details, exploit metadata) |
-| **3. Custom GraphQL** | Write your own queries against the full schema | When you need a specific combination of fields that no pre-built query provides |
+| **1. Lite iterators** | Typed, auto-paginated iterators with lean payloads | Most workflows — lists, reports, triage, CSV exports |
+| **2. Full iterators** | Same iterators but every field to depth 5 | Deeply nested data (correlations, remediation, exploit metadata) |
+| **3. Custom GraphQL** | Your own queries against the full schema | Field combinations no pre-built query provides |
 
-Start at Level 1. Move to Level 2 or 3 only when you need data that the Lite response doesn't include.
+Start at Level 1. Move to Level 2 or 3 only when Lite does not include the fields you need.
 
-### Authentication
-
-OAuth client credentials: set `domain`, `client_id`, `client_secret`, `audience`, and `organization_id` in `.env` or the environment. Tokens are fetched and cached automatically.
-
-### Client lifecycle
-
-`TurbineClient` manages an HTTP connection pool internally. Always close it when you're done, or use it as a context manager:
-
-```python
-# Context manager (recommended)
-with TurbineClient(TurbineClientConfig.from_env()) as sdk:
-    for asset in sdk.iter_assets():
-        print(asset.name)
-
-# Manual close
-sdk = TurbineClient(TurbineClientConfig.from_env())
-try:
-    for asset in sdk.iter_assets():
-        print(asset.name)
-finally:
-    sdk.close()
-```
+OAuth client credentials (`domain`, `client_id`, `client_secret`, `audience`, `organization_id`) are fetched and cached automatically. See [Configuration](guides/configuration.md) for constructor options, extra headers, and client lifecycle.
 
 ---
 
-## Level 1: Lite Iterators (Start Here)
+## Guides
 
-Lite iterators are the recommended way to use the SDK: compact typed responses with the fields most workflows need (identifiers, scores, severity, counts), and cursor pagination handled for you -- no manual cursors, no `while` loops, no `page_info` checks.
-
-```python
-for vuln in sdk.iter_vulnerabilities_lite(asset_id="abc123"):
-    print(vuln.cve, vuln.severity, vuln.cvss_score)
-```
-
-For asset lists, use `iter_assets()` (alias of `iter_assets_relay_lite()`); `iter_assets_full()` adds the full nested payload, `iter_assets_summary()` is the smallest count-only sweep.
-
-All iterators accept these common keyword arguments:
-
-| Parameter | Type | Default | Description |
-| --- | --- | --- | --- |
-| `page_size` | `int` | `100` | Number of items per server round-trip |
-| `max_pages` | `int \| None` | `None` | Hard cap on pages fetched. `None` = fetch all |
-| `max_items` | `int \| None` | `None` | Hard cap on items yielded. Use this for "first N items" |
-| `start_after` | `str \| None` | `None` | Resume after a previously returned cursor |
-
-Results are `Paginator` objects: loop over them directly, or inspect pagination metadata as you go:
-
-```python
-page = sdk.iter_assets(page_size=100, max_items=250)
-assets = page.to_list()
-
-print(page.total_count)     # Server-reported total, once a page has been fetched
-print(page.pages_fetched)   # Round-trips made
-print(page.last_cursor)     # Save this for start_after=...
-
-next_page = sdk.iter_assets(start_after=page.last_cursor, max_items=250)
-```
-
-`max_items` caps returned objects; `max_pages` caps server round-trips; `first()` fetches a single item.
-
-### Available Lite iterators
-
-| Method | Scope | Key parameters | Fields included |
-| --- | --- | --- | --- |
-| `iter_assets` (`iter_assets_relay_lite`) | Org-wide | `filter`, `sort`, `name_contains`, `vendor` | id, name, vendor, product, version, type, status, timestamps, risk score, analytic rollups |
-| `iter_assets_summary` (`iter_assets_relay_summary`) | Org-wide | `filter`, `sort`, `name_contains`, `vendor` | id, name, analytic counts only (smallest payload) |
-| `iter_vulnerabilities_lite` | Per asset | `asset_id`, `filter`, `sort` | id, cve, name, severity, CVSS/EPSS scores, fix versions, KEV, reachability, correlation count |
-| `iter_dependencies_lite` | Per asset | `composed_asset_id`, `filter`, `sort` | id, name, version, license, purls, analytic rollups |
-| `iter_misconfigurations_lite` | Per asset | `asset_id`, `filter`, `sort` | check_id, name, severity, result, correlation count |
-| `iter_detailed_vulnerabilities_lite` | Per asset | `asset_id`, `filter` | CVE, severity, description, preferred CVSS v3.1 vector |
-
-For single records, use `get_asset(asset_id)` and `get_vulnerability(vulnerability_id)`. The raw `query_*` methods remain available via `sdk.graphql()` when you need exact GraphQL control.
-
-### Filtering cookbook
-
-**Convenience kwargs** — the fastest path. Use them when they exist:
-
-```python
-from netrise_turbine_sdk import Severity
-
-for asset in sdk.iter_assets(name_contains="router", vendor="Acme"):
-    print(asset.id, asset.name)
-
-for vuln in sdk.iter_vulnerabilities_lite(
-    asset_id="abc123",
-    severity=Severity.CRITICAL,
-    cve_contains="2024",
-):
-    print(vuln.cve, vuln.severity)
-```
-
-**`where()`** — a reusable typed filter. Lookups: `field=` (exact), `field__contains=`, `field__in=`, `field__gt=` / `__gte=` / `__lt=` / `__lte=`. Each operation page lists its supported fields under "Filter fields".
-
-```python
-from netrise_turbine_sdk import inputs, where
-
-recent_cves = where(
-    inputs.VulnerabilityFilter,
-    cve__contains="2024",
-)
-
-for vuln in sdk.iter_vulnerabilities_lite(asset_id="abc123", filter=recent_cves):
-    print(vuln.cve)
-```
-
-**Plain dicts** — shaped like the generated input model; Pydantic coerces before the request:
-
-```python
-for asset in sdk.iter_assets(filter={"hideFailed": True}):
-    print(asset.name)
-```
-
-**Combine `filter=` with kwargs** — they merge, so a base filter can be narrowed per call:
-
-```python
-for vuln in sdk.iter_vulnerabilities_lite(
-    asset_id="abc123",
-    filter=recent_cves,
-    severity=Severity.CRITICAL,
-):
-    print(vuln.cve)
-```
-
-**Sorting** — pass the generated sort model:
-
-```python
-from netrise_turbine_sdk import SortOrder, enums, inputs
-
-sort = inputs.AssetsSort(field=enums.AssetsSortField.CREATEDAT, order=SortOrder.DESC)
-for asset in sdk.iter_assets(sort=sort, max_items=10):
-    print(asset.name, asset.created_at)
-```
-
-Notes:
-
-- `severity=` / `severity_in=` on vulnerability and misconfiguration iterators filter client-side (the server does not accept severity in `fields`), so pages are fetched then matched. Prefer server-side fields when volume matters.
-- Common enums are importable from `netrise_turbine_sdk`: `Severity` (`LOW`–`CRITICAL`), `SortOrder`, `VexStatus`. Asset risk categories use a different scale (`NEGLIGIBLE`–`SEVERE`) in `enums.RiskCategoryFilter`.
-
-### What Lite leaves out
-
-Lite queries drop deeply-nested objects that are expensive to transfer and process:
-- **Vulnerability correlations** (which other assets share this CVE, with per-asset risk scores)
-- **Remediation status** (VEX justification, author, timestamps)
-- **Attack metadata** (attack vector, attack complexity, maturity)
-- **Full CVSS blocks** (v2/v4 impact breakdowns -- Lite keeps the preferred v3.1 score)
-- **Exploit reference URLs and timelines**
-- **File-level metadata** (file paths, SHA-256 digests, filesystem IDs)
-
-If you need any of these, move to Level 2 (Full iterators) or Level 3 (custom GraphQL).
-
-### Example: efficient org-wide triage
-
-Scan all assets cheaply with Summary, then drill into flagged assets with Lite:
-
-```python
-from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
-
-sdk = TurbineClient(TurbineClientConfig.from_env())
-
-# Pass 1: fast sweep using Summary (only id, name, and counts)
-for asset in sdk.iter_assets_relay_summary(page_size=100):
-    counts = asset.analytic
-    if counts is None:
-        continue
-
-    # Pass 2: drill into high-risk assets with Lite queries
-    if counts.vulnerability.critical + counts.vulnerability.high > 0:
-        for vuln in sdk.iter_vulnerabilities_lite(asset_id=asset.id):
-            print(f"{asset.name}  {vuln.cve}  {vuln.severity}  CVSS={vuln.cvss_score}")
-
-    if counts.misconfigurations.failed > 0:
-        for m in sdk.iter_misconfigurations_lite(asset_id=asset.id):
-            print(f"{asset.name}  {m.check_id}  {m.severity}  {m.result}")
-```
-
-### Example: export vulnerabilities to CSV
-
-```python
-import csv
-from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
-
-sdk = TurbineClient(TurbineClientConfig.from_env())
-
-with open("vulns.csv", "w", newline="") as f:
-    writer = csv.writer(f)
-    writer.writerow(["asset", "cve", "severity", "cvss", "epss", "kev", "reachable"])
-
-    for asset in sdk.iter_assets_summary(page_size=100):
-        counts = asset.analytic
-        if counts is None or counts.vulnerability.critical + counts.vulnerability.high == 0:
-            continue
-        for v in sdk.iter_vulnerabilities_lite(asset_id=asset.id):
-            writer.writerow([
-                asset.name,
-                v.cve,
-                v.severity,
-                v.cvss_score,
-                v.epss_score,
-                v.in_known_exploited_vulnerabilities,
-                v.is_reachable,
-            ])
-```
+| Guide | Covers |
+| --- | --- |
+| [Iterators](guides/iterators.md) | Lite / Full / Summary, kwargs, `Paginator`, triage and CSV examples |
+| [Filtering](guides/filtering.md) | Convenience kwargs, `where()`, dicts, merging, sorting |
+| [Custom GraphQL](guides/custom-graphql.md) | `execute()`, dict responses, manual pagination |
+| [Errors](guides/errors.md) | Exception types, retries, `x-request-id` |
+| [Files and uploads](guides/files-and-uploads.md) | `list_files`, `upload_asset`, `upload_assets` |
+| [Configuration](guides/configuration.md) | Constructor, env loading, extra headers, lifecycle |
 
 ---
 
-## Level 2: Full Iterators
-
-When you need data Lite doesn't include -- correlations, remediation details, exploit metadata, file paths -- use the full iterators. They request every field the server exposes (depth 5), so responses are significantly larger.
-
-```python
-# Full iterator: includes correlations, remediation, attack vector, file paths
-for vuln in sdk.iter_vulnerabilities(asset_id="abc123"):
-    print(vuln.cve, vuln.severity, vuln.attack_vector)
-    for corr in vuln.correlations or []:
-        print(f"  also in: {corr.asset_name} ({corr.location})")
-    if vuln.current_remediation:
-        print(f"  status: {vuln.current_remediation.status}")
-```
-
-### Full vs Lite: what you gain
-
-| Full iterator | Lite equivalent | Additional fields in Full |
-| --- | --- | --- |
-| `iter_assets_full` (`iter_assets_relay`) | `iter_assets` (`iter_assets_relay_lite`) | filesystems, SHA-256, CPE, file name, size, org ID, uploaded_by, group IDs/count, quantum_capable, remediation flag, full exploit/credential/cryptography rollups |
-| `iter_vulnerabilities` | `iter_vulnerabilities_lite` | correlations (nested), current_remediation (nested), attack_complexity, attack_vector, maturity, file_path, vendor, version |
-| `iter_dependencies` | `iter_dependencies_lite` | file metadata, digests, nested correlation details |
-| `iter_misconfigurations` | `iter_misconfigurations_lite` | full correlation objects (not just count) |
-| `iter_detailed_vulnerabilities` | `iter_detailed_vulnerabilities_lite` | CVSS v2/v4 impact blocks, exploit timelines, references, problem type details |
-
-### All available full iterators
-
-| Method | Scope | Key parameters |
-| --- | --- | --- |
-| `iter_assets_full` (`iter_assets_relay`) | Org-wide | `filter`, `sort`, `name_contains`, `vendor` |
-| `iter_assets_overview` | Org-wide | `asset_group_ids`, `filter`, `sort` |
-| `iter_vulnerabilities_overview` | Org-wide | `asset_group_ids`, `filter`, `sort` |
-| `iter_asset_groups` | Org-wide | `filter`, `sort` |
-| `iter_users` | Org-wide | -- |
-| `iter_vulnerabilities` | Per asset | `asset_id`, `filter`, `sort` |
-| `iter_detailed_vulnerabilities` | Per asset | `asset_id`, `filter` |
-| `iter_dependencies` | Per asset | `composed_asset_id`, `filter`, `sort` |
-| `iter_grouped_dependencies` | Per asset | `composed_asset_id`, `filter`, `sort`, `grouped_by` |
-| `iter_misconfigurations` | Per asset | `asset_id`, `filter`, `sort` |
-| `iter_certificates` | Per asset | `asset_id`, `filter`, `sort` |
-| `iter_credentials` | Per asset | `asset_id`, `filter`, `sort` |
-| `iter_binary_protections` | Per asset | `asset_id`, `filter`, `sort` |
-| `iter_hashes` | Per asset | `asset_id`, `filter`, `sort` |
-| `iter_license_issues` | Per asset | `asset_id`, `filter`, `sort` |
-| `iter_list_asset_crypto_libraries` | Per asset | `asset_id`, `filter`, `sort` |
-| `iter_private_keys` | Per asset | `asset_id`, `filter`, `sort` |
-| `iter_public_keys` | Per asset | `asset_id`, `filter`, `sort` |
-| `iter_secrets` | Per asset | `asset_id`, `filter`, `sort` |
-| `iter_activity` | Per asset | `asset_id` |
-| `iter_asset_group_members` | Per group | `group_id`, `sort` |
-
-For common single-record lookups, use the wrapper helpers:
-
-```python
-asset = sdk.get_asset("abc123")
-print(asset.name, asset.status)
-
-vuln = sdk.get_vulnerability("CVE-2024-12345")
-print(vuln.id, vuln.severity)
-```
-
-The generated client also provides typed methods for mutations and lower-level single-page queries:
-
-```python
-from netrise_turbine_sdk import inputs
-
-# Raw generated query
-with sdk.graphql() as client:
-    resp = client.query_asset(asset_args=inputs.AssetInput(asset_id="abc123"))
-    print(resp.asset.name, resp.asset.status)
-
-# Mutations
-with sdk.graphql() as client:
-    client.mutation_asset_update(
-        asset_update_args=inputs.UpdateAssetInput(
-            id="abc123",
-            name="Updated Firmware Name",
-        )
-    )
-```
-
-The `with sdk.graphql() as client:` pattern is safe to use repeatedly -- it does not close the underlying connection pool.
-
----
-
-## Level 3: Custom GraphQL Queries
-
-The Turbine API is a standard GraphQL endpoint. When no pre-built query has the field combination you need, write your own: `sdk.graphql()` returns a client with managed auth and connection pooling, and `execute()` accepts any valid query string.
-
-```python
-from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
-
-sdk = TurbineClient(TurbineClientConfig.from_env())
-client = sdk.graphql()
-
-# Request only the specific fields you need
-response = client.execute(
-    """
-    query ($args: PaginatedVulnerabilitiesInput!) {
-        vulnerabilities(args: $args) {
-            edges {
-                node {
-                    id
-                    cve
-                    severity
-                    cvssScore
-                    correlations {
-                        assetName
-                        location
-                    }
-                }
-            }
-            pageInfo {
-                endCursor
-                hasNextPage
-            }
-        }
-    }
-    """,
-    variables={
-        "args": {
-            "assetId": "abc123",
-            "cursor": {"first": 50},
-        }
-    },
-)
-data = client.get_data(response)
-
-for edge in data["vulnerabilities"]["edges"]:
-    vuln = edge["node"]
-    print(f"{vuln['cve']}  {vuln['severity']}  CVSS={vuln['cvssScore']}")
-    for corr in vuln.get("correlations") or []:
-        print(f"  also in: {corr['assetName']} at {corr['location']}")
-```
-
-### What to know about custom queries
-
-- **Responses are plain dicts**, not typed Pydantic models. You lose autocomplete and validation but gain full field-selection control.
-- **Auth is still managed for you.** The `sdk.graphql()` client handles token refresh automatically.
-- **Pagination is manual.** You'll need to check `pageInfo.hasNextPage` and pass `endCursor` yourself. See the [pageInfo fields](#pagination-with-custom-queries) below.
-- **The schema is your reference.** The full GraphQL schema is bundled at `sdk-artifacts/schema.graphql`. Use it to discover available types and fields.
-- **Input types still work.** You can use the generated `input_types` module to build your variables, then call `.model_dump(by_alias=True)` to get the dict:
-
-```python
-from netrise_turbine_sdk_graphql.input_types import PaginatedVulnerabilitiesInput, Cursor
-
-args = PaginatedVulnerabilitiesInput(
-    assetId="abc123",
-    cursor=Cursor(first=50),
-)
-variables = {"args": args.model_dump(by_alias=True, exclude_unset=True)}
-```
-
-### Pagination with custom queries
-
-When paginating custom queries, include `pageInfo` in your selection and loop on `hasNextPage`:
-
-```python
-client = sdk.graphql()
-cursor = None
-all_vulns = []
-
-while True:
-    cursor_input = {"first": 100}
-    if cursor:
-        cursor_input["after"] = cursor
-
-    data = client.get_data(client.execute(
-        """
-        query ($args: PaginatedVulnerabilitiesInput!) {
-            vulnerabilities(args: $args) {
-                edges { node { id, cve, severity, cvssScore } }
-                pageInfo { endCursor, hasNextPage }
-            }
-        }
-        """,
-        variables={"args": {"assetId": "abc123", "cursor": cursor_input}},
-    ))
-
-    vulns = data["vulnerabilities"]
-    for edge in vulns["edges"]:
-        all_vulns.append(edge["node"])
-
-    if not vulns["pageInfo"]["hasNextPage"]:
-        break
-    cursor = vulns["pageInfo"]["endCursor"]
-```
-
-### When to use each level
-
-| | Level 1: Lite | Level 2: Full | Level 3: Custom |
-| --- | --- | --- | --- |
-| **Response type** | Typed Pydantic models | Typed Pydantic models | Plain dicts |
-| **Pagination** | Automatic | Automatic | Manual |
-| **Field selection** | Curated subset | Everything (depth 5) | You choose |
-| **Best for** | Most workflows | Deep-dive analysis | Surgical queries, unique field combos |
-
----
-
-## Handling errors
-
-Every SDK failure derives from `GraphQLClientError`; the types below are importable from `netrise_turbine_sdk`. Transient HTTP failures (429, 502, 503, 504) are retried automatically before raising. `str(exc)` includes the operation name, endpoint, and `x-request-id` when the server sent one — that is the string to put in a support ticket.
-
-| Exception | Raised when | Useful attributes |
-| --- | --- | --- |
-| `GraphQLClientHttpError` | Non-2xx HTTP response after retries — bad credentials, missing permission, wrong endpoint, rate limit | `.status_code`, `.response` |
-| `GraphQLClientGraphQLMultiError` | Server rejected the operation — unknown IDs, invalid arguments | `.errors` (list of GraphQL errors), `.operation_name`, `.data` |
-| `pydantic.ValidationError` | An input model was built with missing or mistyped fields | `.errors()` |
-
-A 2xx body that is not a GraphQL result (HTML login page, JSON missing both `data` and `errors`) raises `GraphQLClientInvalidResponseError` from `netrise_turbine_sdk_graphql.exceptions`. It has `.reason` (`not_json` or `missing_data_and_errors`) and still subclasses `GraphQLClientError`.
-
-```python
-from netrise_turbine_sdk import (
-    GraphQLClientError,
-    GraphQLClientGraphQLMultiError,
-    GraphQLClientHttpError,
-)
-
-try:
-    asset = sdk.get_asset("no-such-asset")
-except GraphQLClientHttpError as exc:
-    print(exc)                                   # auth / rate limit / transport
-except GraphQLClientGraphQLMultiError as exc:
-    print(exc)                                   # bad IDs, invalid arguments
-except GraphQLClientError as exc:
-    print(exc)                                   # catch-all base class
-```
-
----
-
-## File Listing
-
-### list_files
-
-Return the complete recursive file listing for an asset in a single call:
-
-```python
-from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
-
-sdk = TurbineClient(TurbineClientConfig.from_env())
-files = sdk.list_files("your-asset-id")
-
-for f in files:
-    print(f["filesystemPath"], f.get("size"), f.get("mimeType"))
-
-print(f"Total files: {len(files)}")
-```
-
-Internally the SDK fetches a signed URL via `query_download_file_list`, then downloads and parses the NDJSON listing -- one call, one plain list. Pass the asset identifier without its revision suffix.
-
-**Returns:** `list[dict]` -- one dict per file. Common keys include:
-
-| Key | Type | Description |
-| --- | --- | --- |
-| `path` | `str` | Full path including archive structure (e.g. `/tar/blobs/.../etc/passwd`) |
-| `filesystemPath` | `str` | Logical filesystem path (e.g. `/etc/passwd`) |
-| `size` | `int` | File size in bytes (absent for directories) |
-| `mimeType` | `str` | MIME type (e.g. `text/plain`, `inode/directory`) |
-| `permissions` | `str` | Unix permission string (e.g. `-rw-r--r--`) |
-| `hashMd5` | `str` | MD5 digest (files only) |
-| `hashSha1` | `str` | SHA-1 digest (files only) |
-| `hashSha256` | `str` | SHA-256 digest (files only) |
-| `hasChildren` | `bool` | Whether the entry is a directory with children |
-| `createdAt` | `str` | Creation timestamp |
-| `updatedAt` | `str` | Last modification timestamp |
-
----
-
-## File Uploads
-
-Upload helpers wrap the two-step flow (signed URL, then PUT) in one call and stream from disk, so file size is not a constraint.
-
-### upload_asset
-
-Upload a single file and submit it as an asset:
-
-```python
-from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
-from netrise_turbine_sdk_graphql.input_types import SubmitAssetInput
-
-sdk = TurbineClient(TurbineClientConfig.from_env())
-
-# Simple -- uses the filename as the asset name
-resp = sdk.upload_asset("./firmware.bin")
-print(f"Upload ID: {resp.asset.submit.upload_id}")
-
-# With a display name
-resp = sdk.upload_asset("./firmware.bin", name="My Firmware v1.0")
-
-# With full metadata
-resp = sdk.upload_asset(
-    "./image.tar",
-    submit_args=SubmitAssetInput(
-        name="Router Firmware",
-        product="home-router",
-        manufacturer="Acme Corp",
-        version="2.1.0",
-    ),
-)
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `file_path` | `str \| Path` | Path to the file to upload |
-| `submit_args` | `SubmitAssetInput` | Optional metadata (name, manufacturer, model, version, type, etc.) |
-| `name` | `str` | Optional display name. Defaults to the filename. Ignored if `submit_args.name` is set |
-
-**Returns:** `MutationAssetSubmit` response containing asset info and upload details.
-
-### upload_assets
-
-Upload all files in a directory as assets (batch):
-
-```python
-# Simple: upload all files with default names
-results = sdk.upload_assets("./firmware_images/")
-
-# With per-file metadata
-def make_args(path):
-    return SubmitAssetInput(name=f"device-{path.name}", product="iot-devices")
-
-results = sdk.upload_assets("./firmware/", submit_args_fn=make_args)
-
-for file_path, resp in results:
-    print(f"{file_path.name}: {resp.asset.submit.upload_id}")
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `directory` | `str \| Path` | Path to directory containing files to upload |
-| `submit_args_fn` | `callable` | Optional function `(Path) -> SubmitAssetInput`. If omitted, the filename is used as the asset name |
-
-**Returns:** List of `(Path, MutationAssetSubmit)` tuples for successfully uploaded files. Failed uploads are logged to stderr but do not stop the batch.
-
-### Upload timeout
-
-File uploads default to a 5-minute timeout. For very large files over slow connections, override it at construction:
-
-```python
-sdk = TurbineClient(TurbineClientConfig.from_env(), upload_timeout=600.0)
-```
-
----
-
-## Client Configuration Reference
-
-All parameters are keyword-only except `config`:
-
-```python
-sdk = TurbineClient(
-    config,                          # TurbineClientConfig (required)
-    timeout=30.0,                    # Per-request timeout for GraphQL queries (seconds)
-    upload_timeout=300.0,            # Per-request timeout for file uploads (seconds)
-    max_retries=5,                   # Retry attempts for 429 / 5xx responses
-    backoff_factor=0.5,              # Exponential backoff base (with jitter)
-    retry_statuses=(429, 502, 503, 504),
-    max_in_flight=None,              # Cap on concurrent in-flight requests
-    rate_limit_per_second=None,      # Max requests/second
-    rate_limit_per_minute=None,      # Max requests/minute
-    httpx_client=None,               # Bring your own httpx.Client (bypasses transport stack)
-)
-```
-
-### Alternate configuration methods
-
-**Set environment variables directly (no `.env` file):**
-
-```python
-import os
-os.environ["endpoint"] = "https://apollo.turbine.netrise.io/graphql/v3"
-os.environ["domain"] = "https://authn.turbine.netrise.io"
-os.environ["client_id"] = "your-client-id"
-os.environ["client_secret"] = "your-client-secret"
-os.environ["audience"] = "https://prod.turbine.netrise.io/"
-os.environ["organization_id"] = "your-org-id"
-
-cfg = TurbineClientConfig.from_env(load_env_file=False)
-```
-
-**Load a `.env` file from a custom path:**
-
-```python
-from dotenv import load_dotenv
-load_dotenv("/path/to/custom.env")
-
-cfg = TurbineClientConfig.from_env(load_env_file=False)
-```
-
----
-
-## API Documentation & Code Samples
+## Operations index
 
 <!-- Index is auto-generated below this point -->
 
-- [mutation_add_asset_groups_to_assets](operations/mutation_add_asset_groups_to_assets.md): Associate a list of existing asset groups with selected assets.
-- [mutation_add_assets_to_asset_group](operations/mutation_add_assets_to_asset_group.md): Add specified assets to an existing asset group for organization.
-- [mutation_add_security_group_member](operations/mutation_add_security_group_member.md): Add a user as a member of an RBAC security group.
-- [mutation_asset_add_dependency](operations/mutation_asset_add_dependency.md): Manually inject a missing dependency component into an asset's inventory.
-- [mutation_asset_modify_dependency](operations/mutation_asset_modify_dependency.md): Update metadata or details for a manually added asset dependency.
-- [mutation_asset_remove_dependencies](operations/mutation_asset_remove_dependencies.md): Remove specific dependencies from the component list of an asset.
-- [mutation_asset_submit](operations/mutation_asset_submit.md): Upload firmware or SBOMs with metadata, group assignments, and CPEs.
-- [mutation_asset_update](operations/mutation_asset_update.md): Modify metadata such as name, vendor, or version for assets.
-- [mutation_bulk_delete_ac_rs](operations/mutation_bulk_delete_ac_rs.md): Delete multiple access control records in one call; already-deleted records are treated as success.
-- [mutation_create_acr](operations/mutation_create_acr.md): Create an access control record granting a user or security group a role on a resource.
-- [mutation_create_asset_comparison_report](operations/mutation_create_asset_comparison_report.md): Create a new comparison report to diff vulnerabilities and components between two assets.
-- [mutation_create_asset_group](operations/mutation_create_asset_group.md): Create a new named group to organize and track assets.
-- [mutation_create_custom_role](operations/mutation_create_custom_role.md): Create an org-scoped custom role with a chosen set of permissions.
-- [mutation_create_notification_configuration](operations/mutation_create_notification_configuration.md): Create a notification configuration defining channel, scopes, and triggers for alerts.
-- [mutation_create_security_group](operations/mutation_create_security_group.md): Create a new RBAC security group in the current organization.
-- [mutation_delete_acr](operations/mutation_delete_acr.md): Delete a single access control record, revoking the associated grant.
-- [mutation_delete_asset_comparison_report](operations/mutation_delete_asset_comparison_report.md): Permanently delete an asset comparison report by its ID.
-- [mutation_delete_asset_group](operations/mutation_delete_asset_group.md): Permanently remove an asset group while keeping contained assets intact.
-- [mutation_delete_custom_role](operations/mutation_delete_custom_role.md): Permanently delete a custom role from the organization.
-- [mutation_delete_notification_configuration](operations/mutation_delete_notification_configuration.md): Permanently delete a notification configuration by its ID.
-- [mutation_delete_security_group](operations/mutation_delete_security_group.md): Permanently delete a security group from the organization.
-- [mutation_invite_user](operations/mutation_invite_user.md): Invite a user to the organization with a role and optional security group memberships.
-- [mutation_jira_integration_add_connected_space](operations/mutation_jira_integration_add_connected_space.md): Add a Jira space to the integration's connected spaces list.
-- [mutation_jira_integration_create_issue](operations/mutation_jira_integration_create_issue.md): Create a Jira issue and optionally link it to a vulnerability finding.
-- [mutation_jira_integration_delete_connected_space](operations/mutation_jira_integration_delete_connected_space.md): Remove a connected Jira space from the integration.
-- [mutation_jira_integration_disconnect](operations/mutation_jira_integration_disconnect.md): Disconnect the Jira integration from the organization.
-- [mutation_jira_integration_reconnect](operations/mutation_jira_integration_reconnect.md): Re-enable a Jira installation when the OAuth and app install steps are already complete.
-- [mutation_jira_integration_setup_action](operations/mutation_jira_integration_setup_action.md): Perform an action in the Jira integration setup or reconnect flow.
-- [mutation_jira_integration_test_connection](operations/mutation_jira_integration_test_connection.md): Verify that the Jira integration connection is healthy.
-- [mutation_notify_notification_configuration](operations/mutation_notify_notification_configuration.md): Send a test notification using an existing notification configuration.
-- [mutation_remediate_all_asset_vulnerabilities](operations/mutation_remediate_all_asset_vulnerabilities.md): Apply a remediation status to all vulnerabilities matching specific filters.
-- [mutation_remediate_asset_vulnerabilities](operations/mutation_remediate_asset_vulnerabilities.md): Bulk apply VEX remediation status to multiple vulnerabilities on assets.
-- [mutation_remediate_asset_vulnerability](operations/mutation_remediate_asset_vulnerability.md): Update remediation status and justification for a single asset vulnerability.
-- [mutation_remediate_certificates](operations/mutation_remediate_certificates.md): Update remediation status and notes for certificate issues found in assets.
-- [mutation_remediate_license_issues](operations/mutation_remediate_license_issues.md): Update status and add notes to resolve identified license issues.
-- [mutation_remediate_private_keys](operations/mutation_remediate_private_keys.md): Apply remediation status to private key exposures discovered in assets.
-- [mutation_remediate_public_keys](operations/mutation_remediate_public_keys.md): Update remediation status for public key issues identified in assets.
-- [mutation_remediate_secrets](operations/mutation_remediate_secrets.md): Apply remediation status and justification to exposed secrets in assets.
-- [mutation_remove_all_asset_groups_from_assets](operations/mutation_remove_all_asset_groups_from_assets.md): Disassociate all asset groups from a specified list of assets.
-- [mutation_remove_assets_from_asset_group](operations/mutation_remove_assets_from_asset_group.md): Remove selected assets from a specific asset group container configuration.
-- [mutation_remove_org_user](operations/mutation_remove_org_user.md): Permanently remove a user from the current organization.
+### Vulnerabilities
+
+- [query_asset_vulnerability_remediation](operations/query_asset_vulnerability_remediation.md): Get VEX status and justification for one vuln on an asset.
+- [query_detailed_vulnerabilities](operations/query_detailed_vulnerabilities.md): List vulns with descriptions and full CVSS vectors.
+- [query_detailed_vulnerabilities_lite](operations/query_detailed_vulnerabilities_lite.md): List vulns with description and preferred CVSS v3.1 only.
+- [query_get_vuln_reachability](operations/query_get_vuln_reachability.md): Check whether a vulnerability is reachable via system paths.
+- [query_match_vulnerabilities](operations/query_match_vulnerabilities.md): Find vulnerabilities matching a component or package.
+- [query_remediated_vulnerabilities_by_asset](operations/query_remediated_vulnerabilities_by_asset.md): List remediated vulns for one status bucket, by asset.
+- [query_vulnerabilities](operations/query_vulnerabilities.md): List CVEs on an asset with scores and fix versions.
+- [query_vulnerabilities_lite](operations/query_vulnerabilities_lite.md): List vulns with CVE, severity, scores, and counts.
+- [query_vulnerabilities_overview](operations/query_vulnerabilities_overview.md): Get vulnerability counts and severity across assets.
+- [query_vulnerability](operations/query_vulnerability.md): Get scores and metadata for one vulnerability.
+- [query_vulnerability_external_filters](operations/query_vulnerability_external_filters.md): Count vulns matching threat feeds such as CISA KEV.
+- [query_vulnerability_jira_tickets](operations/query_vulnerability_jira_tickets.md): List Jira tickets linked to a vuln on an asset.
+- [query_vulnerability_lite](operations/query_vulnerability_lite.md): Get one vuln with preferred CVSS v3.1 only.
+- [query_vulnerability_remediation_summary](operations/query_vulnerability_remediation_summary.md): Get org-wide counts of applied VEX statuses.
+- [mutation_remediate_all_asset_vulnerabilities](operations/mutation_remediate_all_asset_vulnerabilities.md): Apply a VEX status to every vuln matching a filter.
+- [mutation_remediate_asset_vulnerabilities](operations/mutation_remediate_asset_vulnerabilities.md): Bulk-apply VEX status to selected asset vulns.
+- [mutation_remediate_asset_vulnerability](operations/mutation_remediate_asset_vulnerability.md): Set VEX status and justification for one asset vuln.
+
+### Reports and search
+
+- [query_get_asset_comparison_report](operations/query_get_asset_comparison_report.md): Get a finished asset comparison report.
+- [query_list_asset_comparison_reports](operations/query_list_asset_comparison_reports.md): List asset comparison reports with filters and sorting.
+- [query_list_asset_correlations](operations/query_list_asset_correlations.md): List cross-asset correlations for shared components or vulns.
+- [query_search](operations/query_search.md): Keyword-search artifacts and files across the org.
+- [query_sift](operations/query_sift.md): Fuzzy-hash match to find similar code or files.
+- [mutation_create_asset_comparison_report](operations/mutation_create_asset_comparison_report.md): Start a comparison report between two assets.
+- [mutation_delete_asset_comparison_report](operations/mutation_delete_asset_comparison_report.md): Delete an asset comparison report by ID.
+
+### Components and SBOM
+
+- [query_dependencies](operations/query_dependencies.md): List software components identified in an asset.
+- [query_dependencies_lite](operations/query_dependencies_lite.md): List components with identity, version, license, and rollups.
+- [query_dependency_known_exploits](operations/query_dependency_known_exploits.md): Check whether dependencies link to known public exploits.
+- [query_get_dependency_reachability](operations/query_get_dependency_reachability.md): Check whether a dependency is reachable via paths or scripts.
+- [query_grouped_dependencies](operations/query_grouped_dependencies.md): List dependencies grouped by vendor, license, or type.
+- [query_identified_components_preview](operations/query_identified_components_preview.md): Preview org-wide component counts under identification settings.
+- [query_list_asset_crypto_libraries](operations/query_list_asset_crypto_libraries.md): List crypto libraries detected in an asset.
+- [query_package_dependencies_by_id](operations/query_package_dependencies_by_id.md): Get the dependency tree for one package.
+- [mutation_asset_add_dependency](operations/mutation_asset_add_dependency.md): Add a manual dependency component to an asset.
+- [mutation_asset_modify_dependency](operations/mutation_asset_modify_dependency.md): Update a manually added asset dependency.
+- [mutation_asset_remove_dependencies](operations/mutation_asset_remove_dependencies.md): Remove selected dependencies from an asset.
+
+### Assets
+
+- [query_activity](operations/query_activity.md): List activity-log events for an asset.
+- [query_asset](operations/query_asset.md): Get metadata and risk for one asset.
+- [query_asset_group_analytics](operations/query_asset_group_analytics.md): Get risk metrics for one asset group.
+- [query_asset_group_members](operations/query_asset_group_members.md): List assets in an asset group.
+- [query_asset_groups](operations/query_asset_groups.md): List asset groups with pagination and filters.
+- [query_asset_status](operations/query_asset_status.md): Check whether an asset is still processing.
+- [query_asset_upload](operations/query_asset_upload.md): Get a pre-signed URL to upload a file for analysis.
+- [query_assets_overview](operations/query_assets_overview.md): Get risk and threat rollups across assets.
+- [query_assets_relay](operations/query_assets_relay.md): List assets with full nested fields (paginated).
+- [query_assets_relay_lite](operations/query_assets_relay_lite.md): List assets with identity, status, risk, and analytic rollups.
+- [query_assets_relay_summary](operations/query_assets_relay_summary.md): List assets as id, name, and analytic counts only.
+- [query_download_extracted_firmware](operations/query_download_extracted_firmware.md): Get a URL to download the unpacked filesystem.
+- [query_download_file](operations/query_download_file.md): Get a URL to download one extracted file.
+- [query_download_file_list](operations/query_download_file_list.md): Get a URL to download the asset file listing.
+- [query_download_firmware](operations/query_download_firmware.md): Get a URL to download the original uploaded image.
+- [query_hashes](operations/query_hashes.md): List file hashes from an asset filesystem.
+- [query_list_entity_assets](operations/query_list_entity_assets.md): List assets a user or security group can access.
+- [mutation_add_asset_groups_to_assets](operations/mutation_add_asset_groups_to_assets.md): Attach asset groups to one or more assets.
+- [mutation_add_assets_to_asset_group](operations/mutation_add_assets_to_asset_group.md): Add assets to an existing asset group.
+- [mutation_asset_submit](operations/mutation_asset_submit.md): Submit firmware or an SBOM for analysis.
+- [mutation_asset_update](operations/mutation_asset_update.md): Update asset metadata such as name, vendor, or version.
+- [mutation_create_asset_group](operations/mutation_create_asset_group.md): Create a named asset group.
+- [mutation_delete_asset_group](operations/mutation_delete_asset_group.md): Delete an asset group; assets stay in the org.
+- [mutation_remove_all_asset_groups_from_assets](operations/mutation_remove_all_asset_groups_from_assets.md): Detach every asset group from the given assets.
+- [mutation_remove_assets_from_asset_group](operations/mutation_remove_assets_from_asset_group.md): Remove selected assets from an asset group.
+- [mutation_set_asset_groups_to_asset](operations/mutation_set_asset_groups_to_asset.md): Replace an asset's group memberships.
+- [mutation_set_assets_to_asset_group](operations/mutation_set_assets_to_asset_group.md): Replace an asset group's member list.
+- [mutation_update_asset_group](operations/mutation_update_asset_group.md): Rename or update an asset group's description.
+
+### Secrets and credentials
+
+- [query_credentials](operations/query_credentials.md): List accounts and password hashes found in an asset.
+- [query_get_secret_reachability](operations/query_get_secret_reachability.md): Check whether secrets are reachable via paths or scripts.
+- [query_secret](operations/query_secret.md): Get details for one discovered secret.
+- [query_secret_categories_summary](operations/query_secret_categories_summary.md): Get secret counts grouped by category.
+- [query_secret_status_count](operations/query_secret_status_count.md): Get secret counts grouped by remediation status.
+- [query_secret_types_and_count](operations/query_secret_types_and_count.md): List secret types with occurrence counts.
+- [query_secrets](operations/query_secrets.md): List secrets discovered in an asset.
+- [query_secrets_summary](operations/query_secrets_summary.md): Get a summary of secret findings on an asset.
+- [mutation_remediate_secrets](operations/mutation_remediate_secrets.md): Set remediation status and justification on secrets.
+
+### Cryptography
+
+- [query_binary_protections](operations/query_binary_protections.md): List binary hardening details for an asset.
+- [query_binary_protections_summary](operations/query_binary_protections_summary.md): Get counts of hardening features such as NX or PIE.
+- [query_certificate_external_filters](operations/query_certificate_external_filters.md): List filter options for certificate queries.
+- [query_certificates](operations/query_certificates.md): List X.509 certificates found in an asset.
+- [query_get_certificate_reachability](operations/query_get_certificate_reachability.md): Check whether certificates are reachable via paths or scripts.
+- [query_private_key_external_filters](operations/query_private_key_external_filters.md): List filter options for private-key queries.
+- [query_private_keys](operations/query_private_keys.md): List private keys found in an asset filesystem.
+- [query_public_key_external_filters](operations/query_public_key_external_filters.md): List filter options for public-key queries.
+- [query_public_keys](operations/query_public_keys.md): List public keys found in an asset filesystem.
+- [mutation_remediate_certificates](operations/mutation_remediate_certificates.md): Set remediation status and notes on certificate findings.
+- [mutation_remediate_private_keys](operations/mutation_remediate_private_keys.md): Set remediation status on private key findings.
+- [mutation_remediate_public_keys](operations/mutation_remediate_public_keys.md): Set remediation status on public key findings.
+
+### Licenses
+
+- [query_license](operations/query_license.md): Get details for one software license.
+- [query_license_issue](operations/query_license_issue.md): Get details for one license compliance issue.
+- [query_license_issues](operations/query_license_issues.md): List license compliance issues on an asset.
+- [query_license_issues_external_filters](operations/query_license_issues_external_filters.md): List filter options for license-issue queries.
+- [query_licenses_spdx_ids](operations/query_licenses_spdx_ids.md): List SPDX license identifiers.
+- [mutation_remediate_license_issues](operations/mutation_remediate_license_issues.md): Set status and notes on license compliance issues.
+
+### Misconfigurations and hardening
+
+- [query_misconfigurations](operations/query_misconfigurations.md): List failed security checks on an asset.
+- [query_misconfigurations_lite](operations/query_misconfigurations_lite.md): List misconfigs with check ID, severity, result, and counts.
+
+### Users and access
+
+- [query_get_my_permissions](operations/query_get_my_permissions.md): List permission IDs held by the calling user.
+- [query_get_resource_permissions](operations/query_get_resource_permissions.md): List the caller's effective permissions on a resource.
+- [query_get_role](operations/query_get_role.md): Get one RBAC role by ID.
+- [query_get_role_delete_impact](operations/query_get_role_delete_impact.md): Preview who loses access if a custom role is deleted.
+- [query_get_security_group_delete_impact](operations/query_get_security_group_delete_impact.md): Preview who loses access if a security group is deleted.
+- [query_list_ac_rs](operations/query_list_ac_rs.md): List access control records, optionally for one user.
+- [query_list_my_ac_rs](operations/query_list_my_ac_rs.md): List access control records that apply to you.
+- [query_list_my_security_groups](operations/query_list_my_security_groups.md): List security groups you belong to.
+- [query_list_org_users](operations/query_list_org_users.md): List org users with groups and accessible asset counts.
+- [query_list_permissions](operations/query_list_permissions.md): List the permission catalog for custom roles.
+- [query_list_roles](operations/query_list_roles.md): List RBAC roles for the current organization.
+- [query_list_security_group_members](operations/query_list_security_group_members.md): List members of a security group.
+- [query_list_security_groups](operations/query_list_security_groups.md): List RBAC security groups for the current org.
+- [query_me](operations/query_me.md): Get the authenticated user's profile.
+- [query_metrics](operations/query_metrics.md): Get org-wide counts for assets, processing, and risk.
+- [query_user_orgs](operations/query_user_orgs.md): List organizations the current user can access.
+- [query_users](operations/query_users.md): List users and their assigned roles.
+- [mutation_add_security_group_member](operations/mutation_add_security_group_member.md): Add a user to an RBAC security group.
+- [mutation_bulk_delete_ac_rs](operations/mutation_bulk_delete_ac_rs.md): Delete many access control records; missing ones count as success.
+- [mutation_create_acr](operations/mutation_create_acr.md): Grant a user or security group a role on a resource.
+- [mutation_create_custom_role](operations/mutation_create_custom_role.md): Create an org-scoped custom role with chosen permissions.
+- [mutation_create_security_group](operations/mutation_create_security_group.md): Create an RBAC security group in the current org.
+- [mutation_delete_acr](operations/mutation_delete_acr.md): Delete one access control record.
+- [mutation_delete_custom_role](operations/mutation_delete_custom_role.md): Delete a custom role from the organization.
+- [mutation_delete_security_group](operations/mutation_delete_security_group.md): Delete a security group from the organization.
+- [mutation_invite_user](operations/mutation_invite_user.md): Invite a user with a role and optional security groups.
+- [mutation_remove_org_user](operations/mutation_remove_org_user.md): Remove a user from the current organization.
 - [mutation_remove_security_group_member](operations/mutation_remove_security_group_member.md): Remove a user from an RBAC security group.
-- [mutation_replace_acr](operations/mutation_replace_acr.md): Replace an access control record with a new grant in one atomic delete-and-create operation.
-- [mutation_set_asset_groups_to_asset](operations/mutation_set_asset_groups_to_asset.md): Replace all current group associations for an asset with new ones.
-- [mutation_set_assets_to_asset_group](operations/mutation_set_assets_to_asset_group.md): Overwrite the member list of an asset group with new assets.
-- [mutation_set_org_user_status](operations/mutation_set_org_user_status.md): Enable or disable a user account within the current organization.
-- [mutation_submit_rise_ai_analysis](operations/mutation_submit_rise_ai_analysis.md): Request a RISE AI analysis for an eligible asset to generate insights.
-- [mutation_update_asset_group](operations/mutation_update_asset_group.md): Rename or update the description of an existing asset group.
-- [mutation_update_custom_role](operations/mutation_update_custom_role.md): Update the name, description, or permissions of an existing custom role.
-- [mutation_update_notification_configuration](operations/mutation_update_notification_configuration.md): Update channel, scopes, triggers, or status for an existing notification configuration.
-- [mutation_update_org_level_settings](operations/mutation_update_org_level_settings.md): Configure global organization settings such as idle session timeout duration.
-- [mutation_update_security_group](operations/mutation_update_security_group.md): Update the name or description of an existing security group.
-- [mutation_user_action](operations/mutation_user_action.md): Perform administrative actions like enabling or disabling specific user accounts.
-- [mutation_user_delete](operations/mutation_user_delete.md): Permanently delete a user account and remove their access rights.
-- [mutation_user_invite](operations/mutation_user_invite.md): Invite a new user to the organization with a specific role.
-- [mutation_user_remove](operations/mutation_user_remove.md): Remove a user from the organization without deleting their account.
-- [mutation_user_reset_password](operations/mutation_user_reset_password.md): Trigger a password reset email for a specific user account.
-- [mutation_user_set_user_role](operations/mutation_user_set_user_role.md): Assign a new permission role like Owner or Operator to users.
-- [mutation_user_update_user](operations/mutation_user_update_user.md): Modify user profile information including name and contact email details.
-- [query_activity](operations/query_activity.md): Retrieve a comprehensive log of actions and events for assets.
-- [query_analytics](operations/query_analytics.md): Access high-level risk data and charts for organization dashboards.
-- [query_asset](operations/query_asset.md): Retrieve detailed metadata and risk information for a single asset.
-- [query_asset_group_analytics](operations/query_asset_group_analytics.md): View risk metrics and exploit counts for a specific group.
-- [query_asset_group_members](operations/query_asset_group_members.md): List all assets associated with a specific asset group container.
-- [query_asset_groups](operations/query_asset_groups.md): Retrieve a detailed paginated list of all asset groups available.
-- [query_asset_status](operations/query_asset_status.md): Check if an asset is currently processing or has finished.
-- [query_asset_upload](operations/query_asset_upload.md): Obtain a secure pre-signed URL to upload files for analysis.
-- [query_asset_vulnerability_remediation](operations/query_asset_vulnerability_remediation.md): Retrieve current VEX status and justification for a specific vulnerability.
-- [query_assets_overview](operations/query_assets_overview.md): View high-level risk and threat exposure metrics for multiple assets.
-- [query_assets_relay](operations/query_assets_relay.md): Retrieve a paginated, sortable list of assets with filtering options.
-- [query_assets_relay_lite](operations/query_assets_relay_lite.md): Retrieve assets with trimmed fields — keeps identity, status, risk score, and analytic rollups; drops filesystems, SHA-256, exploit trees, and credential counts.
-- [query_assets_relay_summary](operations/query_assets_relay_summary.md): Retrieve minimal asset data — ID, name, and analytic counts only — for fast org-wide sweeps to decide which assets need deeper queries.
-- [query_binary_protections](operations/query_binary_protections.md): List security hardening details for binaries found within the asset.
-- [query_binary_protections_summary](operations/query_binary_protections_summary.md): Get aggregated counts of binary hardening features like NX or PIE.
-- [query_caas_availability](operations/query_caas_availability.md): Check for the availability of the RISE AI analysis report.
-- [query_certificate_external_filters](operations/query_certificate_external_filters.md): Retrieve available filter options for certificate queries.
-- [query_certificates](operations/query_certificates.md): List X.509 certificates and validity status found in the asset.
-- [query_credentials](operations/query_credentials.md): Identify user accounts and password hashes discovered within the filesystem.
-- [query_dependencies](operations/query_dependencies.md): List all software components and libraries identified in the asset.
-- [query_dependencies_lite](operations/query_dependencies_lite.md): List dependencies with trimmed fields — keeps identity, version, license, purls, and analytic rollups; drops file metadata, digests, and nested correlation details.
-- [query_dependency_known_exploits](operations/query_dependency_known_exploits.md): Check if specific dependencies are linked to known public exploits.
-- [query_detailed_vulnerabilities](operations/query_detailed_vulnerabilities.md): Retrieve in-depth vulnerability data including descriptions and CVSS vector strings.
-- [query_detailed_vulnerabilities_lite](operations/query_detailed_vulnerabilities_lite.md): Retrieve vulnerability descriptions with preferred CVSS v3.1 scores only — drops full v2/v4 impact blocks, exploit timelines, references, and problem type details.
-- [query_download_extracted_firmware](operations/query_download_extracted_firmware.md): Generate a URL to download the full unpacked file system.
-- [query_download_file](operations/query_download_file.md): Create a secure link to download a specific individual file.
-- [query_download_file_list](operations/query_download_file_list.md): Generate a URL to download a list of all files.
-- [query_download_firmware](operations/query_download_firmware.md): Generate a link to download the original uploaded firmware image.
-- [query_get_ai_model_data](operations/query_get_ai_model_data.md): Retrieve configuration and metadata for a specific AI model integration.
-- [query_get_asset_comparison_report](operations/query_get_asset_comparison_report.md): Retrieve a completed asset comparison report including vulnerability, component, and summary diffs.
-- [query_get_certificate_reachability](operations/query_get_certificate_reachability.md): Determine whether discovered certificates are reachable via executable scripts or system paths.
-- [query_get_dependency_reachability](operations/query_get_dependency_reachability.md): Determine whether a dependency is reachable via executable scripts or system paths.
-- [query_get_my_permissions](operations/query_get_my_permissions.md): Retrieve the flat union of permission IDs the calling user holds across all their access grants.
-- [query_get_resource_permissions](operations/query_get_resource_permissions.md): Retrieve the caller's effective permissions on a specific resource, defaulting to the organization level.
-- [query_get_role](operations/query_get_role.md): Retrieve a single RBAC role by its ID.
-- [query_get_role_delete_impact](operations/query_get_role_delete_impact.md): Preview which users would retain or lose platform access if a custom role were deleted.
-- [query_get_secret_reachability](operations/query_get_secret_reachability.md): Determine whether discovered secrets are reachable via executable scripts or system paths.
-- [query_get_security_group_delete_impact](operations/query_get_security_group_delete_impact.md): Preview which members would retain or lose platform access if a security group were deleted.
-- [query_get_vuln_reachability](operations/query_get_vuln_reachability.md): Determine if a vulnerability can be executed via system paths.
-- [query_grouped_dependencies](operations/query_grouped_dependencies.md): View dependencies aggregated by vendor, license, or specific component type.
-- [query_hashes](operations/query_hashes.md): List cryptographic hashes for files identified within the asset filesystem.
-- [query_identified_components_preview](operations/query_identified_components_preview.md): Return organization-wide component counts filtered by enabled identification methods, with before/after deltas when verification settings change.
-- [query_jira_integration](operations/query_jira_integration.md): Retrieve the Jira integration summary and connection health details.
-- [query_jira_integration_setup](operations/query_jira_integration_setup.md): Retrieve the current state of the Jira integration setup wizard.
-- [query_jira_project_components](operations/query_jira_project_components.md): List the Jira project components available for a connected space.
-- [query_jira_project_labels](operations/query_jira_project_labels.md): Search the Jira labels available for a connected space; labels are instance-global.
-- [query_jira_project_sprints](operations/query_jira_project_sprints.md): Search the Jira sprints available for a connected space.
-- [query_jira_project_teams](operations/query_jira_project_teams.md): Search the Atlassian Teams available for a connected Jira space.
-- [query_jira_project_users](operations/query_jira_project_users.md): Search the assignable Jira users for a connected space.
-- [query_jira_project_versions](operations/query_jira_project_versions.md): List the Jira project versions available for a connected space.
-- [query_jira_space_issue_fields](operations/query_jira_space_issue_fields.md): Retrieve the creatable fields, including priority options, for a Jira space and issue type.
-- [query_jira_space_issue_types](operations/query_jira_space_issue_types.md): Retrieve the issue types available for a connected Jira space.
-- [query_license](operations/query_license.md): Retrieve detailed information for a specific software license.
-- [query_license_issue](operations/query_license_issue.md): Get details about a specific license compliance issue.
-- [query_license_issues](operations/query_license_issues.md): List license compliance issues identified across asset components.
-- [query_license_issues_external_filters](operations/query_license_issues_external_filters.md): Retrieve available filter options for license issue queries.
-- [query_licenses_spdx_ids](operations/query_licenses_spdx_ids.md): List available SPDX license identifiers for filtering and reference.
-- [query_list_ac_rs](operations/query_list_ac_rs.md): List access control records for the organization, optionally filtered to a specific user.
-- [query_list_ai_providers](operations/query_list_ai_providers.md): List available AI provider integrations and their current status.
-- [query_list_asset_comparison_reports](operations/query_list_asset_comparison_reports.md): List all asset comparison reports with pagination, filtering, and sorting.
-- [query_list_asset_correlations](operations/query_list_asset_correlations.md): Retrieve cross-asset correlation data linking shared components and vulnerabilities.
-- [query_list_asset_crypto_libraries](operations/query_list_asset_crypto_libraries.md): List cryptographic libraries and algorithms detected within an asset.
-- [query_list_entity_assets](operations/query_list_entity_assets.md): List the assets accessible to a specific user or security group.
-- [query_list_my_ac_rs](operations/query_list_my_ac_rs.md): List the access control records that apply to the calling user.
-- [query_list_my_security_groups](operations/query_list_my_security_groups.md): List the security groups the calling user belongs to.
-- [query_list_notification_configurations](operations/query_list_notification_configurations.md): List all notification configurations with their channels, scopes, and triggers.
-- [query_list_notification_logs](operations/query_list_notification_logs.md): Retrieve a paginated log of notification delivery events and their statuses.
-- [query_list_org_users](operations/query_list_org_users.md): List all users in the organization with their security groups and accessible asset counts.
-- [query_list_permissions](operations/query_list_permissions.md): Retrieve the full permission catalog available for building custom roles.
-- [query_list_roles](operations/query_list_roles.md): List all RBAC roles defined for the current organization.
-- [query_list_security_group_members](operations/query_list_security_group_members.md): List the users who are members of a specific security group.
-- [query_list_security_groups](operations/query_list_security_groups.md): List all RBAC security groups defined for the current organization.
-- [query_match_vulnerabilities](operations/query_match_vulnerabilities.md): Find specific vulnerabilities matching a provided component identifier or package.
-- [query_me](operations/query_me.md): Retrieve the authenticated user's profile including their editable display name.
-- [query_metrics](operations/query_metrics.md): View organization-wide statistics on asset counts, processing, and risk.
-- [query_misconfigurations](operations/query_misconfigurations.md): List failed security checks and configuration risks found in assets.
-- [query_misconfigurations_lite](operations/query_misconfigurations_lite.md): List misconfigurations with trimmed fields — keeps check ID, name, severity, result, and correlation count; drops nested correlation objects.
-- [query_org_level_information](operations/query_org_level_information.md): Retrieve organization-level metadata such as last-updated time, optionally scoped by asset groups.
-- [query_org_level_settings](operations/query_org_level_settings.md): Check how the tenant organization is configured.
-- [query_package_dependencies_by_id](operations/query_package_dependencies_by_id.md): View the dependency tree hierarchy for a specific software package.
-- [query_private_key_external_filters](operations/query_private_key_external_filters.md): Retrieve available filter options for private key queries.
-- [query_private_keys](operations/query_private_keys.md): Detect private cryptographic keys stored insecurely on the asset filesystem.
-- [query_public_key_external_filters](operations/query_public_key_external_filters.md): Retrieve available filter options for public key queries.
-- [query_public_keys](operations/query_public_keys.md): List public cryptographic keys found within the asset's file system.
-- [query_remediated_vulnerabilities_by_asset](operations/query_remediated_vulnerabilities_by_asset.md): List remediated vulnerabilities grouped by asset for a single remediation-status bucket, with pagination, filtering, and sorting.
-- [query_rise_ai_analysis_data](operations/query_rise_ai_analysis_data.md): Check for the contents of the RISE AI analysis report.
-- [query_rise_ai_availability](operations/query_rise_ai_availability.md): Check eligibility and status of RISE AI analysis for an asset.
-- [query_search](operations/query_search.md): Execute keyword searches across all artifacts and files in organization.
-- [query_secret](operations/query_secret.md): Retrieve detailed information about a specific discovered secret.
-- [query_secret_categories_summary](operations/query_secret_categories_summary.md): Get aggregated counts of secrets grouped by category type.
-- [query_secret_status_count](operations/query_secret_status_count.md): Retrieve counts of secrets grouped by remediation status.
-- [query_secret_types_and_count](operations/query_secret_types_and_count.md): List secret types discovered with their occurrence counts.
-- [query_secrets](operations/query_secrets.md): List all secrets and sensitive data discovered within an asset.
-- [query_secrets_summary](operations/query_secrets_summary.md): Get a high-level overview of secret findings and exposure metrics.
-- [query_sift](operations/query_sift.md): Perform fuzzy hash matching to find similar code or files.
-- [query_user_orgs](operations/query_user_orgs.md): List all organizations the current user is authorized to access.
-- [query_users](operations/query_users.md): Retrieve a detailed list of all users and their assigned roles.
-- [query_vulnerabilities](operations/query_vulnerabilities.md): List CVEs and associated risks for components in an asset.
-- [query_vulnerabilities_lite](operations/query_vulnerabilities_lite.md): List vulnerabilities with trimmed fields — keeps CVE, severity, CVSS/EPSS scores, fix versions, and correlation count; drops nested correlations and remediation details.
-- [query_vulnerabilities_overview](operations/query_vulnerabilities_overview.md): Get a summary of vulnerability counts and severity across assets.
-- [query_vulnerability](operations/query_vulnerability.md): Retrieve detailed metadata, scores, and descriptions for a specific vulnerability.
-- [query_vulnerability_external_filters](operations/query_vulnerability_external_filters.md): Count vulnerabilities matching external threat feeds like CISA or botnets.
-- [query_vulnerability_jira_tickets](operations/query_vulnerability_jira_tickets.md): Retrieve the Jira tickets linked to a vulnerability finding on an asset.
-- [query_vulnerability_lite](operations/query_vulnerability_lite.md): Retrieve a single vulnerability with preferred CVSS v3.1 score only — drops full v2/v4 impact blocks, exploit references, and problem type details.
-- [query_vulnerability_remediation_summary](operations/query_vulnerability_remediation_summary.md): Get org-wide counts of applied VEX remediation statuses, grouped into the overview remediation-status buckets.
+- [mutation_replace_acr](operations/mutation_replace_acr.md): Replace an access control record in one delete-and-create.
+- [mutation_set_org_user_status](operations/mutation_set_org_user_status.md): Enable or disable a user in the current org.
+- [mutation_update_custom_role](operations/mutation_update_custom_role.md): Update a custom role's name, description, or permissions.
+- [mutation_update_security_group](operations/mutation_update_security_group.md): Update a security group's name or description.
+- [mutation_user_action](operations/mutation_user_action.md): Enable or disable a user account.
+- [mutation_user_delete](operations/mutation_user_delete.md): Delete a user account and revoke access.
+- [mutation_user_invite](operations/mutation_user_invite.md): Invite a user to the organization with a role.
+- [mutation_user_remove](operations/mutation_user_remove.md): Remove a user from the org without deleting the account.
+- [mutation_user_reset_password](operations/mutation_user_reset_password.md): Send a password-reset email to a user.
+- [mutation_user_set_user_role](operations/mutation_user_set_user_role.md): Assign a role such as Owner or Operator.
+- [mutation_user_update_user](operations/mutation_user_update_user.md): Update a user's name or email.
+
+### Notifications
+
+- [query_list_notification_configurations](operations/query_list_notification_configurations.md): List notification configurations and their triggers.
+- [query_list_notification_logs](operations/query_list_notification_logs.md): List notification delivery events and statuses.
+- [mutation_create_notification_configuration](operations/mutation_create_notification_configuration.md): Create a notification channel, scopes, and triggers.
+- [mutation_delete_notification_configuration](operations/mutation_delete_notification_configuration.md): Delete a notification configuration by ID.
+- [mutation_notify_notification_configuration](operations/mutation_notify_notification_configuration.md): Send a test notification for a configuration.
+- [mutation_update_notification_configuration](operations/mutation_update_notification_configuration.md): Update a notification configuration's channel or triggers.
+
+### Jira
+
+- [query_jira_integration](operations/query_jira_integration.md): Get Jira integration summary and connection health.
+- [query_jira_integration_setup](operations/query_jira_integration_setup.md): Get the current Jira setup-wizard state.
+- [query_jira_project_components](operations/query_jira_project_components.md): List Jira project components for a connected space.
+- [query_jira_project_labels](operations/query_jira_project_labels.md): Search Jira labels for a connected space.
+- [query_jira_project_sprints](operations/query_jira_project_sprints.md): Search Jira sprints for a connected space.
+- [query_jira_project_teams](operations/query_jira_project_teams.md): Search Atlassian Teams for a connected Jira space.
+- [query_jira_project_users](operations/query_jira_project_users.md): Search assignable Jira users for a connected space.
+- [query_jira_project_versions](operations/query_jira_project_versions.md): List Jira project versions for a connected space.
+- [query_jira_space_issue_fields](operations/query_jira_space_issue_fields.md): List creatable fields for a Jira space and issue type.
+- [query_jira_space_issue_types](operations/query_jira_space_issue_types.md): List issue types for a connected Jira space.
+- [query_jira_space_workflow_config](operations/query_jira_space_workflow_config.md): Get status mappings and workflow config for a Jira space.
+- [query_jira_status_mapping_problems](operations/query_jira_status_mapping_problems.md): List status-mapping problems across connected Jira spaces.
+- [mutation_jira_integration_add_connected_space](operations/mutation_jira_integration_add_connected_space.md): Connect a Jira space to the integration.
+- [mutation_jira_integration_create_issue](operations/mutation_jira_integration_create_issue.md): Create a Jira issue, optionally linked to a finding.
+- [mutation_jira_integration_delete_connected_space](operations/mutation_jira_integration_delete_connected_space.md): Disconnect a Jira space from the integration.
+- [mutation_jira_integration_disconnect](operations/mutation_jira_integration_disconnect.md): Disconnect the Jira integration from the org.
+- [mutation_jira_integration_reconnect](operations/mutation_jira_integration_reconnect.md): Re-enable Jira when OAuth and app install are already done.
+- [mutation_jira_integration_set_status_mapping_auto_sync](operations/mutation_jira_integration_set_status_mapping_auto_sync.md): Enable or disable auto-sync for Jira status mappings.
+- [mutation_jira_integration_setup_action](operations/mutation_jira_integration_setup_action.md): Run a step in the Jira setup or reconnect flow.
+- [mutation_jira_integration_test_connection](operations/mutation_jira_integration_test_connection.md): Check that the Jira integration connection is healthy.
+- [mutation_save_jira_space_workflow_config](operations/mutation_save_jira_space_workflow_config.md): Save status mappings and workflow config for a Jira space.
+
+### RiseAI
+
+- [query_caas_availability](operations/query_caas_availability.md): Check whether a RiseAI analysis report is available.
+- [query_get_ai_model_data](operations/query_get_ai_model_data.md): Get config and metadata for an AI model integration.
+- [query_list_ai_providers](operations/query_list_ai_providers.md): List AI provider integrations and their status.
+- [query_rise_ai_analysis_data](operations/query_rise_ai_analysis_data.md): Get the contents of a RiseAI analysis report.
+- [query_rise_ai_availability](operations/query_rise_ai_availability.md): Check RiseAI eligibility and status for an asset.
+- [mutation_submit_rise_ai_analysis](operations/mutation_submit_rise_ai_analysis.md): Request a RiseAI analysis for an eligible asset.
+
+### Organization
+
+- [query_analytics](operations/query_analytics.md): Get org dashboard risk metrics and chart data.
+- [query_org_level_information](operations/query_org_level_information.md): Get org metadata such as last-updated time.
+- [query_org_level_settings](operations/query_org_level_settings.md): Get the tenant organization's settings.
+- [mutation_update_org_level_settings](operations/mutation_update_org_level_settings.md): Update org settings such as idle session timeout.
+

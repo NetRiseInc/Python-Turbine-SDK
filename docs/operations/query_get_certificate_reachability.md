@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_get_certificate_reachability
 
-Determine whether discovered certificates are reachable via executable scripts or system paths.
+[Back to the index](../README.md)
+
+Check whether certificates are reachable via paths or scripts.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `get_certificate_reachability_args` | `GetCertificateReachabilityInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

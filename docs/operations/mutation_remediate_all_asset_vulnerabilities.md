@@ -1,10 +1,15 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # mutation_remediate_all_asset_vulnerabilities
 
-Apply a remediation status to all vulnerabilities matching specific filters.
+[Back to the index](../README.md)
+
+Apply a VEX status to every vuln matching a filter.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
@@ -12,7 +17,7 @@ Apply a remediation status to all vulnerabilities matching specific filters.
 
 ## Filter fields
 
-Build the `filter` argument with `where()` instead of hand-assembling `VulnerabilityFilter.fields`:
+Use `where()` to build `VulnerabilityFilter` — see [Filtering](../guides/filtering.md).
 
 ```python
 from netrise_turbine_sdk import where
@@ -38,7 +43,9 @@ flt = where(VulnerabilityFilter, severity="...", name__contains="...")
 
 Lookups: `field=` (exact), `field__contains=`, `field__in=`, `field__gt=`, `field__gte=`, `field__lt=`, `field__lte=`.
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

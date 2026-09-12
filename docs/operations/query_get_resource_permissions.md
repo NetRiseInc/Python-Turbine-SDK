@@ -1,17 +1,24 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_get_resource_permissions
 
-Retrieve the caller's effective permissions on a specific resource, defaulting to the organization level.
+[Back to the index](../README.md)
+
+List the caller's effective permissions on a resource.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `get_resource_permissions_resource_type` | `AcrResourceType` | `true` |
 | `get_resource_permissions_resource_id` | `Union[str, None, UnsetType]` | `false` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

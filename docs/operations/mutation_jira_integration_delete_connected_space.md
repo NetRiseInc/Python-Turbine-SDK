@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # mutation_jira_integration_delete_connected_space
 
-Remove a connected Jira space from the integration.
+[Back to the index](../README.md)
+
+Disconnect a Jira space from the integration.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `jira_integration_delete_connected_space_args` | `JiraIntegrationDeleteConnectedSpaceInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

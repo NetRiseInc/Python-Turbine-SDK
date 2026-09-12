@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_jira_space_issue_fields
 
-Retrieve the creatable fields, including priority options, for a Jira space and issue type.
+[Back to the index](../README.md)
+
+List creatable fields for a Jira space and issue type.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `jira_space_issue_fields_args` | `JiraSpaceIssueFieldsInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

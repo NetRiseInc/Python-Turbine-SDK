@@ -68,6 +68,7 @@ from .enums import (
     JiraSetupMode,
     JiraSetupStep,
     JiraSetupStepStatus,
+    JiraStatusCategory,
     JiraSystemCheckStatus,
     Language,
     LicenseIssueSeverity,
@@ -261,6 +262,7 @@ from .input_types import (
     JiraIntegrationAddConnectedSpaceInput,
     JiraIntegrationCreateIssueInput,
     JiraIntegrationDeleteConnectedSpaceInput,
+    JiraIntegrationSetStatusMappingAutoSyncInput,
     JiraIntegrationSetupActionInput,
     JiraIntegrationSetupInput,
     JiraProjectComponentsInput,
@@ -271,6 +273,9 @@ from .input_types import (
     JiraProjectVersionsInput,
     JiraSpaceIssueFieldsInput,
     JiraSpaceIssueTypesInput,
+    JiraSpaceWorkflowConfigInput,
+    JiraStatusMappingInput,
+    JiraStatusMappingProblemsInput,
     JiraVulnerabilityRefInput,
     LicenseInput,
     LicenseIssueInput,
@@ -357,6 +362,7 @@ from .input_types import (
     RemoveSecurityGroupMemberInput,
     ReplaceAcrInput,
     RiseAIAnalysisDataInput,
+    SaveJiraSpaceWorkflowConfigInput,
     SbomFindingsControlInput,
     SearchInput,
     SecretCategoriesInput,
@@ -552,6 +558,10 @@ from .mutation_jira_integration_reconnect import (
     MutationJiraIntegrationReconnectJiraIntegrationReconnectConnectionHealthMetrics,
     MutationJiraIntegrationReconnectJiraIntegrationReconnectConnectionHealthSystemChecks,
 )
+from .mutation_jira_integration_set_status_mapping_auto_sync import (
+    MutationJiraIntegrationSetStatusMappingAutoSync,
+    MutationJiraIntegrationSetStatusMappingAutoSyncJiraIntegrationSetStatusMappingAutoSync,
+)
 from .mutation_jira_integration_setup_action import (
     MutationJiraIntegrationSetupAction,
     MutationJiraIntegrationSetupActionJiraIntegrationSetupAction,
@@ -579,6 +589,7 @@ from .mutation_remediate_asset_vulnerabilities import (
     MutationRemediateAssetVulnerabilitiesRemediateAssetVulnerabilitiesCorrelations,
     MutationRemediateAssetVulnerabilitiesRemediateAssetVulnerabilitiesCorrelationsRisk,
     MutationRemediateAssetVulnerabilitiesRemediateAssetVulnerabilitiesCurrentRemediation,
+    MutationRemediateAssetVulnerabilitiesRemediateAssetVulnerabilitiesJiraTicket,
     MutationRemediateAssetVulnerabilitiesRemediateAssetVulnerabilitiesSsvc,
 )
 from .mutation_remediate_asset_vulnerability import (
@@ -587,6 +598,7 @@ from .mutation_remediate_asset_vulnerability import (
     MutationRemediateAssetVulnerabilityRemediateAssetVulnerabilityCorrelations,
     MutationRemediateAssetVulnerabilityRemediateAssetVulnerabilityCorrelationsRisk,
     MutationRemediateAssetVulnerabilityRemediateAssetVulnerabilityCurrentRemediation,
+    MutationRemediateAssetVulnerabilityRemediateAssetVulnerabilityJiraTicket,
     MutationRemediateAssetVulnerabilityRemediateAssetVulnerabilitySsvc,
 )
 from .mutation_remediate_certificates import (
@@ -629,6 +641,10 @@ from .mutation_replace_acr import (
     MutationReplaceACRReplaceAcr,
     MutationReplaceACRReplaceAcrNewAcr,
     MutationReplaceACRReplaceAcrReplacedAcr,
+)
+from .mutation_save_jira_space_workflow_config import (
+    MutationSaveJiraSpaceWorkflowConfig,
+    MutationSaveJiraSpaceWorkflowConfigSaveJiraSpaceWorkflowConfig,
 )
 from .mutation_set_asset_groups_to_asset import MutationSetAssetGroupsToAsset
 from .mutation_set_assets_to_asset_group import MutationSetAssetsToAssetGroup
@@ -1153,6 +1169,18 @@ from .query_jira_space_issue_types import (
     QueryJiraSpaceIssueTypes,
     QueryJiraSpaceIssueTypesJiraSpaceIssueTypes,
 )
+from .query_jira_space_workflow_config import (
+    QueryJiraSpaceWorkflowConfig,
+    QueryJiraSpaceWorkflowConfigJiraSpaceWorkflowConfig,
+    QueryJiraSpaceWorkflowConfigJiraSpaceWorkflowConfigJiraStatuses,
+    QueryJiraSpaceWorkflowConfigJiraSpaceWorkflowConfigMappings,
+)
+from .query_jira_status_mapping_problems import (
+    QueryJiraStatusMappingProblems,
+    QueryJiraStatusMappingProblemsJiraStatusMappingProblems,
+    QueryJiraStatusMappingProblemsJiraStatusMappingProblemsMappingProblems,
+    QueryJiraStatusMappingProblemsJiraStatusMappingProblemsSpaceProblems,
+)
 from .query_license import (
     QueryLicense,
     QueryLicenseLicense,
@@ -1557,6 +1585,7 @@ from .query_vulnerabilities import (
     QueryVulnerabilitiesVulnerabilitiesEdgesNodeCorrelations,
     QueryVulnerabilitiesVulnerabilitiesEdgesNodeCorrelationsRisk,
     QueryVulnerabilitiesVulnerabilitiesEdgesNodeCurrentRemediation,
+    QueryVulnerabilitiesVulnerabilitiesEdgesNodeJiraTicket,
     QueryVulnerabilitiesVulnerabilitiesEdgesNodeSsvc,
     QueryVulnerabilitiesVulnerabilitiesPageInfo,
 )
@@ -1797,6 +1826,7 @@ __all__ = [
     "JiraIntegrationAddConnectedSpaceInput",
     "JiraIntegrationCreateIssueInput",
     "JiraIntegrationDeleteConnectedSpaceInput",
+    "JiraIntegrationSetStatusMappingAutoSyncInput",
     "JiraIntegrationSetupActionInput",
     "JiraIntegrationSetupInput",
     "JiraIntegrationStatus",
@@ -1813,6 +1843,10 @@ __all__ = [
     "JiraSetupStepStatus",
     "JiraSpaceIssueFieldsInput",
     "JiraSpaceIssueTypesInput",
+    "JiraSpaceWorkflowConfigInput",
+    "JiraStatusCategory",
+    "JiraStatusMappingInput",
+    "JiraStatusMappingProblemsInput",
     "JiraSystemCheckStatus",
     "JiraVulnerabilityRefInput",
     "Language",
@@ -1971,6 +2005,8 @@ __all__ = [
     "MutationJiraIntegrationReconnectJiraIntegrationReconnectConnectionHealthConnectedSpaces",
     "MutationJiraIntegrationReconnectJiraIntegrationReconnectConnectionHealthMetrics",
     "MutationJiraIntegrationReconnectJiraIntegrationReconnectConnectionHealthSystemChecks",
+    "MutationJiraIntegrationSetStatusMappingAutoSync",
+    "MutationJiraIntegrationSetStatusMappingAutoSyncJiraIntegrationSetStatusMappingAutoSync",
     "MutationJiraIntegrationSetupAction",
     "MutationJiraIntegrationSetupActionJiraIntegrationSetupAction",
     "MutationJiraIntegrationSetupActionJiraIntegrationSetupActionAvailableSites",
@@ -1989,12 +2025,14 @@ __all__ = [
     "MutationRemediateAssetVulnerabilitiesRemediateAssetVulnerabilitiesCorrelations",
     "MutationRemediateAssetVulnerabilitiesRemediateAssetVulnerabilitiesCorrelationsRisk",
     "MutationRemediateAssetVulnerabilitiesRemediateAssetVulnerabilitiesCurrentRemediation",
+    "MutationRemediateAssetVulnerabilitiesRemediateAssetVulnerabilitiesJiraTicket",
     "MutationRemediateAssetVulnerabilitiesRemediateAssetVulnerabilitiesSsvc",
     "MutationRemediateAssetVulnerability",
     "MutationRemediateAssetVulnerabilityRemediateAssetVulnerability",
     "MutationRemediateAssetVulnerabilityRemediateAssetVulnerabilityCorrelations",
     "MutationRemediateAssetVulnerabilityRemediateAssetVulnerabilityCorrelationsRisk",
     "MutationRemediateAssetVulnerabilityRemediateAssetVulnerabilityCurrentRemediation",
+    "MutationRemediateAssetVulnerabilityRemediateAssetVulnerabilityJiraTicket",
     "MutationRemediateAssetVulnerabilityRemediateAssetVulnerabilitySsvc",
     "MutationRemediateCertificates",
     "MutationRemediateCertificatesRemediateCertificates",
@@ -2019,6 +2057,8 @@ __all__ = [
     "MutationReplaceACRReplaceAcr",
     "MutationReplaceACRReplaceAcrNewAcr",
     "MutationReplaceACRReplaceAcrReplacedAcr",
+    "MutationSaveJiraSpaceWorkflowConfig",
+    "MutationSaveJiraSpaceWorkflowConfigSaveJiraSpaceWorkflowConfig",
     "MutationSetAssetGroupsToAsset",
     "MutationSetAssetsToAssetGroup",
     "MutationSetOrgUserStatus",
@@ -2482,6 +2522,14 @@ __all__ = [
     "QueryJiraSpaceIssueFieldsJiraSpaceIssueFieldsAllowedValues",
     "QueryJiraSpaceIssueTypes",
     "QueryJiraSpaceIssueTypesJiraSpaceIssueTypes",
+    "QueryJiraSpaceWorkflowConfig",
+    "QueryJiraSpaceWorkflowConfigJiraSpaceWorkflowConfig",
+    "QueryJiraSpaceWorkflowConfigJiraSpaceWorkflowConfigJiraStatuses",
+    "QueryJiraSpaceWorkflowConfigJiraSpaceWorkflowConfigMappings",
+    "QueryJiraStatusMappingProblems",
+    "QueryJiraStatusMappingProblemsJiraStatusMappingProblems",
+    "QueryJiraStatusMappingProblemsJiraStatusMappingProblemsMappingProblems",
+    "QueryJiraStatusMappingProblemsJiraStatusMappingProblemsSpaceProblems",
     "QueryLicense",
     "QueryLicenseIssue",
     "QueryLicenseIssueLicenseIssue",
@@ -2817,6 +2865,7 @@ __all__ = [
     "QueryVulnerabilitiesVulnerabilitiesEdgesNodeCorrelations",
     "QueryVulnerabilitiesVulnerabilitiesEdgesNodeCorrelationsRisk",
     "QueryVulnerabilitiesVulnerabilitiesEdgesNodeCurrentRemediation",
+    "QueryVulnerabilitiesVulnerabilitiesEdgesNodeJiraTicket",
     "QueryVulnerabilitiesVulnerabilitiesEdgesNodeSsvc",
     "QueryVulnerabilitiesVulnerabilitiesPageInfo",
     "QueryVulnerability",
@@ -2881,6 +2930,7 @@ __all__ = [
     "RiskCategoryFilter",
     "RiskFields",
     "SBOM",
+    "SaveJiraSpaceWorkflowConfigInput",
     "SbomFindingsControlInput",
     "SbomFormat",
     "SbomType",

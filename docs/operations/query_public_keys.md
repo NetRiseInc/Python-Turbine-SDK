@@ -1,18 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_public_keys
 
-List public cryptographic keys found within the asset's file system.
+[Back to the index](../README.md)
 
-> **Prefer `sdk.iter_public_keys(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+List public keys found in an asset filesystem.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `public_keys_args` | `PublicKeysInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |
@@ -60,6 +65,29 @@ List public cryptographic keys found within the asset's file system.
 | `publicKeys.pageInfo.totalCount` | `integer` | yes |
 
 ## Example
+
+`sdk.iter_public_keys(...)` paginates for you and accepts filter kwargs.
+
+```python
+from __future__ import annotations
+
+from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
+
+
+def main() -> None:
+    sdk = TurbineClient(TurbineClientConfig.from_env())
+
+    for item in sdk.iter_public_keys(asset_id="asset_123", page_size=10, max_pages=1):
+        print(item)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## Raw client
+
+Same data via `client.query_public_keys` when you need exact GraphQL control.
 
 ```python
 from __future__ import annotations

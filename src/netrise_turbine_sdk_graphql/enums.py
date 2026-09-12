@@ -2243,6 +2243,12 @@ class JiraSystemCheckStatus(str, Enum):
     WARNING = "WARNING"
 
 
+class JiraStatusCategory(str, Enum):
+    TODO = "TODO"
+    IN_PROGRESS = "IN_PROGRESS"
+    DONE = "DONE"
+
+
 class JiraSetupMode(str, Enum):
     SETUP = "SETUP"
     RECONNECT = "RECONNECT"

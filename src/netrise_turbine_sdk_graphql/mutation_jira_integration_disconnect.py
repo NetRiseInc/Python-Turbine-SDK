@@ -42,6 +42,7 @@ class MutationJiraIntegrationDisconnectJiraIntegrationDisconnectConnectionHealth
     connection_status_label: str = Field(alias="connectionStatusLabel")
     instance_url: str = Field(alias="instanceUrl")
     metrics: "MutationJiraIntegrationDisconnectJiraIntegrationDisconnectConnectionHealthMetrics"
+    status_mapping_auto_sync_enabled: bool = Field(alias="statusMappingAutoSyncEnabled")
     system_checks: list[
         "MutationJiraIntegrationDisconnectJiraIntegrationDisconnectConnectionHealthSystemChecks"
     ] = Field(alias="systemChecks")
@@ -64,6 +65,7 @@ class MutationJiraIntegrationDisconnectJiraIntegrationDisconnectConnectionHealth
     avatar_url: Optional[str] = Field(alias="avatarUrl")
     category: str
     icon_color_index: int = Field(alias="iconColorIndex")
+    last_updated: Optional[str] = Field(alias="lastUpdated")
     name: str
     open_tickets_count: int = Field(alias="openTicketsCount")
     project_key: str = Field(alias="projectKey")

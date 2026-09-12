@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # mutation_set_asset_groups_to_asset
 
-Replace all current group associations for an asset with new ones.
+[Back to the index](../README.md)
+
+Replace an asset's group memberships.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `set_asset_groups_to_asset_args` | `SetAssetGroupsToAssetInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

@@ -1,18 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_asset_group_members
 
-List all assets associated with a specific asset group container.
+[Back to the index](../README.md)
 
-> **Prefer `sdk.iter_asset_group_members(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+List assets in an asset group.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `asset_group_members_args` | `AssetGroupMembersInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |
@@ -99,6 +104,29 @@ List all assets associated with a specific asset group container.
 | `assetGroupMembers.pageInfo.totalCount` | `integer` | yes |
 
 ## Example
+
+`sdk.iter_asset_group_members(...)` paginates for you and accepts filter kwargs.
+
+```python
+from __future__ import annotations
+
+from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
+
+
+def main() -> None:
+    sdk = TurbineClient(TurbineClientConfig.from_env())
+
+    for item in sdk.iter_asset_group_members(asset_id="asset_123", page_size=10, max_pages=1):
+        print(item)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## Raw client
+
+Same data via `client.query_asset_group_members` when you need exact GraphQL control.
 
 ```python
 from __future__ import annotations

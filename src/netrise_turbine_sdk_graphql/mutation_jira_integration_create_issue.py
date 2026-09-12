@@ -25,6 +25,9 @@ class MutationJiraIntegrationCreateIssueJiraIntegrationCreateIssue(BaseModel):
 class MutationJiraIntegrationCreateIssueJiraIntegrationCreateIssueTicket(BaseModel):
     id: str
     assignee: Optional[str]
+    assignee_avatar_url: Optional[str] = Field(alias="assigneeAvatarUrl")
+    issue_type: Optional[str] = Field(alias="issueType")
+    issue_type_icon_url: Optional[str] = Field(alias="issueTypeIconUrl")
     project_id: str = Field(alias="projectId")
     space_name: str = Field(alias="spaceName")
     status: str

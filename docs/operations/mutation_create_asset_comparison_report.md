@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # mutation_create_asset_comparison_report
 
-Create a new comparison report to diff vulnerabilities and components between two assets.
+[Back to the index](../README.md)
+
+Start a comparison report between two assets.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `create_asset_comparison_report_args` | `CreateAssetComparisonReportInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

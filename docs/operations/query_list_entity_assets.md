@@ -1,10 +1,15 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_list_entity_assets
 
-List the assets accessible to a specific user or security group.
+[Back to the index](../README.md)
+
+List assets a user or security group can access.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
@@ -12,7 +17,9 @@ List the assets accessible to a specific user or security group.
 | `list_entity_assets_entity_id` | `str` | `true` |
 | `list_entity_assets_cursor` | `Union[Cursor, None, UnsetType]` | `false` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

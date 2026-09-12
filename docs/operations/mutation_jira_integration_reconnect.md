@@ -1,15 +1,22 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # mutation_jira_integration_reconnect
 
-Re-enable a Jira installation when the OAuth and app install steps are already complete.
+[Back to the index](../README.md)
+
+Re-enable Jira when OAuth and app install are already done.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |
@@ -27,6 +34,7 @@ Re-enable a Jira installation when the OAuth and app install steps are already c
 | `jiraIntegrationReconnect.connectionHealth.connectedSpaces[].avatarUrl` | `string` | yes |
 | `jiraIntegrationReconnect.connectionHealth.connectedSpaces[].category` | `string` | no |
 | `jiraIntegrationReconnect.connectionHealth.connectedSpaces[].iconColorIndex` | `integer` | no |
+| `jiraIntegrationReconnect.connectionHealth.connectedSpaces[].lastUpdated` | `string` | yes |
 | `jiraIntegrationReconnect.connectionHealth.connectedSpaces[].name` | `string` | no |
 | `jiraIntegrationReconnect.connectionHealth.connectedSpaces[].openTicketsCount` | `integer` | no |
 | `jiraIntegrationReconnect.connectionHealth.connectedSpaces[].projectKey` | `string` | no |
@@ -35,6 +43,7 @@ Re-enable a Jira installation when the OAuth and app install steps are already c
 | `jiraIntegrationReconnect.connectionHealth.metrics` | `object` | no |
 | `jiraIntegrationReconnect.connectionHealth.metrics.connectedSpaces` | `string` | no |
 | `jiraIntegrationReconnect.connectionHealth.metrics.lastSync` | `string` | no |
+| `jiraIntegrationReconnect.connectionHealth.statusMappingAutoSyncEnabled` | `boolean` | no |
 | `jiraIntegrationReconnect.connectionHealth.systemChecks[]` | `object` | no |
 | `jiraIntegrationReconnect.connectionHealth.systemChecks[].id` | `string` | no |
 | `jiraIntegrationReconnect.connectionHealth.systemChecks[].description` | `string` | no |

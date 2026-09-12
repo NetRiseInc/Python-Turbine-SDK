@@ -1,18 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_credentials
 
-Identify user accounts and password hashes discovered within the filesystem.
+[Back to the index](../README.md)
 
-> **Prefer `sdk.iter_credentials(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+List accounts and password hashes found in an asset.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `credentials_args` | `CredentialsInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |
@@ -47,6 +52,29 @@ Identify user accounts and password hashes discovered within the filesystem.
 | `credentials.pageInfo.totalCount` | `integer` | yes |
 
 ## Example
+
+`sdk.iter_credentials(...)` paginates for you and accepts filter kwargs.
+
+```python
+from __future__ import annotations
+
+from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
+
+
+def main() -> None:
+    sdk = TurbineClient(TurbineClientConfig.from_env())
+
+    for item in sdk.iter_credentials(asset_id="asset_123", page_size=10, max_pages=1):
+        print(item)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## Raw client
+
+Same data via `client.query_credentials` when you need exact GraphQL control.
 
 ```python
 from __future__ import annotations

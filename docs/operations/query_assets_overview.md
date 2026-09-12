@@ -1,18 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_assets_overview
 
-View high-level risk and threat exposure metrics for multiple assets.
+[Back to the index](../README.md)
 
-> **Prefer `sdk.iter_assets_overview(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+Get risk and threat rollups across assets.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `assets_overview_args` | `AssetOverviewInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |
@@ -39,7 +44,7 @@ View high-level risk and threat exposure metrics for multiple assets.
 | `assetsOverview.edges[].node.risk.category` | `RiskCategory` | yes |
 | `assetsOverview.edges[].node.risk.rawScore` | `float` | yes |
 | `assetsOverview.edges[].node.risk.score` | `float` | yes |
-| `assetsOverview.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10b545f80>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `assetsOverview.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1090c2660>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `assetsOverview.edges[].node.threatActors[]` | `string` | yes |
 | `assetsOverview.edges[].node.type` | `AssetType` | yes |
 | `assetsOverview.edges[].node.vendor` | `string` | yes |
@@ -52,6 +57,29 @@ View high-level risk and threat exposure metrics for multiple assets.
 | `assetsOverview.pageInfo.totalCount` | `integer` | yes |
 
 ## Example
+
+`sdk.iter_assets_overview(...)` paginates for you and accepts filter kwargs.
+
+```python
+from __future__ import annotations
+
+from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
+
+
+def main() -> None:
+    sdk = TurbineClient(TurbineClientConfig.from_env())
+
+    for item in sdk.iter_assets_overview(page_size=10, max_pages=1):
+        print(item.id, item.name)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## Raw client
+
+Same data via `client.query_assets_overview` when you need exact GraphQL control.
 
 ```python
 from __future__ import annotations

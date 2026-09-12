@@ -1,18 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_private_keys
 
-Detect private cryptographic keys stored insecurely on the asset filesystem.
+[Back to the index](../README.md)
 
-> **Prefer `sdk.iter_private_keys(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+List private keys found in an asset filesystem.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `private_keys_args` | `PrivateKeysInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |
@@ -65,6 +70,29 @@ Detect private cryptographic keys stored insecurely on the asset filesystem.
 | `privateKeys.pageInfo.totalCount` | `integer` | yes |
 
 ## Example
+
+`sdk.iter_private_keys(...)` paginates for you and accepts filter kwargs.
+
+```python
+from __future__ import annotations
+
+from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
+
+
+def main() -> None:
+    sdk = TurbineClient(TurbineClientConfig.from_env())
+
+    for item in sdk.iter_private_keys(asset_id="asset_123", page_size=10, max_pages=1):
+        print(item)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## Raw client
+
+Same data via `client.query_private_keys` when you need exact GraphQL control.
 
 ```python
 from __future__ import annotations

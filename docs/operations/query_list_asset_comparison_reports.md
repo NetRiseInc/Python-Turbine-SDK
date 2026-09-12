@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_list_asset_comparison_reports
 
-List all asset comparison reports with pagination, filtering, and sorting.
+[Back to the index](../README.md)
+
+List asset comparison reports with filters and sorting.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `list_asset_comparison_reports_args` | `ListAssetComparisonReportsInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

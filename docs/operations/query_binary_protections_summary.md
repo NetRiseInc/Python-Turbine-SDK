@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_binary_protections_summary
 
-Get aggregated counts of binary hardening features like NX or PIE.
+[Back to the index](../README.md)
+
+Get counts of hardening features such as NX or PIE.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `binary_protections_summary_args` | `BinaryProtectionsSummaryInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

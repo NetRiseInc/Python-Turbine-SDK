@@ -1,12 +1,15 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_dependencies_lite
 
-List dependencies with trimmed fields — keeps identity, version, license, purls, and analytic rollups; drops file metadata, digests, and nested correlation details.
+[Back to the index](../README.md)
 
-> **Prefer `sdk.iter_dependencies_lite(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+List components with identity, version, license, and rollups.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
@@ -14,7 +17,7 @@ List dependencies with trimmed fields — keeps identity, version, license, purl
 
 ## Filter fields
 
-Build the `filter` argument with `where()` instead of hand-assembling `DependencyFilter.fields`:
+Use `where()` to build `DependencyFilter` — see [Filtering](../guides/filtering.md).
 
 ```python
 from netrise_turbine_sdk import where
@@ -37,7 +40,9 @@ flt = where(DependencyFilter, type="...", name__contains="...")
 
 Lookups: `field=` (exact), `field__contains=`, `field__in=`, `field__gt=`, `field__gte=`, `field__lt=`, `field__lte=`.
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |
@@ -46,7 +51,7 @@ Lookups: `field=` (exact), `field__contains=`, `field__in=`, `field__gt=`, `fiel
 | `dependencies.edges[].cursor` | `string` | yes |
 | `dependencies.edges[].node` | `object` | yes |
 | `dependencies.edges[].node.id` | `string` | no |
-| `dependencies.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10b545f80>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `dependencies.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1090c2660>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `dependencies.edges[].node.identifiedVia[]` | `IdentifiedViaCategory` | yes |
 | `dependencies.edges[].node.correlationsCount` | `integer` | yes |
 | `dependencies.edges[].node.dependency` | `object` | no |
@@ -90,6 +95,29 @@ Lookups: `field=` (exact), `field__contains=`, `field__in=`, `field__gt=`, `fiel
 | `dependencies.pageInfo.totalCount` | `integer` | yes |
 
 ## Example
+
+`sdk.iter_dependencies_lite(...)` paginates for you and accepts filter kwargs.
+
+```python
+from __future__ import annotations
+
+from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
+
+
+def main() -> None:
+    sdk = TurbineClient(TurbineClientConfig.from_env())
+
+    for item in sdk.iter_dependencies_lite(asset_id="asset_123", page_size=10, max_pages=1):
+        print(item)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## Raw client
+
+Same data via `client.query_dependencies_lite` when you need exact GraphQL control.
 
 ```python
 from __future__ import annotations

@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # mutation_submit_rise_ai_analysis
 
-Request a RISE AI analysis for an eligible asset to generate insights.
+[Back to the index](../README.md)
+
+Request a RiseAI analysis for an eligible asset.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `submit_rise_ai_analysis_args` | `RiseAIAnalysisDataInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_get_asset_comparison_report
 
-Retrieve a completed asset comparison report including vulnerability, component, and summary diffs.
+[Back to the index](../README.md)
+
+Get a finished asset comparison report.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `get_asset_comparison_report_args` | `GetAssetComparisonReportInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

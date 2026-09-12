@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_identified_components_preview
 
-Return organization-wide component counts filtered by enabled identification methods, with before/after deltas when verification settings change.
+[Back to the index](../README.md)
+
+Preview org-wide component counts under identification settings.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `identified_components_preview_args` | `IdentifiedComponentsPreviewInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

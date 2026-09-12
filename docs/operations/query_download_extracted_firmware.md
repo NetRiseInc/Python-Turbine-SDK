@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_download_extracted_firmware
 
-Generate a URL to download the full unpacked file system.
+[Back to the index](../README.md)
+
+Get a URL to download the unpacked filesystem.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `download_extracted_firmware_args` | `ExtractedFirmwareDownloadInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # mutation_create_notification_configuration
 
-Create a notification configuration defining channel, scopes, and triggers for alerts.
+[Back to the index](../README.md)
+
+Create a notification channel, scopes, and triggers.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `create_notification_configuration_args` | `CreateNotificationConfigurationInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

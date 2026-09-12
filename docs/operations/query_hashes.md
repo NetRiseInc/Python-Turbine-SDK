@@ -1,18 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_hashes
 
-List cryptographic hashes for files identified within the asset filesystem.
+[Back to the index](../README.md)
 
-> **Prefer `sdk.iter_hashes(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+List file hashes from an asset filesystem.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `hashes_args` | `HashesInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |
@@ -46,6 +51,29 @@ List cryptographic hashes for files identified within the asset filesystem.
 | `hashes.pageInfo.totalCount` | `integer` | yes |
 
 ## Example
+
+`sdk.iter_hashes(...)` paginates for you and accepts filter kwargs.
+
+```python
+from __future__ import annotations
+
+from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
+
+
+def main() -> None:
+    sdk = TurbineClient(TurbineClientConfig.from_env())
+
+    for item in sdk.iter_hashes(asset_id="asset_123", page_size=10, max_pages=1):
+        print(item)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## Raw client
+
+Same data via `client.query_hashes` when you need exact GraphQL control.
 
 ```python
 from __future__ import annotations
