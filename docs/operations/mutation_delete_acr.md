@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # mutation_delete_acr
 
-Delete a single access control record, revoking the associated grant.
+[Back to the index](../README.md)
+
+Delete one access control record.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `delete_acr_args` | `DeleteAcrInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

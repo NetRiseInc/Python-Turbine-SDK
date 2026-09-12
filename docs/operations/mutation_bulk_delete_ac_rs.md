@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # mutation_bulk_delete_ac_rs
 
-Delete multiple access control records in one call; already-deleted records are treated as success.
+[Back to the index](../README.md)
+
+Delete many access control records; missing ones count as success.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `bulk_delete_ac_rs_args` | `BulkDeleteAcrsInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

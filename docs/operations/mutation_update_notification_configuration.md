@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # mutation_update_notification_configuration
 
-Update channel, scopes, triggers, or status for an existing notification configuration.
+[Back to the index](../README.md)
+
+Update a notification configuration's channel or triggers.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `update_notification_configuration_args` | `UpdateNotificationConfigurationInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

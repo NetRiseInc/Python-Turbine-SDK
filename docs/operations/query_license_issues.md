@@ -1,18 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_license_issues
 
-List license compliance issues identified across asset components.
+[Back to the index](../README.md)
 
-> **Prefer `sdk.iter_license_issues(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+List license compliance issues on an asset.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `license_issues_args` | `LicenseIssuesInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |
@@ -35,7 +40,7 @@ List license compliance issues identified across asset components.
 | `licenseIssues.edges[].node.issueDescription` | `string` | yes |
 | `licenseIssues.edges[].node.issueId` | `string` | no |
 | `licenseIssues.edges[].node.issueName` | `string` | no |
-| `licenseIssues.edges[].node.lastModified` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10b545f80>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `licenseIssues.edges[].node.lastModified` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1090c2660>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `licenseIssues.edges[].node.license` | `object` | yes |
 | `licenseIssues.edges[].node.license.additionalCounts` | `object` | yes |
 | `licenseIssues.edges[].node.license.additionalCounts.associatedComponents` | `integer` | yes |
@@ -49,7 +54,7 @@ List license compliance issues identified across asset components.
 | `licenseIssues.edges[].node.license.url` | `string` | yes |
 | `licenseIssues.edges[].node.potentialSolution` | `string` | yes |
 | `licenseIssues.edges[].node.remediation` | `object` | yes |
-| `licenseIssues.edges[].node.remediation.createdTime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10b545f80>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `licenseIssues.edges[].node.remediation.createdTime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1090c2660>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `licenseIssues.edges[].node.remediation.detail` | `string` | yes |
 | `licenseIssues.edges[].node.remediation.user` | `string` | yes |
 | `licenseIssues.edges[].node.severity` | `LicenseIssueSeverity` | yes |
@@ -62,6 +67,29 @@ List license compliance issues identified across asset components.
 | `licenseIssues.pageInfo.totalCount` | `integer` | yes |
 
 ## Example
+
+`sdk.iter_license_issues(...)` paginates for you and accepts filter kwargs.
+
+```python
+from __future__ import annotations
+
+from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
+
+
+def main() -> None:
+    sdk = TurbineClient(TurbineClientConfig.from_env())
+
+    for item in sdk.iter_license_issues(asset_id="asset_123", page_size=10, max_pages=1):
+        print(item)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## Raw client
+
+Same data via `client.query_license_issues` when you need exact GraphQL control.
 
 ```python
 from __future__ import annotations

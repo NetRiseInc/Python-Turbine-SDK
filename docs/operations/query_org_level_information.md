@@ -1,21 +1,28 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_org_level_information
 
-Retrieve organization-level metadata such as last-updated time, optionally scoped by asset groups.
+[Back to the index](../README.md)
+
+Get org metadata such as last-updated time.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `org_level_information_args` | `OrgLevelInformationInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |
 | `orgLevelInformation` | `object` | no |
-| `orgLevelInformation.lastUpdatedAt` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10b545f80>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `orgLevelInformation.lastUpdatedAt` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1090c2660>, json_schema_input_type=PydanticUndefined)]` | yes |
 
 ## Example
 

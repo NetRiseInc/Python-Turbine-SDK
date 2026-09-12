@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # mutation_delete_custom_role
 
-Permanently delete a custom role from the organization.
+[Back to the index](../README.md)
+
+Delete a custom role from the organization.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `delete_custom_role_args` | `DeleteCustomRoleInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_get_dependency_reachability
 
-Determine whether a dependency is reachable via executable scripts or system paths.
+[Back to the index](../README.md)
+
+Check whether a dependency is reachable via paths or scripts.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `get_dependency_reachability_args` | `GetDependencyReachabilityInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

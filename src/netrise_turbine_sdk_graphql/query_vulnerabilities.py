@@ -53,7 +53,9 @@ class QueryVulnerabilitiesVulnerabilitiesEdgesNode(BaseModel):
         alias="inKnownExploitedVulnerabilities"
     )
     is_reachable: Optional[bool] = Field(alias="isReachable")
-    jira_ticket_count: Optional[int] = Field(alias="jiraTicketCount")
+    jira_ticket: Optional["QueryVulnerabilitiesVulnerabilitiesEdgesNodeJiraTicket"] = (
+        Field(alias="jiraTicket")
+    )
     maturity: Optional[str]
     name: Optional[str]
     severity: Optional[str]
@@ -88,6 +90,11 @@ class QueryVulnerabilitiesVulnerabilitiesEdgesNodeCurrentRemediation(BaseModel):
     responses: Optional[list[Optional[RemediationResponses]]]
     status: VexStatus
     vulnerability_id: str = Field(alias="vulnerabilityId")
+
+
+class QueryVulnerabilitiesVulnerabilitiesEdgesNodeJiraTicket(BaseModel):
+    issue_key: str = Field(alias="issueKey")
+    issue_url: str = Field(alias="issueUrl")
 
 
 class QueryVulnerabilitiesVulnerabilitiesEdgesNodeSsvc(BaseModel):

@@ -1,12 +1,15 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_vulnerabilities
 
-List CVEs and associated risks for components in an asset.
+[Back to the index](../README.md)
 
-> **Prefer `sdk.iter_vulnerabilities(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+List CVEs on an asset with scores and fix versions.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
@@ -14,7 +17,7 @@ List CVEs and associated risks for components in an asset.
 
 ## Filter fields
 
-Build the `filter` argument with `where()` instead of hand-assembling `VulnerabilityFilter.fields`:
+Use `where()` to build `VulnerabilityFilter` — see [Filtering](../guides/filtering.md).
 
 ```python
 from netrise_turbine_sdk import where
@@ -40,7 +43,9 @@ flt = where(VulnerabilityFilter, severity="...", name__contains="...")
 
 Lookups: `field=` (exact), `field__contains=`, `field__in=`, `field__gt=`, `field__gte=`, `field__lt=`, `field__lte=`.
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |
@@ -83,7 +88,9 @@ Lookups: `field=` (exact), `field__contains=`, `field__in=`, `field__gt=`, `fiel
 | `vulnerabilities.edges[].node.identificationIds[]` | `string` | yes |
 | `vulnerabilities.edges[].node.inKnownExploitedVulnerabilities` | `boolean` | yes |
 | `vulnerabilities.edges[].node.isReachable` | `boolean` | yes |
-| `vulnerabilities.edges[].node.jiraTicketCount` | `integer` | yes |
+| `vulnerabilities.edges[].node.jiraTicket` | `object` | yes |
+| `vulnerabilities.edges[].node.jiraTicket.issueKey` | `string` | no |
+| `vulnerabilities.edges[].node.jiraTicket.issueUrl` | `string` | no |
 | `vulnerabilities.edges[].node.maturity` | `string` | yes |
 | `vulnerabilities.edges[].node.name` | `string` | yes |
 | `vulnerabilities.edges[].node.severity` | `string` | yes |
@@ -103,6 +110,29 @@ Lookups: `field=` (exact), `field__contains=`, `field__in=`, `field__gt=`, `fiel
 | `vulnerabilities.pageInfo.totalCount` | `integer` | yes |
 
 ## Example
+
+`sdk.iter_vulnerabilities(...)` paginates for you and accepts filter kwargs.
+
+```python
+from __future__ import annotations
+
+from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
+
+
+def main() -> None:
+    sdk = TurbineClient(TurbineClientConfig.from_env())
+
+    for item in sdk.iter_vulnerabilities(asset_id="asset_123", page_size=10, max_pages=1):
+        print(item)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## Raw client
+
+Same data via `client.query_vulnerabilities` when you need exact GraphQL control.
 
 ```python
 from __future__ import annotations

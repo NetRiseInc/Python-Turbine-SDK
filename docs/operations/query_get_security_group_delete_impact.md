@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_get_security_group_delete_impact
 
-Preview which members would retain or lose platform access if a security group were deleted.
+[Back to the index](../README.md)
+
+Preview who loses access if a security group is deleted.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `get_security_group_delete_impact_security_group_id` | `str` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

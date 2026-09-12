@@ -1,15 +1,22 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # mutation_jira_integration_disconnect
 
-Disconnect the Jira integration from the organization.
+[Back to the index](../README.md)
+
+Disconnect the Jira integration from the org.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |
@@ -27,6 +34,7 @@ Disconnect the Jira integration from the organization.
 | `jiraIntegrationDisconnect.connectionHealth.connectedSpaces[].avatarUrl` | `string` | yes |
 | `jiraIntegrationDisconnect.connectionHealth.connectedSpaces[].category` | `string` | no |
 | `jiraIntegrationDisconnect.connectionHealth.connectedSpaces[].iconColorIndex` | `integer` | no |
+| `jiraIntegrationDisconnect.connectionHealth.connectedSpaces[].lastUpdated` | `string` | yes |
 | `jiraIntegrationDisconnect.connectionHealth.connectedSpaces[].name` | `string` | no |
 | `jiraIntegrationDisconnect.connectionHealth.connectedSpaces[].openTicketsCount` | `integer` | no |
 | `jiraIntegrationDisconnect.connectionHealth.connectedSpaces[].projectKey` | `string` | no |
@@ -35,6 +43,7 @@ Disconnect the Jira integration from the organization.
 | `jiraIntegrationDisconnect.connectionHealth.metrics` | `object` | no |
 | `jiraIntegrationDisconnect.connectionHealth.metrics.connectedSpaces` | `string` | no |
 | `jiraIntegrationDisconnect.connectionHealth.metrics.lastSync` | `string` | no |
+| `jiraIntegrationDisconnect.connectionHealth.statusMappingAutoSyncEnabled` | `boolean` | no |
 | `jiraIntegrationDisconnect.connectionHealth.systemChecks[]` | `object` | no |
 | `jiraIntegrationDisconnect.connectionHealth.systemChecks[].id` | `string` | no |
 | `jiraIntegrationDisconnect.connectionHealth.systemChecks[].description` | `string` | no |

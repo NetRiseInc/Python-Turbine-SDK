@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_rise_ai_availability
 
-Check eligibility and status of RISE AI analysis for an asset.
+[Back to the index](../README.md)
+
+Check RiseAI eligibility and status for an asset.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `rise_ai_availability_args` | `RiseAIAnalysisDataInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

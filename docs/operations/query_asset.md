@@ -1,18 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_asset
 
-Retrieve detailed metadata and risk information for a single asset.
+[Back to the index](../README.md)
 
-> **Prefer `sdk.get_asset(asset_id)`** — returns the asset node directly, no input model required.
+Get metadata and risk for one asset.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `asset_args` | `Union[AssetInput, None, UnsetType]` | `false` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |
@@ -105,6 +110,29 @@ Retrieve detailed metadata and risk information for a single asset.
 | `asset.version` | `string` | yes |
 
 ## Example
+
+`sdk.get_asset(...)` returns the node directly — no input model.
+
+```python
+from __future__ import annotations
+
+from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
+
+
+def main() -> None:
+    sdk = TurbineClient(TurbineClientConfig.from_env())
+
+    asset = sdk.get_asset("asset_123")
+    print(asset.id, asset.name)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## Raw client
+
+Same data via `client.query_asset` when you need exact GraphQL control.
 
 ```python
 from __future__ import annotations

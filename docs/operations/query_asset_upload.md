@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_asset_upload
 
-Obtain a secure pre-signed URL to upload files for analysis.
+[Back to the index](../README.md)
+
+Get a pre-signed URL to upload a file for analysis.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `asset_upload_args` | `Union[AssetUploadInput, None, UnsetType]` | `false` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

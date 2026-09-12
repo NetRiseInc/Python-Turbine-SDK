@@ -49,7 +49,9 @@ class MutationRemediateAssetVulnerabilitiesRemediateAssetVulnerabilities(BaseMod
         alias="inKnownExploitedVulnerabilities"
     )
     is_reachable: Optional[bool] = Field(alias="isReachable")
-    jira_ticket_count: Optional[int] = Field(alias="jiraTicketCount")
+    jira_ticket: Optional[
+        "MutationRemediateAssetVulnerabilitiesRemediateAssetVulnerabilitiesJiraTicket"
+    ] = Field(alias="jiraTicket")
     maturity: Optional[str]
     name: Optional[str]
     severity: Optional[str]
@@ -94,6 +96,13 @@ class MutationRemediateAssetVulnerabilitiesRemediateAssetVulnerabilitiesCurrentR
     responses: Optional[list[Optional[RemediationResponses]]]
     status: VexStatus
     vulnerability_id: str = Field(alias="vulnerabilityId")
+
+
+class MutationRemediateAssetVulnerabilitiesRemediateAssetVulnerabilitiesJiraTicket(
+    BaseModel
+):
+    issue_key: str = Field(alias="issueKey")
+    issue_url: str = Field(alias="issueUrl")
 
 
 class MutationRemediateAssetVulnerabilitiesRemediateAssetVulnerabilitiesSsvc(BaseModel):

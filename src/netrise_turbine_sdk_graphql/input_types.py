@@ -1344,6 +1344,27 @@ class GetDependencyReachabilityInput(BaseModel):
     component_id: str = Field(alias="componentId")
 
 
+class JiraSpaceWorkflowConfigInput(BaseModel):
+    space_id: str = Field(alias="spaceId")
+    issue_type_id: str = Field(alias="issueTypeId")
+
+
+class JiraStatusMappingInput(BaseModel):
+    jira_status_id: str = Field(alias="jiraStatusId")
+    netrise_status_id: Optional[str] = Field(alias="netriseStatusId", default=None)
+
+
+class SaveJiraSpaceWorkflowConfigInput(BaseModel):
+    space_id: str = Field(alias="spaceId")
+    issue_type_id: str = Field(alias="issueTypeId")
+    mappings: list["JiraStatusMappingInput"]
+    resolution_status_ids: list[str] = Field(alias="resolutionStatusIds")
+
+
+class JiraStatusMappingProblemsInput(BaseModel):
+    space_id: Optional[str] = Field(alias="spaceId", default=None)
+
+
 class VulnerabilityJiraTicketsInput(BaseModel):
     asset_id: str = Field(alias="assetId")
     advisory_id: str = Field(alias="advisoryId")
@@ -1356,6 +1377,10 @@ class JiraIntegrationDeleteConnectedSpaceInput(BaseModel):
 
 class JiraIntegrationAddConnectedSpaceInput(BaseModel):
     space_id: Optional[str] = Field(alias="spaceId", default=None)
+
+
+class JiraIntegrationSetStatusMappingAutoSyncInput(BaseModel):
+    enabled: bool
 
 
 class JiraSpaceIssueTypesInput(BaseModel):
@@ -1910,6 +1935,7 @@ DependencyFilter.model_rebuild()
 DependencyAnalyticFilter.model_rebuild()
 GroupedDependencyFilter.model_rebuild()
 ValueFilter.model_rebuild()
+SaveJiraSpaceWorkflowConfigInput.model_rebuild()
 JiraIntegrationCreateIssueInput.model_rebuild()
 MisconfigurationsInput.model_rebuild()
 MisconfigurationsFilter.model_rebuild()

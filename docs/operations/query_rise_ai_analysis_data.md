@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_rise_ai_analysis_data
 
-Check for the contents of the RISE AI analysis report.
+[Back to the index](../README.md)
+
+Get the contents of a RiseAI analysis report.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `rise_ai_analysis_data_args` | `RiseAIAnalysisDataInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # mutation_jira_integration_create_issue
 
-Create a Jira issue and optionally link it to a vulnerability finding.
+[Back to the index](../README.md)
+
+Create a Jira issue, optionally linked to a finding.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `jira_integration_create_issue_args` | `JiraIntegrationCreateIssueInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |
@@ -20,6 +27,9 @@ Create a Jira issue and optionally link it to a vulnerability finding.
 | `jiraIntegrationCreateIssue.ticket` | `object` | yes |
 | `jiraIntegrationCreateIssue.ticket.id` | `string` | no |
 | `jiraIntegrationCreateIssue.ticket.assignee` | `string` | yes |
+| `jiraIntegrationCreateIssue.ticket.assigneeAvatarUrl` | `string` | yes |
+| `jiraIntegrationCreateIssue.ticket.issueType` | `string` | yes |
+| `jiraIntegrationCreateIssue.ticket.issueTypeIconUrl` | `string` | yes |
 | `jiraIntegrationCreateIssue.ticket.projectId` | `string` | no |
 | `jiraIntegrationCreateIssue.ticket.spaceName` | `string` | no |
 | `jiraIntegrationCreateIssue.ticket.status` | `string` | no |

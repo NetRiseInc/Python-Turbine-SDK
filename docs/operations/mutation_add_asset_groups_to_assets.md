@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # mutation_add_asset_groups_to_assets
 
-Associate a list of existing asset groups with selected assets.
+[Back to the index](../README.md)
+
+Attach asset groups to one or more assets.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `add_asset_groups_to_assets_args` | `AddAssetGroupsToAssetsInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

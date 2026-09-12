@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_license_issue
 
-Get details about a specific license compliance issue.
+[Back to the index](../README.md)
+
+Get details for one license compliance issue.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `license_issue_args` | `LicenseIssueInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |
@@ -30,7 +37,7 @@ Get details about a specific license compliance issue.
 | `licenseIssue.issueDescription` | `string` | yes |
 | `licenseIssue.issueId` | `string` | no |
 | `licenseIssue.issueName` | `string` | no |
-| `licenseIssue.lastModified` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10b545f80>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `licenseIssue.lastModified` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1090c2660>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `licenseIssue.license` | `object` | yes |
 | `licenseIssue.license.additionalCounts` | `object` | yes |
 | `licenseIssue.license.additionalCounts.associatedComponents` | `integer` | yes |
@@ -44,7 +51,7 @@ Get details about a specific license compliance issue.
 | `licenseIssue.license.url` | `string` | yes |
 | `licenseIssue.potentialSolution` | `string` | yes |
 | `licenseIssue.remediation` | `object` | yes |
-| `licenseIssue.remediation.createdTime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x10b545f80>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `licenseIssue.remediation.createdTime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1090c2660>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `licenseIssue.remediation.detail` | `string` | yes |
 | `licenseIssue.remediation.user` | `string` | yes |
 | `licenseIssue.severity` | `LicenseIssueSeverity` | yes |

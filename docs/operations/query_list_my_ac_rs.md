@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_list_my_ac_rs
 
-List the access control records that apply to the calling user.
+[Back to the index](../README.md)
+
+List access control records that apply to you.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `list_my_ac_rs_cursor` | `Union[Cursor, None, UnsetType]` | `false` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

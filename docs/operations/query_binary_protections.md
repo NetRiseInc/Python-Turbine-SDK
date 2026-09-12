@@ -1,18 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_binary_protections
 
-List security hardening details for binaries found within the asset.
+[Back to the index](../README.md)
 
-> **Prefer `sdk.iter_binary_protections(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+List binary hardening details for an asset.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `binary_protections_args` | `BinaryProtectionsInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |
@@ -49,6 +54,29 @@ List security hardening details for binaries found within the asset.
 | `binaryProtections.pageInfo.totalCount` | `integer` | yes |
 
 ## Example
+
+`sdk.iter_binary_protections(...)` paginates for you and accepts filter kwargs.
+
+```python
+from __future__ import annotations
+
+from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
+
+
+def main() -> None:
+    sdk = TurbineClient(TurbineClientConfig.from_env())
+
+    for item in sdk.iter_binary_protections(asset_id="asset_123", page_size=10, max_pages=1):
+        print(item)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## Raw client
+
+Same data via `client.query_binary_protections` when you need exact GraphQL control.
 
 ```python
 from __future__ import annotations

@@ -65,6 +65,7 @@ from .input_types import (
     JiraIntegrationAddConnectedSpaceInput,
     JiraIntegrationCreateIssueInput,
     JiraIntegrationDeleteConnectedSpaceInput,
+    JiraIntegrationSetStatusMappingAutoSyncInput,
     JiraIntegrationSetupActionInput,
     JiraIntegrationSetupInput,
     JiraProjectComponentsInput,
@@ -75,6 +76,8 @@ from .input_types import (
     JiraProjectVersionsInput,
     JiraSpaceIssueFieldsInput,
     JiraSpaceIssueTypesInput,
+    JiraSpaceWorkflowConfigInput,
+    JiraStatusMappingProblemsInput,
     LicenseInput,
     LicenseIssueInput,
     LicenseIssuesExternalFiltersInput,
@@ -108,6 +111,7 @@ from .input_types import (
     RemoveSecurityGroupMemberInput,
     ReplaceAcrInput,
     RiseAIAnalysisDataInput,
+    SaveJiraSpaceWorkflowConfigInput,
     SearchInput,
     SecretCategoriesInput,
     SecretInput,
@@ -171,6 +175,9 @@ from .mutation_jira_integration_delete_connected_space import (
 )
 from .mutation_jira_integration_disconnect import MutationJiraIntegrationDisconnect
 from .mutation_jira_integration_reconnect import MutationJiraIntegrationReconnect
+from .mutation_jira_integration_set_status_mapping_auto_sync import (
+    MutationJiraIntegrationSetStatusMappingAutoSync,
+)
 from .mutation_jira_integration_setup_action import MutationJiraIntegrationSetupAction
 from .mutation_jira_integration_test_connection import (
     MutationJiraIntegrationTestConnection,
@@ -197,6 +204,9 @@ from .mutation_remove_assets_from_asset_group import MutationRemoveAssetsFromAss
 from .mutation_remove_org_user import MutationRemoveOrgUser
 from .mutation_remove_security_group_member import MutationRemoveSecurityGroupMember
 from .mutation_replace_acr import MutationReplaceACR
+from .mutation_save_jira_space_workflow_config import (
+    MutationSaveJiraSpaceWorkflowConfig,
+)
 from .mutation_set_asset_groups_to_asset import MutationSetAssetGroupsToAsset
 from .mutation_set_assets_to_asset_group import MutationSetAssetsToAssetGroup
 from .mutation_set_org_user_status import MutationSetOrgUserStatus
@@ -267,6 +277,8 @@ from .query_jira_project_users import QueryJiraProjectUsers
 from .query_jira_project_versions import QueryJiraProjectVersions
 from .query_jira_space_issue_fields import QueryJiraSpaceIssueFields
 from .query_jira_space_issue_types import QueryJiraSpaceIssueTypes
+from .query_jira_space_workflow_config import QueryJiraSpaceWorkflowConfig
+from .query_jira_status_mapping_problems import QueryJiraStatusMappingProblems
 from .query_license import QueryLicense
 from .query_license_issue import QueryLicenseIssue
 from .query_license_issues import QueryLicenseIssues
@@ -3305,6 +3317,7 @@ class Client(BaseClient):
                     avatarUrl
                     category
                     iconColorIndex
+                    lastUpdated
                     name
                     openTicketsCount
                     projectKey
@@ -3315,6 +3328,7 @@ class Client(BaseClient):
                     connectedSpaces
                     lastSync
                   }
+                  statusMappingAutoSyncEnabled
                   systemChecks {
                     id
                     description
@@ -3633,6 +3647,90 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return QueryJiraSpaceIssueTypes.model_validate(data)
+
+    def query_jira_space_workflow_config(
+        self,
+        jira_space_workflow_config_args: JiraSpaceWorkflowConfigInput,
+        **kwargs: Any
+    ) -> QueryJiraSpaceWorkflowConfig:
+        query = gql(
+            """
+            query QueryJiraSpaceWorkflowConfig($jiraSpaceWorkflowConfig_args: JiraSpaceWorkflowConfigInput!) {
+              jiraSpaceWorkflowConfig(args: $jiraSpaceWorkflowConfig_args) {
+                issueTypeId
+                jiraStatuses {
+                  id
+                  category
+                  name
+                }
+                mappings {
+                  jiraStatusId
+                  netriseStatusId
+                }
+                netriseStatuses
+                resolutionStatusIds
+                spaceId
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "jiraSpaceWorkflowConfig_args": jira_space_workflow_config_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryJiraSpaceWorkflowConfig",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryJiraSpaceWorkflowConfig.model_validate(data)
+
+    def query_jira_status_mapping_problems(
+        self,
+        jira_status_mapping_problems_args: Union[
+            Optional[JiraStatusMappingProblemsInput], UnsetType
+        ] = UNSET,
+        **kwargs: Any
+    ) -> QueryJiraStatusMappingProblems:
+        query = gql(
+            """
+            query QueryJiraStatusMappingProblems($jiraStatusMappingProblems_args: JiraStatusMappingProblemsInput) {
+              jiraStatusMappingProblems(args: $jiraStatusMappingProblems_args) {
+                jiraSpaceId
+                mappingProblems {
+                  code
+                  detail
+                  detectedAt
+                  jiraIssueTypeId
+                  jiraIssueTypeName
+                  jiraIssueTypeSubtask
+                  jiraStatusId
+                  jiraStatusMappingId
+                  jiraStatusName
+                }
+                projectKey
+                projectName
+                spaceProblems {
+                  code
+                  detail
+                  detectedAt
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "jiraStatusMappingProblems_args": jira_status_mapping_problems_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryJiraStatusMappingProblems",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryJiraStatusMappingProblems.model_validate(data)
 
     def query_license(self, license_args: LicenseInput, **kwargs: Any) -> QueryLicense:
         query = gql(
@@ -6340,7 +6438,10 @@ class Client(BaseClient):
                     identificationIds
                     inKnownExploitedVulnerabilities
                     isReachable
-                    jiraTicketCount
+                    jiraTicket {
+                      issueKey
+                      issueUrl
+                    }
                     maturity
                     name
                     severity
@@ -6745,6 +6846,9 @@ class Client(BaseClient):
               vulnerabilityJiraTickets(args: $vulnerabilityJiraTickets_args) {
                 id
                 assignee
+                assigneeAvatarUrl
+                issueType
+                issueTypeIconUrl
                 projectId
                 spaceName
                 status
@@ -7702,6 +7806,9 @@ class Client(BaseClient):
                 ticket {
                   id
                   assignee
+                  assigneeAvatarUrl
+                  issueType
+                  issueTypeIconUrl
                   projectId
                   spaceName
                   status
@@ -7777,6 +7884,7 @@ class Client(BaseClient):
                     avatarUrl
                     category
                     iconColorIndex
+                    lastUpdated
                     name
                     openTicketsCount
                     projectKey
@@ -7787,6 +7895,7 @@ class Client(BaseClient):
                     connectedSpaces
                     lastSync
                   }
+                  statusMappingAutoSyncEnabled
                   systemChecks {
                     id
                     description
@@ -7837,6 +7946,7 @@ class Client(BaseClient):
                     avatarUrl
                     category
                     iconColorIndex
+                    lastUpdated
                     name
                     openTicketsCount
                     projectKey
@@ -7847,6 +7957,7 @@ class Client(BaseClient):
                     connectedSpaces
                     lastSync
                   }
+                  statusMappingAutoSyncEnabled
                   systemChecks {
                     id
                     description
@@ -7875,6 +7986,35 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return MutationJiraIntegrationReconnect.model_validate(data)
+
+    def mutation_jira_integration_set_status_mapping_auto_sync(
+        self,
+        jira_integration_set_status_mapping_auto_sync_args: JiraIntegrationSetStatusMappingAutoSyncInput,
+        **kwargs: Any
+    ) -> MutationJiraIntegrationSetStatusMappingAutoSync:
+        query = gql(
+            """
+            mutation MutationJiraIntegrationSetStatusMappingAutoSync($jiraIntegrationSetStatusMappingAutoSync_args: JiraIntegrationSetStatusMappingAutoSyncInput!) {
+              jiraIntegrationSetStatusMappingAutoSync(
+                args: $jiraIntegrationSetStatusMappingAutoSync_args
+              ) {
+                error
+                success
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "jiraIntegrationSetStatusMappingAutoSync_args": jira_integration_set_status_mapping_auto_sync_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationJiraIntegrationSetStatusMappingAutoSync",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationJiraIntegrationSetStatusMappingAutoSync.model_validate(data)
 
     def mutation_jira_integration_setup_action(
         self,
@@ -8060,7 +8200,10 @@ class Client(BaseClient):
                 identificationIds
                 inKnownExploitedVulnerabilities
                 isReachable
-                jiraTicketCount
+                jiraTicket {
+                  issueKey
+                  issueUrl
+                }
                 maturity
                 name
                 severity
@@ -8136,7 +8279,10 @@ class Client(BaseClient):
                 identificationIds
                 inKnownExploitedVulnerabilities
                 isReachable
-                jiraTicketCount
+                jiraTicket {
+                  issueKey
+                  issueUrl
+                }
                 maturity
                 name
                 severity
@@ -8473,6 +8619,33 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return MutationReplaceACR.model_validate(data)
+
+    def mutation_save_jira_space_workflow_config(
+        self,
+        save_jira_space_workflow_config_args: SaveJiraSpaceWorkflowConfigInput,
+        **kwargs: Any
+    ) -> MutationSaveJiraSpaceWorkflowConfig:
+        query = gql(
+            """
+            mutation MutationSaveJiraSpaceWorkflowConfig($saveJiraSpaceWorkflowConfig_args: SaveJiraSpaceWorkflowConfigInput!) {
+              saveJiraSpaceWorkflowConfig(args: $saveJiraSpaceWorkflowConfig_args) {
+                error
+                success
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "saveJiraSpaceWorkflowConfig_args": save_jira_space_workflow_config_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationSaveJiraSpaceWorkflowConfig",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationSaveJiraSpaceWorkflowConfig.model_validate(data)
 
     def mutation_set_asset_groups_to_asset(
         self, set_asset_groups_to_asset_args: SetAssetGroupsToAssetInput, **kwargs: Any

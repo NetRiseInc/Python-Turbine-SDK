@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # mutation_jira_integration_add_connected_space
 
-Add a Jira space to the integration's connected spaces list.
+[Back to the index](../README.md)
+
+Connect a Jira space to the integration.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `jira_integration_add_connected_space_args` | `JiraIntegrationAddConnectedSpaceInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

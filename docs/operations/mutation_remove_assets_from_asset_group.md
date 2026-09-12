@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # mutation_remove_assets_from_asset_group
 
-Remove selected assets from a specific asset group container configuration.
+[Back to the index](../README.md)
+
+Remove selected assets from an asset group.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `remove_assets_from_asset_group_args` | `RemoveAssetsFromAssetGroupInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

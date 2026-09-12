@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # mutation_remediate_asset_vulnerabilities
 
-Bulk apply VEX remediation status to multiple vulnerabilities on assets.
+[Back to the index](../README.md)
+
+Bulk-apply VEX status to selected asset vulns.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `remediate_asset_vulnerabilities_args` | `CreateAssetVulnerabilityRemediationsInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |
@@ -50,7 +57,9 @@ Bulk apply VEX remediation status to multiple vulnerabilities on assets.
 | `remediateAssetVulnerabilities[].identificationIds[]` | `string` | yes |
 | `remediateAssetVulnerabilities[].inKnownExploitedVulnerabilities` | `boolean` | yes |
 | `remediateAssetVulnerabilities[].isReachable` | `boolean` | yes |
-| `remediateAssetVulnerabilities[].jiraTicketCount` | `integer` | yes |
+| `remediateAssetVulnerabilities[].jiraTicket` | `object` | yes |
+| `remediateAssetVulnerabilities[].jiraTicket.issueKey` | `string` | no |
+| `remediateAssetVulnerabilities[].jiraTicket.issueUrl` | `string` | no |
 | `remediateAssetVulnerabilities[].maturity` | `string` | yes |
 | `remediateAssetVulnerabilities[].name` | `string` | yes |
 | `remediateAssetVulnerabilities[].severity` | `string` | yes |

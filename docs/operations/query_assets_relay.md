@@ -1,12 +1,15 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_assets_relay
 
-Retrieve a paginated, sortable list of assets with filtering options.
+[Back to the index](../README.md)
 
-> **Prefer `sdk.iter_assets_relay(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+List assets with full nested fields (paginated).
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
@@ -14,7 +17,7 @@ Retrieve a paginated, sortable list of assets with filtering options.
 
 ## Filter fields
 
-Build the `filter` argument with `where()` instead of hand-assembling `AssetsFilter.fields`:
+Use `where()` to build `AssetsFilter` — see [Filtering](../guides/filtering.md).
 
 ```python
 from netrise_turbine_sdk import where
@@ -39,7 +42,9 @@ flt = where(AssetsFilter, status="...", name__contains="...")
 
 Lookups: `field=` (exact), `field__contains=`, `field__in=`, `field__gt=`, `field__gte=`, `field__lt=`, `field__lte=`.
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |
@@ -126,6 +131,29 @@ Lookups: `field=` (exact), `field__contains=`, `field__in=`, `field__gt=`, `fiel
 | `assetsRelay.pageInfo.totalCount` | `integer` | yes |
 
 ## Example
+
+`sdk.iter_assets_relay(...)` paginates for you and accepts filter kwargs.
+
+```python
+from __future__ import annotations
+
+from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
+
+
+def main() -> None:
+    sdk = TurbineClient(TurbineClientConfig.from_env())
+
+    for item in sdk.iter_assets_relay(page_size=10, max_pages=1):
+        print(item.id, item.name)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## Raw client
+
+Same data via `client.query_assets_relay` when you need exact GraphQL control.
 
 ```python
 from __future__ import annotations

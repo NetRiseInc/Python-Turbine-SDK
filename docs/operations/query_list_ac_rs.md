@@ -1,17 +1,24 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_list_ac_rs
 
-List access control records for the organization, optionally filtered to a specific user.
+[Back to the index](../README.md)
+
+List access control records, optionally for one user.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `list_ac_rs_user_id` | `Union[str, None, UnsetType]` | `false` |
 | `list_ac_rs_cursor` | `Union[Cursor, None, UnsetType]` | `false` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_remediated_vulnerabilities_by_asset
 
-List remediated vulnerabilities grouped by asset for a single remediation-status bucket, with pagination, filtering, and sorting.
+[Back to the index](../README.md)
+
+List remediated vulns for one status bucket, by asset.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `remediated_vulnerabilities_by_asset_args` | `RemediatedVulnerabilitiesByAssetInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

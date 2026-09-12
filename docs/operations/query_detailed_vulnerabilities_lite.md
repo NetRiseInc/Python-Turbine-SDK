@@ -1,18 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_detailed_vulnerabilities_lite
 
-Retrieve vulnerability descriptions with preferred CVSS v3.1 scores only — drops full v2/v4 impact blocks, exploit timelines, references, and problem type details.
+[Back to the index](../README.md)
 
-> **Prefer `sdk.iter_detailed_vulnerabilities_lite(...)`** — same data with automatic pagination, filter kwargs, and no cursor plumbing.
+List vulns with description and preferred CVSS v3.1 only.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `detailed_vulnerabilities_args` | `PaginatedDetailedVulnerabilitiesInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |
@@ -37,6 +42,29 @@ Retrieve vulnerability descriptions with preferred CVSS v3.1 scores only — dro
 | `detailedVulnerabilities.pageInfo.totalCount` | `integer` | yes |
 
 ## Example
+
+`sdk.iter_detailed_vulnerabilities_lite(...)` paginates for you and accepts filter kwargs.
+
+```python
+from __future__ import annotations
+
+from netrise_turbine_sdk import TurbineClient, TurbineClientConfig
+
+
+def main() -> None:
+    sdk = TurbineClient(TurbineClientConfig.from_env())
+
+    for item in sdk.iter_detailed_vulnerabilities_lite(asset_id="asset_123", page_size=10, max_pages=1):
+        print(item)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## Raw client
+
+Same data via `client.query_detailed_vulnerabilities_lite` when you need exact GraphQL control.
 
 ```python
 from __future__ import annotations

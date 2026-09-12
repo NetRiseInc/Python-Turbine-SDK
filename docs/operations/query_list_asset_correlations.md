@@ -1,16 +1,23 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_list_asset_correlations
 
-Retrieve cross-asset correlation data linking shared components and vulnerabilities.
+[Back to the index](../README.md)
+
+List cross-asset correlations for shared components or vulns.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 | `list_asset_correlations_args` | `ListAssetCorrelationsInput` | `true` |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |

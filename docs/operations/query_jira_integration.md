@@ -1,15 +1,22 @@
 <!-- Generated file: do not edit by hand -->
+<!-- Source: turbine/sdk-tools/generate_python_sdk_docs/generate_python_sdk_docs.py -->
 
 # query_jira_integration
 
-Retrieve the Jira integration summary and connection health details.
+[Back to the index](../README.md)
+
+Get Jira integration summary and connection health.
 
 ## Parameters
+
+Arguments on the generated client method.
 
 | name | type | required |
 | --- | --- | --- |
 
-## Response Schema
+## Response fields
+
+Typed attributes on the response model.
 
 | Field | Type | Nullable |
 | --- | --- | --- |
@@ -27,6 +34,7 @@ Retrieve the Jira integration summary and connection health details.
 | `jiraIntegration.connectionHealth.connectedSpaces[].avatarUrl` | `string` | yes |
 | `jiraIntegration.connectionHealth.connectedSpaces[].category` | `string` | no |
 | `jiraIntegration.connectionHealth.connectedSpaces[].iconColorIndex` | `integer` | no |
+| `jiraIntegration.connectionHealth.connectedSpaces[].lastUpdated` | `string` | yes |
 | `jiraIntegration.connectionHealth.connectedSpaces[].name` | `string` | no |
 | `jiraIntegration.connectionHealth.connectedSpaces[].openTicketsCount` | `integer` | no |
 | `jiraIntegration.connectionHealth.connectedSpaces[].projectKey` | `string` | no |
@@ -35,6 +43,7 @@ Retrieve the Jira integration summary and connection health details.
 | `jiraIntegration.connectionHealth.metrics` | `object` | no |
 | `jiraIntegration.connectionHealth.metrics.connectedSpaces` | `string` | no |
 | `jiraIntegration.connectionHealth.metrics.lastSync` | `string` | no |
+| `jiraIntegration.connectionHealth.statusMappingAutoSyncEnabled` | `boolean` | no |
 | `jiraIntegration.connectionHealth.systemChecks[]` | `object` | no |
 | `jiraIntegration.connectionHealth.systemChecks[].id` | `string` | no |
 | `jiraIntegration.connectionHealth.systemChecks[].description` | `string` | no |
