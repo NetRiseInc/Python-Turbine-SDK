@@ -14,6 +14,7 @@ from .enums import (
     Architecture,
     ArtifactName,
     AssetAnalysisEventSelection,
+    AssetClassification,
     AssetCorrelationType,
     AssetGroupMutationResultEnum,
     AssetGroupsField,
@@ -130,6 +131,17 @@ from .enums import (
     SortOrder,
     SpdxFormat,
     SpdxVersion,
+    SsoAction,
+    SsoConnectionIssue,
+    SsoConnectionStatus,
+    SsoConnectionType,
+    SsoGroupKeyType,
+    SsoGroupRuleType,
+    SsoIdentityProvider,
+    SsoReadinessBlockerReason,
+    SsoRequiredClaim,
+    SsoResetField,
+    SsoTestState,
     SsvcCategorizationFilter,
     SsvcExploitation,
     SsvcTechnicalImpact,
@@ -159,11 +171,13 @@ from .fragments import (
 )
 from .input_types import (
     AcrBindingInput,
+    ActivateSsoConnectionInput,
     ActivityInput,
     AddAssetGroupsToAssetsInput,
     AddAssetsToAssetGroupInput,
     AddDependencyInput,
     AddSecurityGroupMemberInput,
+    AddSsoGroupMappingInput,
     AnalyticsAssetHighlightedProductsInput,
     AnalyticsAssetInput,
     AnalyticsOrgInput,
@@ -207,6 +221,7 @@ from .input_types import (
     CreateNotificationConfigurationInput,
     CreateSecretsRemediationInput,
     CreateSecurityGroupInput,
+    CreateSsoConnectionInput,
     CredentialsFieldFilter,
     CredentialsFilter,
     CredentialsInput,
@@ -220,6 +235,8 @@ from .input_types import (
     DeleteCustomRoleInput,
     DeleteNotificationConfigurationInput,
     DeleteSecurityGroupInput,
+    DeleteSsoConnectionInput,
+    DeleteSsoGroupMappingInput,
     DependencyAnalyticFilter,
     DependencyDetailsInput,
     DependencyFieldFilter,
@@ -228,6 +245,9 @@ from .input_types import (
     DependencyKnownExploitsInput,
     DependencySort,
     DetailedVulnerabilityFilter,
+    DisableSsoConnectionInput,
+    EditSsoGroupMappingInput,
+    EnableSsoConnectionInput,
     ExtractedFirmwareDownloadInput,
     FileDownloadInput,
     FileListDownloadInput,
@@ -343,6 +363,7 @@ from .input_types import (
     OrgLevelSettingsInput,
     PaginatedDetailedVulnerabilitiesInput,
     PaginatedVulnerabilitiesInput,
+    PreviewSsoGroupMappingsInput,
     PrivateKeyExternalFiltersInput,
     PrivateKeyIdentifierInput,
     PrivateKeysInput,
@@ -361,6 +382,8 @@ from .input_types import (
     RemoveOrgUserInput,
     RemoveSecurityGroupMemberInput,
     ReplaceAcrInput,
+    ReplaceSsoConnectionCertificateInput,
+    ReplaceSsoGroupMappingsInput,
     RiseAIAnalysisDataInput,
     SaveJiraSpaceWorkflowConfigInput,
     SbomFindingsControlInput,
@@ -373,12 +396,15 @@ from .input_types import (
     SecretsSummaryInput,
     SecretStatusCountInput,
     SecretTypesAndCountInput,
+    SelectSsoIdentityProviderInput,
     SetAssetGroupsToAssetInput,
     SetAssetsToAssetGroupInput,
     SetOrgUserStatusInput,
     SetUserRoleInput,
     SiftInput,
     SimilaritySearchInput,
+    SsoGroupMappingInput,
+    StartSsoConnectionTestInput,
     StringFilter,
     SubmitAssetInput,
     UpdateAssetGroupInput,
@@ -386,7 +412,9 @@ from .input_types import (
     UpdateCustomRoleInput,
     UpdateNotificationConfigurationInput,
     UpdateNotificationSettingsInput,
+    UpdateOrgSsoSettingsInput,
     UpdateSecurityGroupInput,
+    UpdateSsoConnectionInput,
     UpdateUserInput,
     UserActionInput,
     UserInput,
@@ -409,12 +437,23 @@ from .input_types import (
     VulnerabilitySort,
     packageDependenciesByIdInput,
 )
+from .mutation_activate_sso_connection import (
+    MutationActivateSsoConnection,
+    MutationActivateSsoConnectionActivateSsoConnection,
+    MutationActivateSsoConnectionActivateSsoConnectionConnection,
+    MutationActivateSsoConnectionActivateSsoConnectionConnectionGroupMappings,
+)
 from .mutation_add_asset_groups_to_assets import MutationAddAssetGroupsToAssets
 from .mutation_add_assets_to_asset_group import MutationAddAssetsToAssetGroup
 from .mutation_add_security_group_member import (
     MutationAddSecurityGroupMember,
     MutationAddSecurityGroupMemberAddSecurityGroupMember,
     MutationAddSecurityGroupMemberAddSecurityGroupMemberMember,
+)
+from .mutation_add_sso_group_mapping import (
+    MutationAddSsoGroupMapping,
+    MutationAddSsoGroupMappingAddSsoGroupMapping,
+    MutationAddSsoGroupMappingAddSsoGroupMappingMapping,
 )
 from .mutation_asset_add_dependency import (
     MutationAssetAddDependency,
@@ -506,6 +545,12 @@ from .mutation_create_security_group import (
     MutationCreateSecurityGroupCreateSecurityGroupSecurityGroup,
     MutationCreateSecurityGroupCreateSecurityGroupSecurityGroupMembers,
 )
+from .mutation_create_sso_connection import (
+    MutationCreateSsoConnection,
+    MutationCreateSsoConnectionCreateSsoConnection,
+    MutationCreateSsoConnectionCreateSsoConnectionConnection,
+    MutationCreateSsoConnectionCreateSsoConnectionConnectionGroupMappings,
+)
 from .mutation_delete_acr import MutationDeleteACR, MutationDeleteACRDeleteAcr
 from .mutation_delete_asset_comparison_report import MutationDeleteAssetComparisonReport
 from .mutation_delete_asset_group import MutationDeleteAssetGroup
@@ -519,6 +564,31 @@ from .mutation_delete_notification_configuration import (
 from .mutation_delete_security_group import (
     MutationDeleteSecurityGroup,
     MutationDeleteSecurityGroupDeleteSecurityGroup,
+)
+from .mutation_delete_sso_connection import (
+    MutationDeleteSsoConnection,
+    MutationDeleteSsoConnectionDeleteSsoConnection,
+)
+from .mutation_delete_sso_group_mapping import (
+    MutationDeleteSsoGroupMapping,
+    MutationDeleteSsoGroupMappingDeleteSsoGroupMapping,
+)
+from .mutation_disable_sso_connection import (
+    MutationDisableSsoConnection,
+    MutationDisableSsoConnectionDisableSsoConnection,
+    MutationDisableSsoConnectionDisableSsoConnectionConnection,
+    MutationDisableSsoConnectionDisableSsoConnectionConnectionGroupMappings,
+)
+from .mutation_edit_sso_group_mapping import (
+    MutationEditSsoGroupMapping,
+    MutationEditSsoGroupMappingEditSsoGroupMapping,
+    MutationEditSsoGroupMappingEditSsoGroupMappingMapping,
+)
+from .mutation_enable_sso_connection import (
+    MutationEnableSsoConnection,
+    MutationEnableSsoConnectionEnableSsoConnection,
+    MutationEnableSsoConnectionEnableSsoConnectionConnection,
+    MutationEnableSsoConnectionEnableSsoConnectionConnectionGroupMappings,
 )
 from .mutation_invite_user import (
     MutationInviteUser,
@@ -642,9 +712,27 @@ from .mutation_replace_acr import (
     MutationReplaceACRReplaceAcrNewAcr,
     MutationReplaceACRReplaceAcrReplacedAcr,
 )
+from .mutation_replace_sso_connection_certificate import (
+    MutationReplaceSsoConnectionCertificate,
+    MutationReplaceSsoConnectionCertificateReplaceSsoConnectionCertificate,
+    MutationReplaceSsoConnectionCertificateReplaceSsoConnectionCertificateConnection,
+    MutationReplaceSsoConnectionCertificateReplaceSsoConnectionCertificateConnectionGroupMappings,
+)
+from .mutation_replace_sso_group_mappings import (
+    MutationReplaceSsoGroupMappings,
+    MutationReplaceSsoGroupMappingsReplaceSsoGroupMappings,
+    MutationReplaceSsoGroupMappingsReplaceSsoGroupMappingsMappings,
+)
 from .mutation_save_jira_space_workflow_config import (
     MutationSaveJiraSpaceWorkflowConfig,
     MutationSaveJiraSpaceWorkflowConfigSaveJiraSpaceWorkflowConfig,
+)
+from .mutation_select_sso_identity_provider import (
+    MutationSelectSsoIdentityProvider,
+    MutationSelectSsoIdentityProviderSelectSsoIdentityProvider,
+    MutationSelectSsoIdentityProviderSelectSsoIdentityProviderChange,
+    MutationSelectSsoIdentityProviderSelectSsoIdentityProviderConnection,
+    MutationSelectSsoIdentityProviderSelectSsoIdentityProviderConnectionGroupMappings,
 )
 from .mutation_set_asset_groups_to_asset import MutationSetAssetGroupsToAsset
 from .mutation_set_assets_to_asset_group import MutationSetAssetsToAssetGroup
@@ -654,6 +742,10 @@ from .mutation_set_org_user_status import (
     MutationSetOrgUserStatusSetOrgUserStatusUser,
     MutationSetOrgUserStatusSetOrgUserStatusUserAcrs,
     MutationSetOrgUserStatusSetOrgUserStatusUserSecurityGroups,
+)
+from .mutation_start_sso_connection_test import (
+    MutationStartSsoConnectionTest,
+    MutationStartSsoConnectionTestStartSsoConnectionTest,
 )
 from .mutation_submit_rise_ai_analysis import (
     MutationSubmitRiseAIAnalysis,
@@ -683,11 +775,22 @@ from .mutation_update_org_level_settings import (
     MutationUpdateOrgLevelSettings,
     MutationUpdateOrgLevelSettingsUpdateOrgLevelSettings,
 )
+from .mutation_update_org_sso_settings import (
+    MutationUpdateOrgSsoSettings,
+    MutationUpdateOrgSsoSettingsUpdateOrgSsoSettings,
+    MutationUpdateOrgSsoSettingsUpdateOrgSsoSettingsSettings,
+)
 from .mutation_update_security_group import (
     MutationUpdateSecurityGroup,
     MutationUpdateSecurityGroupUpdateSecurityGroup,
     MutationUpdateSecurityGroupUpdateSecurityGroupSecurityGroup,
     MutationUpdateSecurityGroupUpdateSecurityGroupSecurityGroupMembers,
+)
+from .mutation_update_sso_connection import (
+    MutationUpdateSsoConnection,
+    MutationUpdateSsoConnectionUpdateSsoConnection,
+    MutationUpdateSsoConnectionUpdateSsoConnectionConnection,
+    MutationUpdateSsoConnectionUpdateSsoConnectionConnectionGroupMappings,
 )
 from .mutation_user_action import (
     MutationUserAction,
@@ -1054,6 +1157,20 @@ from .query_get_my_permissions import (
     QueryGetMyPermissionsGetMyPermissions,
     QueryGetMyPermissionsGetMyPermissionsRoles,
 )
+from .query_get_org_sso_settings import (
+    QueryGetOrgSsoSettings,
+    QueryGetOrgSsoSettingsGetOrgSsoSettings,
+)
+from .query_get_org_user import (
+    QueryGetOrgUser,
+    QueryGetOrgUserGetOrgUser,
+    QueryGetOrgUserGetOrgUserAcrs,
+    QueryGetOrgUserGetOrgUserSecurityGroups,
+)
+from .query_get_resource_ac_rs import (
+    QueryGetResourceACRs,
+    QueryGetResourceACRsGetResourceAcRs,
+)
 from .query_get_resource_permissions import (
     QueryGetResourcePermissions,
     QueryGetResourcePermissionsGetResourcePermissions,
@@ -1070,11 +1187,39 @@ from .query_get_secret_reachability import (
     QueryGetSecretReachabilityGetSecretReachability,
     QueryGetSecretReachabilityGetSecretReachabilityScripts,
 )
+from .query_get_security_group import (
+    QueryGetSecurityGroup,
+    QueryGetSecurityGroupGetSecurityGroup,
+    QueryGetSecurityGroupGetSecurityGroupMembers,
+)
 from .query_get_security_group_delete_impact import (
     QueryGetSecurityGroupDeleteImpact,
     QueryGetSecurityGroupDeleteImpactGetSecurityGroupDeleteImpact,
     QueryGetSecurityGroupDeleteImpactGetSecurityGroupDeleteImpactUsersWhoLoseAll,
     QueryGetSecurityGroupDeleteImpactGetSecurityGroupDeleteImpactUsersWhoRetain,
+)
+from .query_get_sso_activation_readiness import (
+    QueryGetSsoActivationReadiness,
+    QueryGetSsoActivationReadinessGetSsoActivationReadiness,
+    QueryGetSsoActivationReadinessGetSsoActivationReadinessBlockers,
+)
+from .query_get_sso_connection import (
+    QueryGetSsoConnection,
+    QueryGetSsoConnectionGetSsoConnection,
+    QueryGetSsoConnectionGetSsoConnectionGroupMappings,
+)
+from .query_get_sso_connection_test import (
+    QueryGetSsoConnectionTest,
+    QueryGetSsoConnectionTestGetSsoConnectionTest,
+    QueryGetSsoConnectionTestGetSsoConnectionTestFailureSsoTestIdpError,
+    QueryGetSsoConnectionTestGetSsoConnectionTestFailureSsoTestMissingRequiredClaims,
+    QueryGetSsoConnectionTestGetSsoConnectionTestFailureSsoTestNetworkFailure,
+    QueryGetSsoConnectionTestGetSsoConnectionTestObservedClaims,
+)
+from .query_get_sso_group_sync_summary import (
+    QueryGetSsoGroupSyncSummary,
+    QueryGetSsoGroupSyncSummaryGetSsoGroupSyncSummary,
+    QueryGetSsoGroupSyncSummaryGetSsoGroupSyncSummarySummaries,
 )
 from .query_get_vuln_reachability import (
     QueryGetVulnReachability,
@@ -1347,6 +1492,17 @@ from .query_list_security_groups import (
     QueryListSecurityGroupsListSecurityGroupsEdgesNodeMembers,
     QueryListSecurityGroupsListSecurityGroupsPageInfo,
 )
+from .query_list_sso_connections import (
+    QueryListSsoConnections,
+    QueryListSsoConnectionsListSsoConnections,
+    QueryListSsoConnectionsListSsoConnectionsConnections,
+    QueryListSsoConnectionsListSsoConnectionsConnectionsGroupMappings,
+)
+from .query_list_sso_group_mappings import (
+    QueryListSsoGroupMappings,
+    QueryListSsoGroupMappingsListSsoGroupMappings,
+    QueryListSsoGroupMappingsListSsoGroupMappingsMappings,
+)
 from .query_match_vulnerabilities import (
     QueryMatchVulnerabilities,
     QueryMatchVulnerabilitiesMatchVulnerabilities,
@@ -1472,6 +1628,12 @@ from .query_package_dependencies_by_id import (
     QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesIndirectComponentPackage,
     QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesIndirectComponentScope,
     QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesIndirectComponentVersion,
+)
+from .query_preview_sso_group_mappings import (
+    QueryPreviewSsoGroupMappings,
+    QueryPreviewSsoGroupMappingsPreviewSsoGroupMappings,
+    QueryPreviewSsoGroupMappingsPreviewSsoGroupMappingsIdentity,
+    QueryPreviewSsoGroupMappingsPreviewSsoGroupMappingsMatchedGroups,
 )
 from .query_private_key_external_filters import (
     QueryPrivateKeyExternalFilters,
@@ -1658,6 +1820,7 @@ __all__ = [
     "AcrBindingInput",
     "AcrEntityType",
     "AcrResourceType",
+    "ActivateSsoConnectionInput",
     "ActivityEntityType",
     "ActivityInput",
     "ActivityType",
@@ -1665,6 +1828,7 @@ __all__ = [
     "AddAssetsToAssetGroupInput",
     "AddDependencyInput",
     "AddSecurityGroupMemberInput",
+    "AddSsoGroupMappingInput",
     "AdvisorySource",
     "AiModelCategory",
     "AnalyticsAssetHighlightedProductsInput",
@@ -1678,6 +1842,7 @@ __all__ = [
     "AssetAnalyticLiteComponents",
     "AssetAnalyticLiteMisconfigurations",
     "AssetAnalyticLiteVulnerability",
+    "AssetClassification",
     "AssetCorrelationType",
     "AssetGroupAnalyticsInput",
     "AssetGroupMembersInput",
@@ -1740,6 +1905,7 @@ __all__ = [
     "CreateNotificationConfigurationInput",
     "CreateSecretsRemediationInput",
     "CreateSecurityGroupInput",
+    "CreateSsoConnectionInput",
     "CredentialsField",
     "CredentialsFieldFilter",
     "CredentialsFilter",
@@ -1764,6 +1930,8 @@ __all__ = [
     "DeleteCustomRoleInput",
     "DeleteNotificationConfigurationInput",
     "DeleteSecurityGroupInput",
+    "DeleteSsoConnectionInput",
+    "DeleteSsoGroupMappingInput",
     "DependencyAnalyticFilter",
     "DependencyDetailsInput",
     "DependencyField",
@@ -1775,6 +1943,9 @@ __all__ = [
     "DependencySort",
     "DependencySortField",
     "DetailedVulnerabilityFilter",
+    "DisableSsoConnectionInput",
+    "EditSsoGroupMappingInput",
+    "EnableSsoConnectionInput",
     "EvidenceEdgeType",
     "EvidenceEntryType",
     "ExtractedFirmwareDownloadInput",
@@ -1899,11 +2070,18 @@ __all__ = [
     "MisconfigurationsInput",
     "MisconfigurationsSort",
     "ModifyDependencyInput",
+    "MutationActivateSsoConnection",
+    "MutationActivateSsoConnectionActivateSsoConnection",
+    "MutationActivateSsoConnectionActivateSsoConnectionConnection",
+    "MutationActivateSsoConnectionActivateSsoConnectionConnectionGroupMappings",
     "MutationAddAssetGroupsToAssets",
     "MutationAddAssetsToAssetGroup",
     "MutationAddSecurityGroupMember",
     "MutationAddSecurityGroupMemberAddSecurityGroupMember",
     "MutationAddSecurityGroupMemberAddSecurityGroupMemberMember",
+    "MutationAddSsoGroupMapping",
+    "MutationAddSsoGroupMappingAddSsoGroupMapping",
+    "MutationAddSsoGroupMappingAddSsoGroupMappingMapping",
     "MutationAssetAddDependency",
     "MutationAssetAddDependencyAsset",
     "MutationAssetAddDependencyAssetAddDependency",
@@ -1970,6 +2148,10 @@ __all__ = [
     "MutationCreateSecurityGroupCreateSecurityGroup",
     "MutationCreateSecurityGroupCreateSecurityGroupSecurityGroup",
     "MutationCreateSecurityGroupCreateSecurityGroupSecurityGroupMembers",
+    "MutationCreateSsoConnection",
+    "MutationCreateSsoConnectionCreateSsoConnection",
+    "MutationCreateSsoConnectionCreateSsoConnectionConnection",
+    "MutationCreateSsoConnectionCreateSsoConnectionConnectionGroupMappings",
     "MutationDeleteACR",
     "MutationDeleteACRDeleteAcr",
     "MutationDeleteAssetComparisonReport",
@@ -1979,6 +2161,21 @@ __all__ = [
     "MutationDeleteNotificationConfiguration",
     "MutationDeleteSecurityGroup",
     "MutationDeleteSecurityGroupDeleteSecurityGroup",
+    "MutationDeleteSsoConnection",
+    "MutationDeleteSsoConnectionDeleteSsoConnection",
+    "MutationDeleteSsoGroupMapping",
+    "MutationDeleteSsoGroupMappingDeleteSsoGroupMapping",
+    "MutationDisableSsoConnection",
+    "MutationDisableSsoConnectionDisableSsoConnection",
+    "MutationDisableSsoConnectionDisableSsoConnectionConnection",
+    "MutationDisableSsoConnectionDisableSsoConnectionConnectionGroupMappings",
+    "MutationEditSsoGroupMapping",
+    "MutationEditSsoGroupMappingEditSsoGroupMapping",
+    "MutationEditSsoGroupMappingEditSsoGroupMappingMapping",
+    "MutationEnableSsoConnection",
+    "MutationEnableSsoConnectionEnableSsoConnection",
+    "MutationEnableSsoConnectionEnableSsoConnectionConnection",
+    "MutationEnableSsoConnectionEnableSsoConnectionConnectionGroupMappings",
     "MutationInviteUser",
     "MutationInviteUserInviteUser",
     "MutationInviteUserInviteUserUser",
@@ -2057,8 +2254,20 @@ __all__ = [
     "MutationReplaceACRReplaceAcr",
     "MutationReplaceACRReplaceAcrNewAcr",
     "MutationReplaceACRReplaceAcrReplacedAcr",
+    "MutationReplaceSsoConnectionCertificate",
+    "MutationReplaceSsoConnectionCertificateReplaceSsoConnectionCertificate",
+    "MutationReplaceSsoConnectionCertificateReplaceSsoConnectionCertificateConnection",
+    "MutationReplaceSsoConnectionCertificateReplaceSsoConnectionCertificateConnectionGroupMappings",
+    "MutationReplaceSsoGroupMappings",
+    "MutationReplaceSsoGroupMappingsReplaceSsoGroupMappings",
+    "MutationReplaceSsoGroupMappingsReplaceSsoGroupMappingsMappings",
     "MutationSaveJiraSpaceWorkflowConfig",
     "MutationSaveJiraSpaceWorkflowConfigSaveJiraSpaceWorkflowConfig",
+    "MutationSelectSsoIdentityProvider",
+    "MutationSelectSsoIdentityProviderSelectSsoIdentityProvider",
+    "MutationSelectSsoIdentityProviderSelectSsoIdentityProviderChange",
+    "MutationSelectSsoIdentityProviderSelectSsoIdentityProviderConnection",
+    "MutationSelectSsoIdentityProviderSelectSsoIdentityProviderConnectionGroupMappings",
     "MutationSetAssetGroupsToAsset",
     "MutationSetAssetsToAssetGroup",
     "MutationSetOrgUserStatus",
@@ -2066,6 +2275,8 @@ __all__ = [
     "MutationSetOrgUserStatusSetOrgUserStatusUser",
     "MutationSetOrgUserStatusSetOrgUserStatusUserAcrs",
     "MutationSetOrgUserStatusSetOrgUserStatusUserSecurityGroups",
+    "MutationStartSsoConnectionTest",
+    "MutationStartSsoConnectionTestStartSsoConnectionTest",
     "MutationSubmitRiseAIAnalysis",
     "MutationSubmitRiseAIAnalysisSubmitRiseAiAnalysis",
     "MutationUpdateAssetGroup",
@@ -2084,10 +2295,17 @@ __all__ = [
     "MutationUpdateNotificationConfigurationUpdateNotificationConfigurationInventoryScopes",
     "MutationUpdateOrgLevelSettings",
     "MutationUpdateOrgLevelSettingsUpdateOrgLevelSettings",
+    "MutationUpdateOrgSsoSettings",
+    "MutationUpdateOrgSsoSettingsUpdateOrgSsoSettings",
+    "MutationUpdateOrgSsoSettingsUpdateOrgSsoSettingsSettings",
     "MutationUpdateSecurityGroup",
     "MutationUpdateSecurityGroupUpdateSecurityGroup",
     "MutationUpdateSecurityGroupUpdateSecurityGroupSecurityGroup",
     "MutationUpdateSecurityGroupUpdateSecurityGroupSecurityGroupMembers",
+    "MutationUpdateSsoConnection",
+    "MutationUpdateSsoConnectionUpdateSsoConnection",
+    "MutationUpdateSsoConnectionUpdateSsoConnectionConnection",
+    "MutationUpdateSsoConnectionUpdateSsoConnectionConnectionGroupMappings",
     "MutationUserAction",
     "MutationUserActionUser",
     "MutationUserActionUserAction",
@@ -2160,6 +2378,7 @@ __all__ = [
     "PaginatedDetailedVulnerabilitiesInput",
     "PaginatedVulnerabilitiesInput",
     "PieType",
+    "PreviewSsoGroupMappingsInput",
     "PriorityScore",
     "PrivateKeyExternalFiltersInput",
     "PrivateKeyIdentifierInput",
@@ -2442,6 +2661,14 @@ __all__ = [
     "QueryGetMyPermissions",
     "QueryGetMyPermissionsGetMyPermissions",
     "QueryGetMyPermissionsGetMyPermissionsRoles",
+    "QueryGetOrgSsoSettings",
+    "QueryGetOrgSsoSettingsGetOrgSsoSettings",
+    "QueryGetOrgUser",
+    "QueryGetOrgUserGetOrgUser",
+    "QueryGetOrgUserGetOrgUserAcrs",
+    "QueryGetOrgUserGetOrgUserSecurityGroups",
+    "QueryGetResourceACRs",
+    "QueryGetResourceACRsGetResourceAcRs",
     "QueryGetResourcePermissions",
     "QueryGetResourcePermissionsGetResourcePermissions",
     "QueryGetRole",
@@ -2453,10 +2680,28 @@ __all__ = [
     "QueryGetSecretReachability",
     "QueryGetSecretReachabilityGetSecretReachability",
     "QueryGetSecretReachabilityGetSecretReachabilityScripts",
+    "QueryGetSecurityGroup",
     "QueryGetSecurityGroupDeleteImpact",
     "QueryGetSecurityGroupDeleteImpactGetSecurityGroupDeleteImpact",
     "QueryGetSecurityGroupDeleteImpactGetSecurityGroupDeleteImpactUsersWhoLoseAll",
     "QueryGetSecurityGroupDeleteImpactGetSecurityGroupDeleteImpactUsersWhoRetain",
+    "QueryGetSecurityGroupGetSecurityGroup",
+    "QueryGetSecurityGroupGetSecurityGroupMembers",
+    "QueryGetSsoActivationReadiness",
+    "QueryGetSsoActivationReadinessGetSsoActivationReadiness",
+    "QueryGetSsoActivationReadinessGetSsoActivationReadinessBlockers",
+    "QueryGetSsoConnection",
+    "QueryGetSsoConnectionGetSsoConnection",
+    "QueryGetSsoConnectionGetSsoConnectionGroupMappings",
+    "QueryGetSsoConnectionTest",
+    "QueryGetSsoConnectionTestGetSsoConnectionTest",
+    "QueryGetSsoConnectionTestGetSsoConnectionTestFailureSsoTestIdpError",
+    "QueryGetSsoConnectionTestGetSsoConnectionTestFailureSsoTestMissingRequiredClaims",
+    "QueryGetSsoConnectionTestGetSsoConnectionTestFailureSsoTestNetworkFailure",
+    "QueryGetSsoConnectionTestGetSsoConnectionTestObservedClaims",
+    "QueryGetSsoGroupSyncSummary",
+    "QueryGetSsoGroupSyncSummaryGetSsoGroupSyncSummary",
+    "QueryGetSsoGroupSyncSummaryGetSsoGroupSyncSummarySummaries",
     "QueryGetVulnReachability",
     "QueryGetVulnReachabilityGetVulnReachability",
     "QueryGetVulnReachabilityGetVulnReachabilityScripts",
@@ -2658,6 +2903,13 @@ __all__ = [
     "QueryListSecurityGroupsListSecurityGroupsEdgesNode",
     "QueryListSecurityGroupsListSecurityGroupsEdgesNodeMembers",
     "QueryListSecurityGroupsListSecurityGroupsPageInfo",
+    "QueryListSsoConnections",
+    "QueryListSsoConnectionsListSsoConnections",
+    "QueryListSsoConnectionsListSsoConnectionsConnections",
+    "QueryListSsoConnectionsListSsoConnectionsConnectionsGroupMappings",
+    "QueryListSsoGroupMappings",
+    "QueryListSsoGroupMappingsListSsoGroupMappings",
+    "QueryListSsoGroupMappingsListSsoGroupMappingsMappings",
     "QueryMatchVulnerabilities",
     "QueryMatchVulnerabilitiesMatchVulnerabilities",
     "QueryMatchVulnerabilitiesMatchVulnerabilitiesCurrentRemediation",
@@ -2771,6 +3023,10 @@ __all__ = [
     "QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesIndirectComponentPackage",
     "QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesIndirectComponentScope",
     "QueryPackageDependenciesByIdPackageDependenciesByIdDependenciesIndirectComponentVersion",
+    "QueryPreviewSsoGroupMappings",
+    "QueryPreviewSsoGroupMappingsPreviewSsoGroupMappings",
+    "QueryPreviewSsoGroupMappingsPreviewSsoGroupMappingsIdentity",
+    "QueryPreviewSsoGroupMappingsPreviewSsoGroupMappingsMatchedGroups",
     "QueryPrivateKeyExternalFilters",
     "QueryPrivateKeyExternalFiltersPrivateKeyExternalFilters",
     "QueryPrivateKeys",
@@ -2924,6 +3180,8 @@ __all__ = [
     "RemoveOrgUserInput",
     "RemoveSecurityGroupMemberInput",
     "ReplaceAcrInput",
+    "ReplaceSsoConnectionCertificateInput",
+    "ReplaceSsoGroupMappingsInput",
     "RiseAIAnalysisDataInput",
     "RiseAIStatus",
     "RiskCategory",
@@ -2951,6 +3209,7 @@ __all__ = [
     "SecretsSort",
     "SecretsSummaryInput",
     "SecurityGroupMemberSource",
+    "SelectSsoIdentityProviderInput",
     "SetAssetGroupsToAssetInput",
     "SetAssetsToAssetGroupInput",
     "SetOrgUserStatusInput",
@@ -2962,9 +3221,22 @@ __all__ = [
     "SortOrder",
     "SpdxFormat",
     "SpdxVersion",
+    "SsoAction",
+    "SsoConnectionIssue",
+    "SsoConnectionStatus",
+    "SsoConnectionType",
+    "SsoGroupKeyType",
+    "SsoGroupMappingInput",
+    "SsoGroupRuleType",
+    "SsoIdentityProvider",
+    "SsoReadinessBlockerReason",
+    "SsoRequiredClaim",
+    "SsoResetField",
+    "SsoTestState",
     "SsvcCategorizationFilter",
     "SsvcExploitation",
     "SsvcTechnicalImpact",
+    "StartSsoConnectionTestInput",
     "StringFilter",
     "SubmitAssetInput",
     "UpdateAssetGroupInput",
@@ -2972,7 +3244,9 @@ __all__ = [
     "UpdateCustomRoleInput",
     "UpdateNotificationConfigurationInput",
     "UpdateNotificationSettingsInput",
+    "UpdateOrgSsoSettingsInput",
     "UpdateSecurityGroupInput",
+    "UpdateSsoConnectionInput",
     "UpdateUserInput",
     "Upload",
     "UserActionEnum",

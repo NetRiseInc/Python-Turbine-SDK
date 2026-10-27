@@ -73,6 +73,7 @@ Typed attributes on the response model.
 | `assetGroupMembers.edges[].node.assetCpes[]` | `string` | yes |
 | `assetGroupMembers.edges[].node.assetGroupCount` | `integer` | yes |
 | `assetGroupMembers.edges[].node.assetGroupIds[]` | `string` | yes |
+| `assetGroupMembers.edges[].node.classification` | `AssetClassification` | yes |
 | `assetGroupMembers.edges[].node.createdAt` | `string` | yes |
 | `assetGroupMembers.edges[].node.fileName` | `string` | yes |
 | `assetGroupMembers.edges[].node.filesystems[]` | `object` | yes |

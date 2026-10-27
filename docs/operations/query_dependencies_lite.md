@@ -51,7 +51,7 @@ Typed attributes on the response model.
 | `dependencies.edges[].cursor` | `string` | yes |
 | `dependencies.edges[].node` | `object` | yes |
 | `dependencies.edges[].node.id` | `string` | no |
-| `dependencies.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1090c2660>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `dependencies.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x107056660>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `dependencies.edges[].node.identifiedVia[]` | `IdentifiedViaCategory` | yes |
 | `dependencies.edges[].node.correlationsCount` | `integer` | yes |
 | `dependencies.edges[].node.dependency` | `object` | no |

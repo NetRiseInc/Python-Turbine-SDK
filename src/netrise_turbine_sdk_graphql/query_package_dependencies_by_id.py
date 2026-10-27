@@ -8,6 +8,7 @@ from pydantic import Field
 from .base_model import BaseModel
 from .enums import (
     Architecture,
+    AssetClassification,
     AssetType,
     ComponentBadge,
     ComponentScope,
@@ -139,6 +140,7 @@ class QueryPackageDependenciesByIdPackageDependenciesByIdAssociatedFilesComponen
     asset_cpes: Optional[list[str]] = Field(alias="assetCpes")
     asset_group_count: Optional[int] = Field(alias="assetGroupCount")
     asset_group_ids: Optional[list[str]] = Field(alias="assetGroupIds")
+    classification: Optional[AssetClassification]
     created_at: Optional[str] = Field(alias="createdAt")
     file_name: Optional[str] = Field(alias="fileName")
     first_analysis_time: Optional[str] = Field(alias="firstAnalysisTime")

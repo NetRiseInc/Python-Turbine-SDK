@@ -22,7 +22,7 @@ Typed attributes on the response model.
 | Field | Type | Nullable |
 | --- | --- | --- |
 | `orgLevelInformation` | `object` | no |
-| `orgLevelInformation.lastUpdatedAt` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1090c2660>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `orgLevelInformation.lastUpdatedAt` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x107056660>, json_schema_input_type=PydanticUndefined)]` | yes |
 
 ## Example
 

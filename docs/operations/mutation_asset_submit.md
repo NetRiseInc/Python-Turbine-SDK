@@ -73,6 +73,7 @@ Typed attributes on the response model.
 | `asset.submit.asset.assetCpes[]` | `string` | yes |
 | `asset.submit.asset.assetGroupCount` | `integer` | yes |
 | `asset.submit.asset.assetGroupIds[]` | `string` | yes |
+| `asset.submit.asset.classification` | `AssetClassification` | yes |
 | `asset.submit.asset.createdAt` | `string` | yes |
 | `asset.submit.asset.fileName` | `string` | yes |
 | `asset.submit.asset.filesystems[]` | `object` | yes |

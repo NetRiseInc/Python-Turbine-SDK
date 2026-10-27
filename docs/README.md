@@ -182,6 +182,7 @@ OAuth client credentials (`domain`, `client_id`, `client_secret`, `audience`, `o
 - [mutation_remediate_certificates](operations/mutation_remediate_certificates.md): Set remediation status and notes on certificate findings.
 - [mutation_remediate_private_keys](operations/mutation_remediate_private_keys.md): Set remediation status on private key findings.
 - [mutation_remediate_public_keys](operations/mutation_remediate_public_keys.md): Set remediation status on public key findings.
+- [mutation_replace_sso_connection_certificate](operations/mutation_replace_sso_connection_certificate.md): Replace the SSO connection's signing certificate.
 
 ### Licenses
 
@@ -200,9 +201,11 @@ OAuth client credentials (`domain`, `client_id`, `client_secret`, `audience`, `o
 ### Users and access
 
 - [query_get_my_permissions](operations/query_get_my_permissions.md): List permission IDs held by the calling user.
+- [query_get_org_user](operations/query_get_org_user.md): Get one org user by ID.
 - [query_get_resource_permissions](operations/query_get_resource_permissions.md): List the caller's effective permissions on a resource.
 - [query_get_role](operations/query_get_role.md): Get one RBAC role by ID.
 - [query_get_role_delete_impact](operations/query_get_role_delete_impact.md): Preview who loses access if a custom role is deleted.
+- [query_get_security_group](operations/query_get_security_group.md): Get one security group by ID.
 - [query_get_security_group_delete_impact](operations/query_get_security_group_delete_impact.md): Preview who loses access if a security group is deleted.
 - [query_list_ac_rs](operations/query_list_ac_rs.md): List access control records, optionally for one user.
 - [query_list_my_ac_rs](operations/query_list_my_ac_rs.md): List access control records that apply to you.
@@ -287,4 +290,29 @@ OAuth client credentials (`domain`, `client_id`, `client_secret`, `audience`, `o
 - [query_org_level_information](operations/query_org_level_information.md): Get org metadata such as last-updated time.
 - [query_org_level_settings](operations/query_org_level_settings.md): Get the tenant organization's settings.
 - [mutation_update_org_level_settings](operations/mutation_update_org_level_settings.md): Update org settings such as idle session timeout.
+
+### Other
+
+- [query_get_org_sso_settings](operations/query_get_org_sso_settings.md): Get the org's sign-in settings and enforced domains.
+- [query_get_resource_ac_rs](operations/query_get_resource_ac_rs.md): List access control records attached to one resource.
+- [query_get_sso_activation_readiness](operations/query_get_sso_activation_readiness.md): Check whether the SSO connection can be activated.
+- [query_get_sso_connection](operations/query_get_sso_connection.md): Get the org's SSO connection, or null if none exists.
+- [query_get_sso_connection_test](operations/query_get_sso_connection_test.md): Get an SSO login test's status, claims, or failure.
+- [query_get_sso_group_sync_summary](operations/query_get_sso_group_sync_summary.md): Show recent SSO group-sync membership changes per group.
+- [query_list_sso_connections](operations/query_list_sso_connections.md): List the org's SSO connections, including drafts.
+- [query_list_sso_group_mappings](operations/query_list_sso_group_mappings.md): List the IdP group mapping rules on the SSO connection.
+- [query_preview_sso_group_mappings](operations/query_preview_sso_group_mappings.md): Test mapping rules against observed SSO claims without saving.
+- [mutation_activate_sso_connection](operations/mutation_activate_sso_connection.md): Put a tested draft SSO connection into service.
+- [mutation_add_sso_group_mapping](operations/mutation_add_sso_group_mapping.md): Add one IdP group-to-security-group mapping rule.
+- [mutation_create_sso_connection](operations/mutation_create_sso_connection.md): Create the org's SSO connection as an inactive draft.
+- [mutation_delete_sso_connection](operations/mutation_delete_sso_connection.md): Delete the SSO connection and its group mappings.
+- [mutation_delete_sso_group_mapping](operations/mutation_delete_sso_group_mapping.md): Remove one IdP group mapping rule.
+- [mutation_disable_sso_connection](operations/mutation_disable_sso_connection.md): Stop new SSO logins; existing sessions stay active.
+- [mutation_edit_sso_group_mapping](operations/mutation_edit_sso_group_mapping.md): Replace one IdP group mapping rule in place.
+- [mutation_enable_sso_connection](operations/mutation_enable_sso_connection.md): Resume logins through an active SSO connection.
+- [mutation_replace_sso_group_mappings](operations/mutation_replace_sso_group_mappings.md): Replace the full set of IdP group mapping rules.
+- [mutation_select_sso_identity_provider](operations/mutation_select_sso_identity_provider.md): Choose the identity provider for the SSO connection.
+- [mutation_start_sso_connection_test](operations/mutation_start_sso_connection_test.md): Start an SSO login test and get the URL to open.
+- [mutation_update_org_sso_settings](operations/mutation_update_org_sso_settings.md): Update org sign-in settings, such as SSO-only login.
+- [mutation_update_sso_connection](operations/mutation_update_sso_connection.md): Update settings on a draft or disabled SSO connection.
 

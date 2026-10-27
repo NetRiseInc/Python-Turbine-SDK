@@ -70,6 +70,7 @@ Typed attributes on the response model.
 | `asset.assetCpes[]` | `string` | yes |
 | `asset.assetGroupCount` | `integer` | yes |
 | `asset.assetGroupIds[]` | `string` | yes |
+| `asset.classification` | `AssetClassification` | yes |
 | `asset.createdAt` | `string` | yes |
 | `asset.fileName` | `string` | yes |
 | `asset.filesystems[]` | `object` | yes |

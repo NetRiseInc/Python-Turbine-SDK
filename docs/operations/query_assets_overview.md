@@ -44,7 +44,7 @@ Typed attributes on the response model.
 | `assetsOverview.edges[].node.risk.category` | `RiskCategory` | yes |
 | `assetsOverview.edges[].node.risk.rawScore` | `float` | yes |
 | `assetsOverview.edges[].node.risk.score` | `float` | yes |
-| `assetsOverview.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1090c2660>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `assetsOverview.edges[].node.submitDatetime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x107056660>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `assetsOverview.edges[].node.threatActors[]` | `string` | yes |
 | `assetsOverview.edges[].node.type` | `AssetType` | yes |
 | `assetsOverview.edges[].node.vendor` | `string` | yes |

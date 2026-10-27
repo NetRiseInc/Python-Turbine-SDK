@@ -14,6 +14,7 @@ from .enums import (
     ActivityEntityType,
     ArtifactName,
     AssetAnalysisEventSelection,
+    AssetClassification,
     AssetCorrelationType,
     AssetGroupsField,
     AssetOverviewRiskCategory,
@@ -81,6 +82,10 @@ from .enums import (
     SiftSearchType,
     SortOrder,
     SpdxVersion,
+    SsoConnectionType,
+    SsoGroupKeyType,
+    SsoGroupRuleType,
+    SsoIdentityProvider,
     SsvcCategorizationFilter,
     UserActionEnum,
     UserManagementEventSelection,
@@ -1125,6 +1130,8 @@ class UpdateAssetInput(BaseModel):
     asset_cpes: Optional[list[str]] = Field(alias="assetCpes", default=None)
     "Ordered CPE 2.3 strings. Empty list clears all CPEs."
     license: Optional[str] = None
+    classification: Optional[AssetClassification] = None
+    "CycloneDX component type the asset is classified as."
 
 
 class SubmitAssetInput(BaseModel):
@@ -1151,6 +1158,8 @@ class SubmitAssetInput(BaseModel):
     "format: JSON, XML, SPDX"
     asset_group_ids: Optional[list[str]] = Field(alias="assetGroupIds", default=None)
     license: Optional[str] = None
+    classification: Optional[AssetClassification] = None
+    "CycloneDX component type. Mapped to T++ AssetClassification int32 on InitializeAssetUploadRequest.\nDefaults to FILE when omitted."
 
 
 class AssetsByStatusInput(BaseModel):
@@ -1660,6 +1669,175 @@ class GetSecretReachabilityInput(BaseModel):
     secret_id: str = Field(alias="secretId")
 
 
+class SsoGroupMappingInput(BaseModel):
+    """One mapping rule to save. Mirrors the `SsoGroupMappingInput` proto message.
+
+    `idpGroupKey` is required on an `IDP_GROUP` rule and must be empty on any other kind: a
+    non-empty key on a rule that ignores it is rejected rather than dropped, or two rules differing
+    only in an ignored field would look distinct and behave identically. An omitted `ruleType` means
+    `IDP_GROUP`, so omitting both the type and the key is rejected rather than quietly creating a
+    catch-all.
+
+    `securityGroupId` is required on `IDP_GROUP`. Omit only on `UNMATCHED`/`ALL_USERS` for an
+    explicit "no access" catch-all."""
+
+    idp_group_key: Optional[str] = Field(alias="idpGroupKey", default=None)
+    idp_group_label: Optional[str] = Field(alias="idpGroupLabel", default=None)
+    security_group_id: Optional[str] = Field(alias="securityGroupId", default=None)
+    rule_type: Optional[SsoGroupRuleType] = Field(alias="ruleType", default=None)
+
+
+class CreateSsoConnectionInput(BaseModel):
+    """Input payload for the `createSsoConnection` mutation. Creates a bare draft holding no IdP
+    configuration yet; IdP-sourced fields belong on `updateSsoConnection`."""
+
+    connection_type: SsoConnectionType = Field(alias="connectionType")
+    "Required. `UNSPECIFIED` is rejected rather than defaulted, so adding a second protocol later\ncannot silently reinterpret an existing caller."
+    identity_provider: SsoIdentityProvider = Field(alias="identityProvider")
+
+
+class UpdateSsoConnectionInput(BaseModel):
+    """Input payload for the `updateSsoConnection` mutation. Patches the supplied fields and
+    invalidates any passing test.
+
+    Refused with `CONNECTION_ACTIVE` when the connection is active, and with `STALE_ETAG` when
+    `etag` is no longer current."""
+
+    connection_id: Optional[str] = Field(alias="connectionId", default=None)
+    "Omitted, the organization's connection is resolved."
+    etag: str
+    "The value last read. A stale etag fails, and an empty one is rejected rather than treated as\nan unconditional write."
+    idp_sign_in_url: Optional[str] = Field(alias="idpSignInUrl", default=None)
+    idp_sign_out_url: Optional[str] = Field(alias="idpSignOutUrl", default=None)
+    idp_identifier: Optional[str] = Field(alias="idpIdentifier", default=None)
+    signing_certificate_pem: Optional[str] = Field(
+        alias="signingCertificatePem", default=None
+    )
+    "Replaces the identity provider signing certificate. Write-only. PEM-only until TURB-6478.\n\nFor a draft or a disabled connection only. An active connection's certificate is replaced\nthrough `replaceSsoConnectionCertificate`, and sending it here is refused with\n`CONNECTION_ACTIVE`."
+    email_claim: Optional[str] = Field(alias="emailClaim", default=None)
+    name_claim: Optional[str] = Field(alias="nameClaim", default=None)
+    groups_claim: Optional[str] = Field(alias="groupsClaim", default=None)
+    "The claim that carries the user's groups. Optional: a connection without one maps no groups, needs\nno mappings to activate, and its logins grant nothing from them.\n\nOmitted or null leaves the claim unchanged. An empty string clears it."
+    group_key_type: Optional[SsoGroupKeyType] = Field(
+        alias="groupKeyType", default=None
+    )
+    login_button_label: Optional[str] = Field(alias="loginButtonLabel", default=None)
+    login_button_logo_url: Optional[str] = Field(
+        alias="loginButtonLogoUrl", default=None
+    )
+
+
+class ReplaceSsoConnectionCertificateInput(BaseModel):
+    """Input payload for the `replaceSsoConnectionCertificate` mutation. Replaces the signing
+    certificate only, including on an active connection."""
+
+    connection_id: Optional[str] = Field(alias="connectionId", default=None)
+    etag: str
+    "The value last read. A stale etag fails, and an empty one is rejected rather than treated as\nan unconditional write."
+    signing_certificate_pem: str = Field(alias="signingCertificatePem")
+    "The replacement identity provider signing certificate. PEM."
+
+
+class SelectSsoIdentityProviderInput(BaseModel):
+    """Input payload for the `selectSsoIdentityProvider` mutation.
+
+    Refused with `CONNECTION_ACTIVE` when the connection is active and the provider would change.
+    """
+
+    connection_id: Optional[str] = Field(alias="connectionId", default=None)
+    "Omitted, the organization's pending draft is resolved, else its serving connection."
+    connection_type: SsoConnectionType = Field(alias="connectionType")
+    "Required. `UNSPECIFIED` is rejected rather than defaulted, matching `createSsoConnection`."
+    identity_provider: SsoIdentityProvider = Field(alias="identityProvider")
+    "Required. `UNSPECIFIED` is rejected."
+
+
+class DeleteSsoConnectionInput(BaseModel):
+    """Input payload for the `deleteSsoConnection` mutation. Removes the connection and its group
+    mappings. Refused with `LAST_AUTHENTICATION_METHOD` when it is the organization's only remaining
+    way to sign in."""
+
+    connection_id: Optional[str] = Field(alias="connectionId", default=None)
+
+
+class EnableSsoConnectionInput(BaseModel):
+    """Input payload for the `enableSsoConnection` mutation. Resumes logins through an active
+    connection. Idempotent."""
+
+    connection_id: Optional[str] = Field(alias="connectionId", default=None)
+
+
+class DisableSsoConnectionInput(BaseModel):
+    """Input payload for the `disableSsoConnection` mutation. Stops new logins through the connection
+    and leaves existing sessions alone. Refused when it is the organization's only remaining way to
+    sign in."""
+
+    connection_id: Optional[str] = Field(alias="connectionId", default=None)
+
+
+class ActivateSsoConnectionInput(BaseModel):
+    """Input payload for the `activateSsoConnection` mutation. Promotes a tested draft into service,
+    re-evaluating activation readiness and refusing when it no longer holds."""
+
+    connection_id: Optional[str] = Field(alias="connectionId", default=None)
+
+
+class StartSsoConnectionTestInput(BaseModel):
+    """Input payload for the `startSsoConnectionTest` mutation. Arms a one-shot capture of a real
+    assertion. Refused when the connection is already in service."""
+
+    connection_id: Optional[str] = Field(alias="connectionId", default=None)
+
+
+class ReplaceSsoGroupMappingsInput(BaseModel):
+    """Input payload for the `replaceSsoGroupMappings` mutation. Replaces the whole mapping set."""
+
+    connection_id: Optional[str] = Field(alias="connectionId", default=None)
+    mappings: list["SsoGroupMappingInput"]
+
+
+class AddSsoGroupMappingInput(BaseModel):
+    """Input payload for the `addSsoGroupMapping` mutation. Adds one rule; an identical rule is a
+    no-op."""
+
+    connection_id: Optional[str] = Field(alias="connectionId", default=None)
+    mapping: "SsoGroupMappingInput"
+
+
+class EditSsoGroupMappingInput(BaseModel):
+    """Input payload for the `editSsoGroupMapping` mutation. Replaces one existing rule in place."""
+
+    connection_id: Optional[str] = Field(alias="connectionId", default=None)
+    mapping_id: str = Field(alias="mappingId")
+    mapping: "SsoGroupMappingInput"
+
+
+class DeleteSsoGroupMappingInput(BaseModel):
+    """Input payload for the `deleteSsoGroupMapping` mutation. An already-absent mapping is a no-op."""
+
+    mapping_id: str = Field(alias="mappingId")
+
+
+class PreviewSsoGroupMappingsInput(BaseModel):
+    """Input payload for the `previewSsoGroupMappings` query."""
+
+    connection_id: Optional[str] = Field(alias="connectionId", default=None)
+    test_id: str = Field(alias="testId")
+    "Names the completed connection test whose observed claims are resolved against."
+    mappings: Optional[list["SsoGroupMappingInput"]] = None
+    "The candidate rules to evaluate, of every kind, so a rule can be previewed before it is saved.\nEmpty evaluates the saved set instead."
+
+
+class UpdateOrgSsoSettingsInput(BaseModel):
+    """Input payload for the `updateOrgSsoSettings` mutation. Disabling password authentication
+    requires a caller who authenticated through SSO, and is refused with `SAML_SESSION_REQUIRED`
+    otherwise."""
+
+    user_pass_auth_disabled: Optional[bool] = Field(
+        alias="userPassAuthDisabled", default=None
+    )
+
+
 class UsersInput(BaseModel):
     cursor: "Cursor"
 
@@ -1941,6 +2119,10 @@ MisconfigurationsInput.model_rebuild()
 MisconfigurationsFilter.model_rebuild()
 CreateAcrInput.model_rebuild()
 ReplaceAcrInput.model_rebuild()
+ReplaceSsoGroupMappingsInput.model_rebuild()
+AddSsoGroupMappingInput.model_rebuild()
+EditSsoGroupMappingInput.model_rebuild()
+PreviewSsoGroupMappingsInput.model_rebuild()
 UsersInput.model_rebuild()
 CreateAssetVulnerabilityRemediationInput.model_rebuild()
 CreateAssetVulnerabilityRemediationsInput.model_rebuild()

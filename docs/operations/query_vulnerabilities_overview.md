@@ -26,11 +26,11 @@ Typed attributes on the response model.
 | `vulnerabilitiesOverview.edges[].cursor` | `string` | yes |
 | `vulnerabilitiesOverview.edges[].node` | `object` | yes |
 | `vulnerabilitiesOverview.edges[].node.botnetsList[]` | `string` | yes |
-| `vulnerabilitiesOverview.edges[].node.cisaDueDate` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1090c2660>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `vulnerabilitiesOverview.edges[].node.cisaDueDate` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x107056660>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `vulnerabilitiesOverview.edges[].node.component` | `string` | yes |
 | `vulnerabilitiesOverview.edges[].node.cve` | `string` | yes |
 | `vulnerabilitiesOverview.edges[].node.cvssScore` | `float` | yes |
-| `vulnerabilitiesOverview.edges[].node.dateAdded` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1090c2660>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `vulnerabilitiesOverview.edges[].node.dateAdded` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x107056660>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `vulnerabilitiesOverview.edges[].node.epssPercentile` | `float` | yes |
 | `vulnerabilitiesOverview.edges[].node.epssScore` | `float` | yes |
 | `vulnerabilitiesOverview.edges[].node.exploitFound` | `boolean` | yes |
