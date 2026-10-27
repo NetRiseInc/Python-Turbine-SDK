@@ -6,7 +6,7 @@ from typing import Optional
 from pydantic import Field
 
 from .base_model import BaseModel
-from .enums import AssetType, ProcessingStatus, RiskCategory
+from .enums import AssetClassification, AssetType, ProcessingStatus, RiskCategory
 
 
 class MutationAssetUpdate(BaseModel):
@@ -24,6 +24,7 @@ class MutationAssetUpdateAssetUpdate(BaseModel):
     asset_cpes: Optional[list[str]] = Field(alias="assetCpes")
     asset_group_count: Optional[int] = Field(alias="assetGroupCount")
     asset_group_ids: Optional[list[str]] = Field(alias="assetGroupIds")
+    classification: Optional[AssetClassification]
     created_at: Optional[str] = Field(alias="createdAt")
     file_name: Optional[str] = Field(alias="fileName")
     filesystems: Optional[list["MutationAssetUpdateAssetUpdateFilesystems"]]

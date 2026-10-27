@@ -7,11 +7,13 @@ from .base_client import BaseClient
 from .base_model import UNSET, UnsetType
 from .enums import AcrEntityType, AcrResourceType
 from .input_types import (
+    ActivateSsoConnectionInput,
     ActivityInput,
     AddAssetGroupsToAssetsInput,
     AddAssetsToAssetGroupInput,
     AddDependencyInput,
     AddSecurityGroupMemberInput,
+    AddSsoGroupMappingInput,
     AssetGroupAnalyticsInput,
     AssetGroupMembersInput,
     AssetGroupsInput,
@@ -36,6 +38,7 @@ from .input_types import (
     CreateNotificationConfigurationInput,
     CreateSecretsRemediationInput,
     CreateSecurityGroupInput,
+    CreateSsoConnectionInput,
     CredentialsInput,
     Cursor,
     DeleteAcrInput,
@@ -44,8 +47,13 @@ from .input_types import (
     DeleteCustomRoleInput,
     DeleteNotificationConfigurationInput,
     DeleteSecurityGroupInput,
+    DeleteSsoConnectionInput,
+    DeleteSsoGroupMappingInput,
     DependencyInput,
     DependencyKnownExploitsInput,
+    DisableSsoConnectionInput,
+    EditSsoGroupMappingInput,
+    EnableSsoConnectionInput,
     ExtractedFirmwareDownloadInput,
     FileDownloadInput,
     FileListDownloadInput,
@@ -96,6 +104,7 @@ from .input_types import (
     OrgLevelSettingsInput,
     PaginatedDetailedVulnerabilitiesInput,
     PaginatedVulnerabilitiesInput,
+    PreviewSsoGroupMappingsInput,
     PrivateKeyExternalFiltersInput,
     PrivateKeysInput,
     PublicKeyExternalFiltersInput,
@@ -110,6 +119,8 @@ from .input_types import (
     RemoveOrgUserInput,
     RemoveSecurityGroupMemberInput,
     ReplaceAcrInput,
+    ReplaceSsoConnectionCertificateInput,
+    ReplaceSsoGroupMappingsInput,
     RiseAIAnalysisDataInput,
     SaveJiraSpaceWorkflowConfigInput,
     SearchInput,
@@ -119,16 +130,20 @@ from .input_types import (
     SecretsSummaryInput,
     SecretStatusCountInput,
     SecretTypesAndCountInput,
+    SelectSsoIdentityProviderInput,
     SetAssetGroupsToAssetInput,
     SetAssetsToAssetGroupInput,
     SetOrgUserStatusInput,
     SetUserRoleInput,
+    StartSsoConnectionTestInput,
     SubmitAssetInput,
     UpdateAssetGroupInput,
     UpdateAssetInput,
     UpdateCustomRoleInput,
     UpdateNotificationConfigurationInput,
+    UpdateOrgSsoSettingsInput,
     UpdateSecurityGroupInput,
+    UpdateSsoConnectionInput,
     UpdateUserInput,
     UserActionInput,
     UserInput,
@@ -140,9 +155,11 @@ from .input_types import (
     VulnerabilityRemediationSummaryInput,
     packageDependenciesByIdInput,
 )
+from .mutation_activate_sso_connection import MutationActivateSsoConnection
 from .mutation_add_asset_groups_to_assets import MutationAddAssetGroupsToAssets
 from .mutation_add_assets_to_asset_group import MutationAddAssetsToAssetGroup
 from .mutation_add_security_group_member import MutationAddSecurityGroupMember
+from .mutation_add_sso_group_mapping import MutationAddSsoGroupMapping
 from .mutation_asset_add_dependency import MutationAssetAddDependency
 from .mutation_asset_modify_dependency import MutationAssetModifyDependency
 from .mutation_asset_remove_dependencies import MutationAssetRemoveDependencies
@@ -157,6 +174,7 @@ from .mutation_create_notification_configuration import (
     MutationCreateNotificationConfiguration,
 )
 from .mutation_create_security_group import MutationCreateSecurityGroup
+from .mutation_create_sso_connection import MutationCreateSsoConnection
 from .mutation_delete_acr import MutationDeleteACR
 from .mutation_delete_asset_comparison_report import MutationDeleteAssetComparisonReport
 from .mutation_delete_asset_group import MutationDeleteAssetGroup
@@ -165,6 +183,11 @@ from .mutation_delete_notification_configuration import (
     MutationDeleteNotificationConfiguration,
 )
 from .mutation_delete_security_group import MutationDeleteSecurityGroup
+from .mutation_delete_sso_connection import MutationDeleteSsoConnection
+from .mutation_delete_sso_group_mapping import MutationDeleteSsoGroupMapping
+from .mutation_disable_sso_connection import MutationDisableSsoConnection
+from .mutation_edit_sso_group_mapping import MutationEditSsoGroupMapping
+from .mutation_enable_sso_connection import MutationEnableSsoConnection
 from .mutation_invite_user import MutationInviteUser
 from .mutation_jira_integration_add_connected_space import (
     MutationJiraIntegrationAddConnectedSpace,
@@ -204,12 +227,18 @@ from .mutation_remove_assets_from_asset_group import MutationRemoveAssetsFromAss
 from .mutation_remove_org_user import MutationRemoveOrgUser
 from .mutation_remove_security_group_member import MutationRemoveSecurityGroupMember
 from .mutation_replace_acr import MutationReplaceACR
+from .mutation_replace_sso_connection_certificate import (
+    MutationReplaceSsoConnectionCertificate,
+)
+from .mutation_replace_sso_group_mappings import MutationReplaceSsoGroupMappings
 from .mutation_save_jira_space_workflow_config import (
     MutationSaveJiraSpaceWorkflowConfig,
 )
+from .mutation_select_sso_identity_provider import MutationSelectSsoIdentityProvider
 from .mutation_set_asset_groups_to_asset import MutationSetAssetGroupsToAsset
 from .mutation_set_assets_to_asset_group import MutationSetAssetsToAssetGroup
 from .mutation_set_org_user_status import MutationSetOrgUserStatus
+from .mutation_start_sso_connection_test import MutationStartSsoConnectionTest
 from .mutation_submit_rise_ai_analysis import MutationSubmitRiseAIAnalysis
 from .mutation_update_asset_group import MutationUpdateAssetGroup
 from .mutation_update_custom_role import MutationUpdateCustomRole
@@ -217,7 +246,9 @@ from .mutation_update_notification_configuration import (
     MutationUpdateNotificationConfiguration,
 )
 from .mutation_update_org_level_settings import MutationUpdateOrgLevelSettings
+from .mutation_update_org_sso_settings import MutationUpdateOrgSsoSettings
 from .mutation_update_security_group import MutationUpdateSecurityGroup
+from .mutation_update_sso_connection import MutationUpdateSsoConnection
 from .mutation_user_action import MutationUserAction
 from .mutation_user_delete import MutationUserDelete
 from .mutation_user_invite import MutationUserInvite
@@ -258,11 +289,19 @@ from .query_get_asset_comparison_report import QueryGetAssetComparisonReport
 from .query_get_certificate_reachability import QueryGetCertificateReachability
 from .query_get_dependency_reachability import QueryGetDependencyReachability
 from .query_get_my_permissions import QueryGetMyPermissions
+from .query_get_org_sso_settings import QueryGetOrgSsoSettings
+from .query_get_org_user import QueryGetOrgUser
+from .query_get_resource_ac_rs import QueryGetResourceACRs
 from .query_get_resource_permissions import QueryGetResourcePermissions
 from .query_get_role import QueryGetRole
 from .query_get_role_delete_impact import QueryGetRoleDeleteImpact
 from .query_get_secret_reachability import QueryGetSecretReachability
+from .query_get_security_group import QueryGetSecurityGroup
 from .query_get_security_group_delete_impact import QueryGetSecurityGroupDeleteImpact
+from .query_get_sso_activation_readiness import QueryGetSsoActivationReadiness
+from .query_get_sso_connection import QueryGetSsoConnection
+from .query_get_sso_connection_test import QueryGetSsoConnectionTest
+from .query_get_sso_group_sync_summary import QueryGetSsoGroupSyncSummary
 from .query_get_vuln_reachability import QueryGetVulnReachability
 from .query_grouped_dependencies import QueryGroupedDependencies
 from .query_hashes import QueryHashes
@@ -299,6 +338,8 @@ from .query_list_permissions import QueryListPermissions
 from .query_list_roles import QueryListRoles
 from .query_list_security_group_members import QueryListSecurityGroupMembers
 from .query_list_security_groups import QueryListSecurityGroups
+from .query_list_sso_connections import QueryListSsoConnections
+from .query_list_sso_group_mappings import QueryListSsoGroupMappings
 from .query_match_vulnerabilities import QueryMatchVulnerabilities
 from .query_me import QueryMe
 from .query_metrics import QueryMetrics
@@ -307,6 +348,7 @@ from .query_misconfigurations_lite import QueryMisconfigurationsLite
 from .query_org_level_information import QueryOrgLevelInformation
 from .query_org_level_settings import QueryOrgLevelSettings
 from .query_package_dependencies_by_id import QueryPackageDependenciesById
+from .query_preview_sso_group_mappings import QueryPreviewSsoGroupMappings
 from .query_private_key_external_filters import QueryPrivateKeyExternalFilters
 from .query_private_keys import QueryPrivateKeys
 from .query_public_key_external_filters import QueryPublicKeyExternalFilters
@@ -1067,6 +1109,7 @@ class Client(BaseClient):
                 assetCpes
                 assetGroupCount
                 assetGroupIds
+                classification
                 createdAt
                 fileName
                 filesystems {
@@ -1215,6 +1258,7 @@ class Client(BaseClient):
                     assetCpes
                     assetGroupCount
                     assetGroupIds
+                    classification
                     createdAt
                     fileName
                     filesystems {
@@ -1512,6 +1556,7 @@ class Client(BaseClient):
                     assetCpes
                     assetGroupCount
                     assetGroupIds
+                    classification
                     createdAt
                     fileName
                     filesystems {
@@ -2901,6 +2946,134 @@ class Client(BaseClient):
         data = self.get_data(response)
         return QueryGetMyPermissions.model_validate(data)
 
+    def query_get_org_sso_settings(self, **kwargs: Any) -> QueryGetOrgSsoSettings:
+        query = gql(
+            """
+            query QueryGetOrgSsoSettings {
+              getOrgSsoSettings {
+                enforcedDomains
+                userPassAuthDisabled
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {}
+        response = self.execute(
+            query=query,
+            operation_name="QueryGetOrgSsoSettings",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryGetOrgSsoSettings.model_validate(data)
+
+    def query_get_org_user(
+        self, get_org_user_user_id: str, **kwargs: Any
+    ) -> QueryGetOrgUser:
+        query = gql(
+            """
+            query QueryGetOrgUser($getOrgUser_userId: ID!) {
+              getOrgUser(userId: $getOrgUser_userId) {
+                id
+                accessibleAssetCount
+                acrs {
+                  id
+                  createdBy
+                  createdTime
+                  directPermissions
+                  entityId
+                  entityMemberCount
+                  entityName
+                  entityType
+                  expiresAt
+                  lastModifiedBy
+                  lastModifiedTime
+                  orgId
+                  resourceId
+                  resourceName
+                  resourceType
+                  roleId
+                  roleName
+                  rolePermissions
+                  userEmails
+                }
+                createdTime
+                disabledAt
+                disabledBy
+                displayName
+                email
+                emailVerified
+                isExternal
+                lastModifiedTime
+                lastSeenTime
+                orgId
+                permissionCount
+                securityGroups {
+                  id
+                  maxRolePrecedence
+                  name
+                }
+                status
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {"getOrgUser_userId": get_org_user_user_id}
+        response = self.execute(
+            query=query, operation_name="QueryGetOrgUser", variables=variables, **kwargs
+        )
+        data = self.get_data(response)
+        return QueryGetOrgUser.model_validate(data)
+
+    def query_get_resource_ac_rs(
+        self,
+        get_resource_ac_rs_resource_type: AcrResourceType,
+        get_resource_ac_rs_resource_id: Union[Optional[str], UnsetType] = UNSET,
+        **kwargs: Any
+    ) -> QueryGetResourceACRs:
+        query = gql(
+            """
+            query QueryGetResourceACRs($getResourceACRs_resourceType: AcrResourceType!, $getResourceACRs_resourceId: String) {
+              getResourceACRs(
+                resourceType: $getResourceACRs_resourceType
+                resourceId: $getResourceACRs_resourceId
+              ) {
+                id
+                createdBy
+                createdTime
+                directPermissions
+                entityId
+                entityMemberCount
+                entityName
+                entityType
+                expiresAt
+                lastModifiedBy
+                lastModifiedTime
+                orgId
+                resourceId
+                resourceName
+                resourceType
+                roleId
+                roleName
+                rolePermissions
+                userEmails
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "getResourceACRs_resourceType": get_resource_ac_rs_resource_type,
+            "getResourceACRs_resourceId": get_resource_ac_rs_resource_id,
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryGetResourceACRs",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryGetResourceACRs.model_validate(data)
+
     def query_get_resource_permissions(
         self,
         get_resource_permissions_resource_type: AcrResourceType,
@@ -3028,6 +3201,42 @@ class Client(BaseClient):
         data = self.get_data(response)
         return QueryGetSecretReachability.model_validate(data)
 
+    def query_get_security_group(
+        self, get_security_group_security_group_id: str, **kwargs: Any
+    ) -> QueryGetSecurityGroup:
+        query = gql(
+            """
+            query QueryGetSecurityGroup($getSecurityGroup_securityGroupId: ID!) {
+              getSecurityGroup(securityGroupId: $getSecurityGroup_securityGroupId) {
+                id
+                createdBy
+                createdTime
+                description
+                lastModifiedTime
+                lastSeenTime
+                memberCount
+                members {
+                  displayName
+                  email
+                  userId
+                }
+                name
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "getSecurityGroup_securityGroupId": get_security_group_security_group_id
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryGetSecurityGroup",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryGetSecurityGroup.model_validate(data)
+
     def query_get_security_group_delete_impact(
         self, get_security_group_delete_impact_security_group_id: str, **kwargs: Any
     ) -> QueryGetSecurityGroupDeleteImpact:
@@ -3063,6 +3272,183 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return QueryGetSecurityGroupDeleteImpact.model_validate(data)
+
+    def query_get_sso_activation_readiness(
+        self,
+        get_sso_activation_readiness_connection_id: Union[
+            Optional[str], UnsetType
+        ] = UNSET,
+        **kwargs: Any
+    ) -> QueryGetSsoActivationReadiness:
+        query = gql(
+            """
+            query QueryGetSsoActivationReadiness($getSsoActivationReadiness_connectionId: ID) {
+              getSsoActivationReadiness(connectionId: $getSsoActivationReadiness_connectionId) {
+                blockers {
+                  message
+                  reason
+                }
+                ready
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "getSsoActivationReadiness_connectionId": get_sso_activation_readiness_connection_id
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryGetSsoActivationReadiness",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryGetSsoActivationReadiness.model_validate(data)
+
+    def query_get_sso_connection(
+        self,
+        get_sso_connection_connection_id: Union[Optional[str], UnsetType] = UNSET,
+        **kwargs: Any
+    ) -> QueryGetSsoConnection:
+        query = gql(
+            """
+            query QueryGetSsoConnection($getSsoConnection_connectionId: ID) {
+              getSsoConnection(connectionId: $getSsoConnection_connectionId) {
+                acsUrl
+                allowedActions
+                certExpiry
+                certFingerprint
+                certSubject
+                connectionId
+                connectionName
+                connectionType
+                emailClaim
+                encryptionCertificatePem
+                etag
+                groupKeyType
+                groupMappings {
+                  createdAt
+                  idpGroupKey
+                  idpGroupLabel
+                  lastSyncedAt
+                  mappingId
+                  memberCount
+                  ruleType
+                  securityGroupId
+                  securityGroupName
+                }
+                groupsClaim
+                identityProvider
+                idpIdentifier
+                idpSignInUrl
+                idpSignOutUrl
+                issues
+                loginButtonLabel
+                loginButtonLogoUrl
+                metadataAvailable
+                nameClaim
+                orgId
+                resettableFields
+                spEntityId
+                spMetadataUrl
+                status
+                statusDetail
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "getSsoConnection_connectionId": get_sso_connection_connection_id
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryGetSsoConnection",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryGetSsoConnection.model_validate(data)
+
+    def query_get_sso_connection_test(
+        self, get_sso_connection_test_test_id: str, **kwargs: Any
+    ) -> QueryGetSsoConnectionTest:
+        query = gql(
+            """
+            query QueryGetSsoConnectionTest($getSsoConnectionTest_testId: ID!) {
+              getSsoConnectionTest(testId: $getSsoConnectionTest_testId) {
+                createdAt
+                expiresAt
+                failure {
+                  __typename
+                  ... on SsoTestNetworkFailure {
+                    detail
+                  }
+                  ... on SsoTestIdpError {
+                    idpMessage
+                    statusCode
+                    subStatusCode
+                  }
+                  ... on SsoTestMissingRequiredClaims {
+                    claims
+                  }
+                }
+                initiatedBy
+                observedClaims {
+                  name
+                  values
+                }
+                state
+                testId
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "getSsoConnectionTest_testId": get_sso_connection_test_test_id
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryGetSsoConnectionTest",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryGetSsoConnectionTest.model_validate(data)
+
+    def query_get_sso_group_sync_summary(
+        self,
+        get_sso_group_sync_summary_security_group_ids: Union[
+            Optional[list[str]], UnsetType
+        ] = UNSET,
+        **kwargs: Any
+    ) -> QueryGetSsoGroupSyncSummary:
+        query = gql(
+            """
+            query QueryGetSsoGroupSyncSummary($getSsoGroupSyncSummary_securityGroupIds: [ID!]) {
+              getSsoGroupSyncSummary(
+                securityGroupIds: $getSsoGroupSyncSummary_securityGroupIds
+              ) {
+                summaries {
+                  lastAdded
+                  lastRemoved
+                  lastSyncedAt
+                  securityGroupId
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "getSsoGroupSyncSummary_securityGroupIds": get_sso_group_sync_summary_security_group_ids
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryGetSsoGroupSyncSummary",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryGetSsoGroupSyncSummary.model_validate(data)
 
     def query_get_vuln_reachability(
         self, get_vuln_reachability_args: GetVulnReachabilityInput, **kwargs: Any
@@ -4871,6 +5257,102 @@ class Client(BaseClient):
         data = self.get_data(response)
         return QueryListSecurityGroups.model_validate(data)
 
+    def query_list_sso_connections(self, **kwargs: Any) -> QueryListSsoConnections:
+        query = gql(
+            """
+            query QueryListSsoConnections {
+              listSsoConnections {
+                connections {
+                  acsUrl
+                  allowedActions
+                  certExpiry
+                  certFingerprint
+                  certSubject
+                  connectionId
+                  connectionName
+                  connectionType
+                  emailClaim
+                  encryptionCertificatePem
+                  etag
+                  groupKeyType
+                  groupMappings {
+                    createdAt
+                    idpGroupKey
+                    idpGroupLabel
+                    lastSyncedAt
+                    mappingId
+                    memberCount
+                    ruleType
+                    securityGroupId
+                    securityGroupName
+                  }
+                  groupsClaim
+                  identityProvider
+                  idpIdentifier
+                  idpSignInUrl
+                  idpSignOutUrl
+                  issues
+                  loginButtonLabel
+                  loginButtonLogoUrl
+                  metadataAvailable
+                  nameClaim
+                  orgId
+                  resettableFields
+                  spEntityId
+                  spMetadataUrl
+                  status
+                  statusDetail
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {}
+        response = self.execute(
+            query=query,
+            operation_name="QueryListSsoConnections",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryListSsoConnections.model_validate(data)
+
+    def query_list_sso_group_mappings(
+        self,
+        list_sso_group_mappings_connection_id: Union[Optional[str], UnsetType] = UNSET,
+        **kwargs: Any
+    ) -> QueryListSsoGroupMappings:
+        query = gql(
+            """
+            query QueryListSsoGroupMappings($listSsoGroupMappings_connectionId: ID) {
+              listSsoGroupMappings(connectionId: $listSsoGroupMappings_connectionId) {
+                mappings {
+                  createdAt
+                  idpGroupKey
+                  idpGroupLabel
+                  lastSyncedAt
+                  mappingId
+                  memberCount
+                  ruleType
+                  securityGroupId
+                  securityGroupName
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "listSsoGroupMappings_connectionId": list_sso_group_mappings_connection_id
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryListSsoGroupMappings",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryListSsoGroupMappings.model_validate(data)
+
     def query_match_vulnerabilities(
         self, match_vulnerabilities_args: MatchVulnerabilitiesInput, **kwargs: Any
     ) -> QueryMatchVulnerabilities:
@@ -5402,6 +5884,7 @@ class Client(BaseClient):
                         assetCpes
                         assetGroupCount
                         assetGroupIds
+                        classification
                         createdAt
                         fileName
                         firstAnalysisTime
@@ -5716,6 +6199,42 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return QueryPackageDependenciesById.model_validate(data)
+
+    def query_preview_sso_group_mappings(
+        self,
+        preview_sso_group_mappings_args: PreviewSsoGroupMappingsInput,
+        **kwargs: Any
+    ) -> QueryPreviewSsoGroupMappings:
+        query = gql(
+            """
+            query QueryPreviewSsoGroupMappings($previewSsoGroupMappings_args: PreviewSsoGroupMappingsInput!) {
+              previewSsoGroupMappings(args: $previewSsoGroupMappings_args) {
+                catchAllSecurityGroupIds
+                identity {
+                  displayName
+                  email
+                }
+                matchedGroups {
+                  idpGroupKey
+                  idpGroupLabel
+                  securityGroupId
+                }
+                unmatchedGroupKeys
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "previewSsoGroupMappings_args": preview_sso_group_mappings_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="QueryPreviewSsoGroupMappings",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return QueryPreviewSsoGroupMappings.model_validate(data)
 
     def query_private_key_external_filters(
         self,
@@ -6905,6 +7424,70 @@ class Client(BaseClient):
         data = self.get_data(response)
         return QueryVulnerabilityRemediationSummary.model_validate(data)
 
+    def mutation_activate_sso_connection(
+        self, activate_sso_connection_args: ActivateSsoConnectionInput, **kwargs: Any
+    ) -> MutationActivateSsoConnection:
+        query = gql(
+            """
+            mutation MutationActivateSsoConnection($activateSsoConnection_args: ActivateSsoConnectionInput!) {
+              activateSsoConnection(args: $activateSsoConnection_args) {
+                connection {
+                  acsUrl
+                  allowedActions
+                  certExpiry
+                  certFingerprint
+                  certSubject
+                  connectionId
+                  connectionName
+                  connectionType
+                  emailClaim
+                  encryptionCertificatePem
+                  etag
+                  groupKeyType
+                  groupMappings {
+                    createdAt
+                    idpGroupKey
+                    idpGroupLabel
+                    lastSyncedAt
+                    mappingId
+                    memberCount
+                    ruleType
+                    securityGroupId
+                    securityGroupName
+                  }
+                  groupsClaim
+                  identityProvider
+                  idpIdentifier
+                  idpSignInUrl
+                  idpSignOutUrl
+                  issues
+                  loginButtonLabel
+                  loginButtonLogoUrl
+                  metadataAvailable
+                  nameClaim
+                  orgId
+                  resettableFields
+                  spEntityId
+                  spMetadataUrl
+                  status
+                  statusDetail
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "activateSsoConnection_args": activate_sso_connection_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationActivateSsoConnection",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationActivateSsoConnection.model_validate(data)
+
     def mutation_add_asset_groups_to_assets(
         self,
         add_asset_groups_to_assets_args: AddAssetGroupsToAssetsInput,
@@ -6982,6 +7565,40 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return MutationAddSecurityGroupMember.model_validate(data)
+
+    def mutation_add_sso_group_mapping(
+        self, add_sso_group_mapping_args: AddSsoGroupMappingInput, **kwargs: Any
+    ) -> MutationAddSsoGroupMapping:
+        query = gql(
+            """
+            mutation MutationAddSsoGroupMapping($addSsoGroupMapping_args: AddSsoGroupMappingInput!) {
+              addSsoGroupMapping(args: $addSsoGroupMapping_args) {
+                mapping {
+                  createdAt
+                  idpGroupKey
+                  idpGroupLabel
+                  lastSyncedAt
+                  mappingId
+                  memberCount
+                  ruleType
+                  securityGroupId
+                  securityGroupName
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "addSsoGroupMapping_args": add_sso_group_mapping_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationAddSsoGroupMapping",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationAddSsoGroupMapping.model_validate(data)
 
     def mutation_asset_add_dependency(
         self, asset_add_dependency_args: AddDependencyInput, **kwargs: Any
@@ -7128,6 +7745,7 @@ class Client(BaseClient):
                     assetCpes
                     assetGroupCount
                     assetGroupIds
+                    classification
                     createdAt
                     fileName
                     filesystems {
@@ -7249,6 +7867,7 @@ class Client(BaseClient):
                   assetCpes
                   assetGroupCount
                   assetGroupIds
+                  classification
                   createdAt
                   fileName
                   filesystems {
@@ -7559,6 +8178,70 @@ class Client(BaseClient):
         data = self.get_data(response)
         return MutationCreateSecurityGroup.model_validate(data)
 
+    def mutation_create_sso_connection(
+        self, create_sso_connection_args: CreateSsoConnectionInput, **kwargs: Any
+    ) -> MutationCreateSsoConnection:
+        query = gql(
+            """
+            mutation MutationCreateSsoConnection($createSsoConnection_args: CreateSsoConnectionInput!) {
+              createSsoConnection(args: $createSsoConnection_args) {
+                connection {
+                  acsUrl
+                  allowedActions
+                  certExpiry
+                  certFingerprint
+                  certSubject
+                  connectionId
+                  connectionName
+                  connectionType
+                  emailClaim
+                  encryptionCertificatePem
+                  etag
+                  groupKeyType
+                  groupMappings {
+                    createdAt
+                    idpGroupKey
+                    idpGroupLabel
+                    lastSyncedAt
+                    mappingId
+                    memberCount
+                    ruleType
+                    securityGroupId
+                    securityGroupName
+                  }
+                  groupsClaim
+                  identityProvider
+                  idpIdentifier
+                  idpSignInUrl
+                  idpSignOutUrl
+                  issues
+                  loginButtonLabel
+                  loginButtonLogoUrl
+                  metadataAvailable
+                  nameClaim
+                  orgId
+                  resettableFields
+                  spEntityId
+                  spMetadataUrl
+                  status
+                  statusDetail
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "createSsoConnection_args": create_sso_connection_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationCreateSsoConnection",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationCreateSsoConnection.model_validate(data)
+
     def mutation_delete_acr(
         self, delete_acr_args: DeleteAcrInput, **kwargs: Any
     ) -> MutationDeleteACR:
@@ -7701,6 +8384,217 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return MutationDeleteSecurityGroup.model_validate(data)
+
+    def mutation_delete_sso_connection(
+        self, delete_sso_connection_args: DeleteSsoConnectionInput, **kwargs: Any
+    ) -> MutationDeleteSsoConnection:
+        query = gql(
+            """
+            mutation MutationDeleteSsoConnection($deleteSsoConnection_args: DeleteSsoConnectionInput!) {
+              deleteSsoConnection(args: $deleteSsoConnection_args) {
+                success
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "deleteSsoConnection_args": delete_sso_connection_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationDeleteSsoConnection",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationDeleteSsoConnection.model_validate(data)
+
+    def mutation_delete_sso_group_mapping(
+        self, delete_sso_group_mapping_args: DeleteSsoGroupMappingInput, **kwargs: Any
+    ) -> MutationDeleteSsoGroupMapping:
+        query = gql(
+            """
+            mutation MutationDeleteSsoGroupMapping($deleteSsoGroupMapping_args: DeleteSsoGroupMappingInput!) {
+              deleteSsoGroupMapping(args: $deleteSsoGroupMapping_args) {
+                mappingId
+                success
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "deleteSsoGroupMapping_args": delete_sso_group_mapping_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationDeleteSsoGroupMapping",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationDeleteSsoGroupMapping.model_validate(data)
+
+    def mutation_disable_sso_connection(
+        self, disable_sso_connection_args: DisableSsoConnectionInput, **kwargs: Any
+    ) -> MutationDisableSsoConnection:
+        query = gql(
+            """
+            mutation MutationDisableSsoConnection($disableSsoConnection_args: DisableSsoConnectionInput!) {
+              disableSsoConnection(args: $disableSsoConnection_args) {
+                connection {
+                  acsUrl
+                  allowedActions
+                  certExpiry
+                  certFingerprint
+                  certSubject
+                  connectionId
+                  connectionName
+                  connectionType
+                  emailClaim
+                  encryptionCertificatePem
+                  etag
+                  groupKeyType
+                  groupMappings {
+                    createdAt
+                    idpGroupKey
+                    idpGroupLabel
+                    lastSyncedAt
+                    mappingId
+                    memberCount
+                    ruleType
+                    securityGroupId
+                    securityGroupName
+                  }
+                  groupsClaim
+                  identityProvider
+                  idpIdentifier
+                  idpSignInUrl
+                  idpSignOutUrl
+                  issues
+                  loginButtonLabel
+                  loginButtonLogoUrl
+                  metadataAvailable
+                  nameClaim
+                  orgId
+                  resettableFields
+                  spEntityId
+                  spMetadataUrl
+                  status
+                  statusDetail
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "disableSsoConnection_args": disable_sso_connection_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationDisableSsoConnection",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationDisableSsoConnection.model_validate(data)
+
+    def mutation_edit_sso_group_mapping(
+        self, edit_sso_group_mapping_args: EditSsoGroupMappingInput, **kwargs: Any
+    ) -> MutationEditSsoGroupMapping:
+        query = gql(
+            """
+            mutation MutationEditSsoGroupMapping($editSsoGroupMapping_args: EditSsoGroupMappingInput!) {
+              editSsoGroupMapping(args: $editSsoGroupMapping_args) {
+                mapping {
+                  createdAt
+                  idpGroupKey
+                  idpGroupLabel
+                  lastSyncedAt
+                  mappingId
+                  memberCount
+                  ruleType
+                  securityGroupId
+                  securityGroupName
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "editSsoGroupMapping_args": edit_sso_group_mapping_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationEditSsoGroupMapping",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationEditSsoGroupMapping.model_validate(data)
+
+    def mutation_enable_sso_connection(
+        self, enable_sso_connection_args: EnableSsoConnectionInput, **kwargs: Any
+    ) -> MutationEnableSsoConnection:
+        query = gql(
+            """
+            mutation MutationEnableSsoConnection($enableSsoConnection_args: EnableSsoConnectionInput!) {
+              enableSsoConnection(args: $enableSsoConnection_args) {
+                connection {
+                  acsUrl
+                  allowedActions
+                  certExpiry
+                  certFingerprint
+                  certSubject
+                  connectionId
+                  connectionName
+                  connectionType
+                  emailClaim
+                  encryptionCertificatePem
+                  etag
+                  groupKeyType
+                  groupMappings {
+                    createdAt
+                    idpGroupKey
+                    idpGroupLabel
+                    lastSyncedAt
+                    mappingId
+                    memberCount
+                    ruleType
+                    securityGroupId
+                    securityGroupName
+                  }
+                  groupsClaim
+                  identityProvider
+                  idpIdentifier
+                  idpSignInUrl
+                  idpSignOutUrl
+                  issues
+                  loginButtonLabel
+                  loginButtonLogoUrl
+                  metadataAvailable
+                  nameClaim
+                  orgId
+                  resettableFields
+                  spEntityId
+                  spMetadataUrl
+                  status
+                  statusDetail
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "enableSsoConnection_args": enable_sso_connection_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationEnableSsoConnection",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationEnableSsoConnection.model_validate(data)
 
     def mutation_invite_user(
         self, invite_user_args: InviteOrgUserInput, **kwargs: Any
@@ -8620,6 +9514,108 @@ class Client(BaseClient):
         data = self.get_data(response)
         return MutationReplaceACR.model_validate(data)
 
+    def mutation_replace_sso_connection_certificate(
+        self,
+        replace_sso_connection_certificate_args: ReplaceSsoConnectionCertificateInput,
+        **kwargs: Any
+    ) -> MutationReplaceSsoConnectionCertificate:
+        query = gql(
+            """
+            mutation MutationReplaceSsoConnectionCertificate($replaceSsoConnectionCertificate_args: ReplaceSsoConnectionCertificateInput!) {
+              replaceSsoConnectionCertificate(args: $replaceSsoConnectionCertificate_args) {
+                connection {
+                  acsUrl
+                  allowedActions
+                  certExpiry
+                  certFingerprint
+                  certSubject
+                  connectionId
+                  connectionName
+                  connectionType
+                  emailClaim
+                  encryptionCertificatePem
+                  etag
+                  groupKeyType
+                  groupMappings {
+                    createdAt
+                    idpGroupKey
+                    idpGroupLabel
+                    lastSyncedAt
+                    mappingId
+                    memberCount
+                    ruleType
+                    securityGroupId
+                    securityGroupName
+                  }
+                  groupsClaim
+                  identityProvider
+                  idpIdentifier
+                  idpSignInUrl
+                  idpSignOutUrl
+                  issues
+                  loginButtonLabel
+                  loginButtonLogoUrl
+                  metadataAvailable
+                  nameClaim
+                  orgId
+                  resettableFields
+                  spEntityId
+                  spMetadataUrl
+                  status
+                  statusDetail
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "replaceSsoConnectionCertificate_args": replace_sso_connection_certificate_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationReplaceSsoConnectionCertificate",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationReplaceSsoConnectionCertificate.model_validate(data)
+
+    def mutation_replace_sso_group_mappings(
+        self,
+        replace_sso_group_mappings_args: ReplaceSsoGroupMappingsInput,
+        **kwargs: Any
+    ) -> MutationReplaceSsoGroupMappings:
+        query = gql(
+            """
+            mutation MutationReplaceSsoGroupMappings($replaceSsoGroupMappings_args: ReplaceSsoGroupMappingsInput!) {
+              replaceSsoGroupMappings(args: $replaceSsoGroupMappings_args) {
+                mappings {
+                  createdAt
+                  idpGroupKey
+                  idpGroupLabel
+                  lastSyncedAt
+                  mappingId
+                  memberCount
+                  ruleType
+                  securityGroupId
+                  securityGroupName
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "replaceSsoGroupMappings_args": replace_sso_group_mappings_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationReplaceSsoGroupMappings",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationReplaceSsoGroupMappings.model_validate(data)
+
     def mutation_save_jira_space_workflow_config(
         self,
         save_jira_space_workflow_config_args: SaveJiraSpaceWorkflowConfigInput,
@@ -8646,6 +9642,78 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return MutationSaveJiraSpaceWorkflowConfig.model_validate(data)
+
+    def mutation_select_sso_identity_provider(
+        self,
+        select_sso_identity_provider_args: SelectSsoIdentityProviderInput,
+        **kwargs: Any
+    ) -> MutationSelectSsoIdentityProvider:
+        query = gql(
+            """
+            mutation MutationSelectSsoIdentityProvider($selectSsoIdentityProvider_args: SelectSsoIdentityProviderInput!) {
+              selectSsoIdentityProvider(args: $selectSsoIdentityProvider_args) {
+                change {
+                  claimDefaultsApplied
+                  clearedFields
+                  mappingsDropped
+                  providerChanged
+                }
+                connection {
+                  acsUrl
+                  allowedActions
+                  certExpiry
+                  certFingerprint
+                  certSubject
+                  connectionId
+                  connectionName
+                  connectionType
+                  emailClaim
+                  encryptionCertificatePem
+                  etag
+                  groupKeyType
+                  groupMappings {
+                    createdAt
+                    idpGroupKey
+                    idpGroupLabel
+                    lastSyncedAt
+                    mappingId
+                    memberCount
+                    ruleType
+                    securityGroupId
+                    securityGroupName
+                  }
+                  groupsClaim
+                  identityProvider
+                  idpIdentifier
+                  idpSignInUrl
+                  idpSignOutUrl
+                  issues
+                  loginButtonLabel
+                  loginButtonLogoUrl
+                  metadataAvailable
+                  nameClaim
+                  orgId
+                  resettableFields
+                  spEntityId
+                  spMetadataUrl
+                  status
+                  statusDetail
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "selectSsoIdentityProvider_args": select_sso_identity_provider_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationSelectSsoIdentityProvider",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationSelectSsoIdentityProvider.model_validate(data)
 
     def mutation_set_asset_groups_to_asset(
         self, set_asset_groups_to_asset_args: SetAssetGroupsToAssetInput, **kwargs: Any
@@ -8755,6 +9823,32 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return MutationSetOrgUserStatus.model_validate(data)
+
+    def mutation_start_sso_connection_test(
+        self, start_sso_connection_test_args: StartSsoConnectionTestInput, **kwargs: Any
+    ) -> MutationStartSsoConnectionTest:
+        query = gql(
+            """
+            mutation MutationStartSsoConnectionTest($startSsoConnectionTest_args: StartSsoConnectionTestInput!) {
+              startSsoConnectionTest(args: $startSsoConnectionTest_args) {
+                authorizeUrl
+                expiresAt
+                testId
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "startSsoConnectionTest_args": start_sso_connection_test_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationStartSsoConnectionTest",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationStartSsoConnectionTest.model_validate(data)
 
     def mutation_submit_rise_ai_analysis(
         self, submit_rise_ai_analysis_args: RiseAIAnalysisDataInput, **kwargs: Any
@@ -8927,6 +10021,33 @@ class Client(BaseClient):
         data = self.get_data(response)
         return MutationUpdateOrgLevelSettings.model_validate(data)
 
+    def mutation_update_org_sso_settings(
+        self, update_org_sso_settings_args: UpdateOrgSsoSettingsInput, **kwargs: Any
+    ) -> MutationUpdateOrgSsoSettings:
+        query = gql(
+            """
+            mutation MutationUpdateOrgSsoSettings($updateOrgSsoSettings_args: UpdateOrgSsoSettingsInput!) {
+              updateOrgSsoSettings(args: $updateOrgSsoSettings_args) {
+                settings {
+                  enforcedDomains
+                  userPassAuthDisabled
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "updateOrgSsoSettings_args": update_org_sso_settings_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationUpdateOrgSsoSettings",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationUpdateOrgSsoSettings.model_validate(data)
+
     def mutation_update_security_group(
         self, update_security_group_args: UpdateSecurityGroupInput, **kwargs: Any
     ) -> MutationUpdateSecurityGroup:
@@ -8964,6 +10085,70 @@ class Client(BaseClient):
         )
         data = self.get_data(response)
         return MutationUpdateSecurityGroup.model_validate(data)
+
+    def mutation_update_sso_connection(
+        self, update_sso_connection_args: UpdateSsoConnectionInput, **kwargs: Any
+    ) -> MutationUpdateSsoConnection:
+        query = gql(
+            """
+            mutation MutationUpdateSsoConnection($updateSsoConnection_args: UpdateSsoConnectionInput!) {
+              updateSsoConnection(args: $updateSsoConnection_args) {
+                connection {
+                  acsUrl
+                  allowedActions
+                  certExpiry
+                  certFingerprint
+                  certSubject
+                  connectionId
+                  connectionName
+                  connectionType
+                  emailClaim
+                  encryptionCertificatePem
+                  etag
+                  groupKeyType
+                  groupMappings {
+                    createdAt
+                    idpGroupKey
+                    idpGroupLabel
+                    lastSyncedAt
+                    mappingId
+                    memberCount
+                    ruleType
+                    securityGroupId
+                    securityGroupName
+                  }
+                  groupsClaim
+                  identityProvider
+                  idpIdentifier
+                  idpSignInUrl
+                  idpSignOutUrl
+                  issues
+                  loginButtonLabel
+                  loginButtonLogoUrl
+                  metadataAvailable
+                  nameClaim
+                  orgId
+                  resettableFields
+                  spEntityId
+                  spMetadataUrl
+                  status
+                  statusDetail
+                }
+              }
+            }
+            """
+        )
+        variables: dict[str, object] = {
+            "updateSsoConnection_args": update_sso_connection_args
+        }
+        response = self.execute(
+            query=query,
+            operation_name="MutationUpdateSsoConnection",
+            variables=variables,
+            **kwargs
+        )
+        data = self.get_data(response)
+        return MutationUpdateSsoConnection.model_validate(data)
 
     def mutation_user_action(
         self, user_action_args: UserActionInput, **kwargs: Any

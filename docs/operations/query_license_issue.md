@@ -37,7 +37,7 @@ Typed attributes on the response model.
 | `licenseIssue.issueDescription` | `string` | yes |
 | `licenseIssue.issueId` | `string` | no |
 | `licenseIssue.issueName` | `string` | no |
-| `licenseIssue.lastModified` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1090c2660>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `licenseIssue.lastModified` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x107056660>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `licenseIssue.license` | `object` | yes |
 | `licenseIssue.license.additionalCounts` | `object` | yes |
 | `licenseIssue.license.additionalCounts.associatedComponents` | `integer` | yes |
@@ -51,7 +51,7 @@ Typed attributes on the response model.
 | `licenseIssue.license.url` | `string` | yes |
 | `licenseIssue.potentialSolution` | `string` | yes |
 | `licenseIssue.remediation` | `object` | yes |
-| `licenseIssue.remediation.createdTime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x1090c2660>, json_schema_input_type=PydanticUndefined)]` | yes |
+| `licenseIssue.remediation.createdTime` | `typing.Annotated[datetime.datetime, BeforeValidator(func=<function parse_datetime at 0x107056660>, json_schema_input_type=PydanticUndefined)]` | yes |
 | `licenseIssue.remediation.detail` | `string` | yes |
 | `licenseIssue.remediation.user` | `string` | yes |
 | `licenseIssue.severity` | `LicenseIssueSeverity` | yes |

@@ -71,6 +71,7 @@ Typed attributes on the response model.
 | `asset.update.assetCpes[]` | `string` | yes |
 | `asset.update.assetGroupCount` | `integer` | yes |
 | `asset.update.assetGroupIds[]` | `string` | yes |
+| `asset.update.classification` | `AssetClassification` | yes |
 | `asset.update.createdAt` | `string` | yes |
 | `asset.update.fileName` | `string` | yes |
 | `asset.update.filesystems[]` | `object` | yes |

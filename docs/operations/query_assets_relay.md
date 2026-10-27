@@ -100,6 +100,7 @@ Typed attributes on the response model.
 | `assetsRelay.edges[].node.assetCpes[]` | `string` | yes |
 | `assetsRelay.edges[].node.assetGroupCount` | `integer` | yes |
 | `assetsRelay.edges[].node.assetGroupIds[]` | `string` | yes |
+| `assetsRelay.edges[].node.classification` | `AssetClassification` | yes |
 | `assetsRelay.edges[].node.createdAt` | `string` | yes |
 | `assetsRelay.edges[].node.fileName` | `string` | yes |
 | `assetsRelay.edges[].node.filesystems[]` | `object` | yes |

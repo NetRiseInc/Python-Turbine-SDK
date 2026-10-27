@@ -41,6 +41,7 @@ Typed attributes on the response model.
 | `packageDependenciesById.associatedFiles[].component.file.assets[].assetCpes[]` | `string` | yes |
 | `packageDependenciesById.associatedFiles[].component.file.assets[].assetGroupCount` | `integer` | yes |
 | `packageDependenciesById.associatedFiles[].component.file.assets[].assetGroupIds[]` | `string` | yes |
+| `packageDependenciesById.associatedFiles[].component.file.assets[].classification` | `AssetClassification` | yes |
 | `packageDependenciesById.associatedFiles[].component.file.assets[].createdAt` | `string` | yes |
 | `packageDependenciesById.associatedFiles[].component.file.assets[].fileName` | `string` | yes |
 | `packageDependenciesById.associatedFiles[].component.file.assets[].firstAnalysisTime` | `string` | yes |
