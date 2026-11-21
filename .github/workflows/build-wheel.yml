@@ -6,26 +6,30 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    # Manual build + NetRise upload. To re-test upload alone against an
+    # existing wheel artifact, run the "Upload to NetRise" workflow instead.
 
 jobs:
   build-wheel:
     runs-on: ubuntu-latest
-    
-    # Only run if PR was merged (not just closed)
+
+    # Only run if PR was merged (not just closed), or on push / manual dispatch
     if: |
       (github.event_name == 'push') ||
+      (github.event_name == 'workflow_dispatch') ||
       (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
         id: setup-python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-      
+          python-version: "3.12"
+
       - name: Install Poetry
         uses: snok/install-poetry@v1
         with:
@@ -33,7 +37,7 @@ jobs:
           virtualenvs-create: true
           virtualenvs-in-project: true
           installer-parallel: true
-      
+
       - name: Cache Poetry dependencies
         uses: actions/cache@v4
         with:
@@ -43,13 +47,13 @@ jobs:
           key: poetry-${{ runner.os }}-3.12-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
             poetry-${{ runner.os }}-3.12-
-      
+
       - name: Install dependencies
         run: poetry install --no-interaction --no-root
-      
+
       - name: Build wheel package
         run: poetry build
-      
+
       - name: Extract package metadata
         id: package-info
         run: |
@@ -58,7 +62,7 @@ jobs:
           echo "name=$PACKAGE_NAME" >> $GITHUB_OUTPUT
           echo "version=$PACKAGE_VERSION" >> $GITHUB_OUTPUT
           echo "Extracted package name: $PACKAGE_NAME, version: $PACKAGE_VERSION"
-      
+
       - name: Get wheel file path
         id: wheel-path
         run: |
@@ -72,87 +76,23 @@ jobs:
           echo "path=$WHEEL_FILE" >> $GITHUB_OUTPUT
           echo "name=$(basename $WHEEL_FILE)" >> $GITHUB_OUTPUT
           echo "Found wheel: $WHEEL_FILE"
-      
+
       - name: Upload wheel artifact
         uses: actions/upload-artifact@v4
         with:
           name: wheel-package
           path: dist/*.whl
           retention-days: 30
-      
+
       - name: Upload source distribution artifact
         uses: actions/upload-artifact@v4
         with:
           name: source-distribution
           path: dist/*.tar.gz
           retention-days: 30
-      
-  
+
   upload-to-netrise:
-    runs-on: ubuntu-latest
     needs: build-wheel
-    if: needs.build-wheel.result == 'success'  # Only run if build succeeded
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      
-      - name: Download wheel artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: wheel-package
-          path: dist/
-      
-      - name: Extract package metadata
-        id: package-info
-        run: |
-          PACKAGE_NAME=$(python3 -c "import tomllib; f=open('pyproject.toml','rb'); d=tomllib.load(f); print(d['tool']['poetry']['name'])" 2>/dev/null || echo "netrise-turbine-sdk")
-          PACKAGE_VERSION=$(python3 -c "import tomllib; f=open('pyproject.toml','rb'); d=tomllib.load(f); print(d['tool']['poetry']['version'])" 2>/dev/null || echo "0.1.0")
-          echo "name=$PACKAGE_NAME" >> $GITHUB_OUTPUT
-          echo "version=$PACKAGE_VERSION" >> $GITHUB_OUTPUT
-          echo "Extracted package name: $PACKAGE_NAME, version: $PACKAGE_VERSION"
-      
-      - name: Get wheel file path
-        id: wheel-path
-        run: |
-          set -euo pipefail
-          WHEEL_FILE=$(ls dist/*.whl 2>/dev/null | head -n 1 || true)
-          if [ -z "$WHEEL_FILE" ] || [ ! -f "$WHEEL_FILE" ]; then
-            echo "Error: No wheel file found in dist/ directory"
-            ls -la dist/ || echo "dist/ directory does not exist"
-            exit 1
-          fi
-          echo "path=$WHEEL_FILE" >> $GITHUB_OUTPUT
-          echo "Found wheel: $WHEEL_FILE"
-      
-      - name: Upload wheel to NetRise Platform
-        id: netrise-upload
-        uses: NetRiseInc/binary-composition-analysis@v1.0.7
-        with:
-          # Authentication Info (from GitHub Secrets)
-          client-id: ${{ secrets.NETRISE_CLIENT_ID }}
-          client-secret: ${{ secrets.NETRISE_CLIENT_SECRET }}
-          organization-id: ${{ secrets.NETRISE_ORGANIZATION_ID }}
-          domain: ${{ secrets.NETRISE_TOKEN_URL }}
-          audience: ${{ secrets.NETRISE_AUDIENCE }}
-          endpoint: ${{ secrets.NETRISE_ENDPOINT }}
-          
-          # Asset Info
-          artifact-path: ${{ steps.wheel-path.outputs.path }}
-          name: ${{ steps.package-info.outputs.name }}
-          version: ${{ steps.package-info.outputs.version }}
-          manufacturer: "NetRise"
-          model: "Python SDK"
-      
-      - name: Display NetRise upload results
-        if: always()
-        run: |
-          echo "NetRise Upload Status:"
-          echo "  Uploaded: ${{ steps.netrise-upload.outputs.uploaded }}"
-          echo "  Asset ID: ${{ steps.netrise-upload.outputs.asset-id }}"
-          echo "  Upload ID: ${{ steps.netrise-upload.outputs.upload-id }}"
+    if: needs.build-wheel.result == 'success'
+    uses: ./.github/workflows/upload-to-netrise.yml
+    secrets: inherit
